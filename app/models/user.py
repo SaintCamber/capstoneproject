@@ -4,15 +4,18 @@ from flask_login import UserMixin
 
 
 class User(db.Model, UserMixin):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     if environment == "production":
-        __table_args__ = {'schema': SCHEMA}
+        __table_args__ = {"schema": SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+    playlists = db.relationship(
+        "Playlist", back_populates="user", cascade="all, delete-orphan"
+    )
 
     @property
     def password(self):
@@ -27,7 +30,8 @@ class User(db.Model, UserMixin):
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'username': self.username,
-            'email': self.email
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "playlists": self.playlists,
         }
