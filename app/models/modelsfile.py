@@ -12,6 +12,15 @@ class Artist(db.Model):
         "Song", back_populates="artist", cascade="all, delete-orphan"
     )
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "genre": self.genre,
+            "albums": [album.to_dict() for album in self.albums],
+            "songs": [song.to_dict() for song in self.songs],
+        }
+
 
 class Album(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -20,6 +29,14 @@ class Album(db.Model):
     songs = db.relationship(
         "Song", back_populates="album", cascade="all, delete-orphan"
     )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "artist_id": self.artist_id,
+            "artist": self.artist.to_dict(),
+            "songs": [song.to_dict() for song in self.songs],
+        }
 
 
 class Song(db.Model):
@@ -34,6 +51,18 @@ class Song(db.Model):
     artist = db.relationship("Artist", back_populates="songs")
     album = db.relationship("Album", back_populates="songs")
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "link": self.link,
+            "artist_id": self.artist_id,
+            "artist": self.artist.to_dict(),
+            "album_id": self.album_id,
+            "album": self.album.to_dict() if self.album else None,
+            "genre": self.genre,
+            "playlists": [playlist.to_dict() for playlist in self.playlists],
+        }
+
 
 class Playlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -41,8 +70,15 @@ class Playlist(db.Model):
     songs = db.relationship(
         "PlaylistSong", back_populates="playlist", cascade="all, delete-orphan"
     )
-    user = db.relationship(
-        "User", back_populates="playlists")
+    user = db.relationship("User", back_populates="playlists")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "user": self.user.to_dict(),
+            "songs": [song.to_dict() for song in self.songs],
+        }
 
 
 class PlaylistSong(db.Model):
@@ -53,3 +89,11 @@ class PlaylistSong(db.Model):
     )
     song = db.relationship("Song", back_populates="playlists")
     playlist = db.relationship("Playlist", back_populates="songs")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "song_id": self.song_id,
+            "song": self.song.to_dict(),
+            "playlist": self.playlist.to_dict(),
+        }
