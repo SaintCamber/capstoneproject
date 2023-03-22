@@ -7,7 +7,10 @@ Create Date: 2023-03-20 14:45:19.149674
 """
 from alembic import op
 import sqlalchemy as sa
+import os
 
+environment = os.getenv("FLASK_ENV")
+SCHEMA = os.environ.get("SCHEMA")
 
 # revision identifiers, used by Alembic.
 revision = "961ada98cff9"
@@ -25,6 +28,8 @@ def upgrade():
         sa.Column("genre", sa.String(length=255), nullable=False),
         sa.PrimaryKeyConstraint("id"),
     )
+    if environment == "production":
+        op.execute(f"ALTER TABLE artist SET SCHEMA {SCHEMA};")
     op.create_table(
         "album",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -33,6 +38,8 @@ def upgrade():
         sa.ForeignKeyConstraint(["artist_id"], ["artist.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
+    if environment == "production":
+        op.execute(f"ALTER TABLE album SET SCHEMA {SCHEMA};")
     op.create_table(
         "playlist",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -41,6 +48,8 @@ def upgrade():
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
+    if environment == "production":
+        op.execute(f"ALTER TABLE playlist SET SCHEMA {SCHEMA};")
     op.create_table(
         "song",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -53,6 +62,8 @@ def upgrade():
         sa.ForeignKeyConstraint(["artist_id"], ["artist.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
+    if environment == "production":
+        op.execute(f"ALTER TABLE song SET SCHEMA {SCHEMA};")
     op.create_table(
         "playlist_song",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -62,6 +73,8 @@ def upgrade():
         sa.ForeignKeyConstraint(["song_id"], ["song.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
     )
+    if environment == "production":
+        op.execute(f"ALTER TABLE playlist_song SET SCHEMA {SCHEMA};")
     # ### end Alembic commands ###
 
 

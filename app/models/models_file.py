@@ -2,6 +2,8 @@ from .db import db
 
 
 class Artist(db.Model):
+    if environment == "production":
+        __table_args__ = {"schema": SCHEMA}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
 
@@ -24,6 +26,8 @@ class Artist(db.Model):
 
 
 class Album(db.Model):
+    if environment == "production":
+        __table_args__ = {"schema": SCHEMA}
     id = db.Column(db.Integer, primary_key=True)
     artist_id = db.Column(
         db.Integer, db.ForeignKey("artist.id", ondelete="CASCADE"), nullable=False
@@ -45,6 +49,8 @@ class Album(db.Model):
 
 
 class Song(db.Model):
+    if environment == "production":
+        __table_args__ = {"schema": SCHEMA}
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     file_url = db.Column(db.String(255), nullable=False)
@@ -73,6 +79,8 @@ class Song(db.Model):
 
 
 class Playlist(db.Model):
+    if environment == "production":
+        __table_args__ = {"schema": SCHEMA}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     user_id = db.Column(
@@ -89,11 +97,13 @@ class Playlist(db.Model):
             "name": self.name,
             "user_id": self.user_id,
             "user": self.user.to_dict(),
-            "songs": self.songs
+            "songs": self.songs,
         }
 
 
 class PlaylistSong(db.Model):
+    if environment == "production":
+        __table_args__ = {"schema": SCHEMA}
     id = db.Column(db.Integer, primary_key=True)
     song_id = db.Column(
         db.Integer, db.ForeignKey("song.id", ondelete="CASCADE"), nullable=False
@@ -106,8 +116,8 @@ class PlaylistSong(db.Model):
 
     def to_dict(self):
         return {
-            "id":self.id,
-            "song_id":self.song_id,
-            "playlist_id":self.playlist_id,
-            "song":self.song.title
+            "id": self.id,
+            "song_id": self.song_id,
+            "playlist_id": self.playlist_id,
+            "song": self.song.title,
         }
