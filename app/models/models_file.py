@@ -1,4 +1,4 @@
-from .db import db, environment, SCHEMA
+from .db import db, environment, SCHEMA, add_prefix_for_prod
 
 
 class Artist(db.Model):
@@ -30,7 +30,9 @@ class Album(db.Model):
         __table_args__ = {"schema": SCHEMA}
     id = db.Column(db.Integer, primary_key=True)
     artist_id = db.Column(
-        db.Integer, db.ForeignKey("artist.id", ondelete="CASCADE"), nullable=False
+        db.Integer,
+        db.ForeignKey("artist.id", add_prefix_for_prod("album.id"), onDelete="CASCADE"),
+        nullable=False,
     )
     name = db.Column(db.String, nullable=False, unique=True)
     artist = db.relationship("Artist", back_populates="albums")
@@ -54,8 +56,16 @@ class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     file_url = db.Column(db.String(255), nullable=False)
-    artist_id = db.Column(db.Integer, db.ForeignKey("artist.id", ondelete="CASCADE"))
-    album_id = db.Column(db.Integer, db.ForeignKey("album.id", ondelete="CASCADE"))
+    artist_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            "artist.id", add_prefix_for_prod("artist.id"), onDelete="CASCADE"
+        ),
+    )
+    album_id = db.Column(
+        db.Integer,
+        db.ForeignKey("album.id", add_prefix_for_prod("album.id"), onDelete="CASCADE"),
+    )
     genre = db.Column(db.String(255), nullable=False)
     playlists = db.relationship(
         "PlaylistSong", back_populates="song", cascade="all, delete-orphan"
@@ -84,7 +94,9 @@ class Playlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     user_id = db.Column(
-        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+        db.Integer,
+        db.ForeignKey("users.id", add_prefix_for_prod("users.id"), onDelete="CASCADE"),
+        nullable=False,
     )
     songs = db.relationship(
         "PlaylistSong", back_populates="playlist", cascade="all, delete-orphan"
@@ -106,10 +118,16 @@ class PlaylistSong(db.Model):
         __table_args__ = {"schema": SCHEMA}
     id = db.Column(db.Integer, primary_key=True)
     song_id = db.Column(
-        db.Integer, db.ForeignKey("song.id", ondelete="CASCADE"), nullable=False
+        db.Integer,
+        db.ForeignKey("song.id", add_prefix_for_prod("song.id"), onDelete="CASCADE"),
+        nullable=False,
     )
     playlist_id = db.Column(
-        db.Integer, db.ForeignKey("playlist.id", ondelete="CASCADE"), nullable=False
+        db.Integer,
+        db.ForeignKey(
+            "playlist.id", add_prefix_for_prod("playlist.id"), onDelete="CASCADE"
+        ),
+        nullable=False,
     )
     song = db.relationship("Song", back_populates="playlists")
     playlist = db.relationship("Playlist", back_populates="songs")
