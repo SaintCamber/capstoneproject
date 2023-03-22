@@ -1,4 +1,4 @@
 from .db import db
-from .user import User
+from .user import User, Role
 from .db import environment, SCHEMA
-from .modelsfile import Artist, Song, Playlist, PlaylistSong, Album
+from .models_file import Artist, Song, Album, Playlist, PlaylistSong

@@ -3,8 +3,9 @@ from .db import db
 
 class Artist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
-    genre = db.Column(db.String(255))
+    name = db.Column(db.String, nullable=False, unique=True)
+
+    genre = db.Column(db.String(255), nullable=False)
     albums = db.relationship(
         "Album", back_populates="artist", cascade="all, delete-orphan"
     )
@@ -24,7 +25,10 @@ class Artist(db.Model):
 
 class Album(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    artist_id = db.Column(db.Integer, db.ForeignKey("artist.id", ondelete="CASCADE"))
+    artist_id = db.Column(
+        db.Integer, db.ForeignKey("artist.id", ondelete="CASCADE"), nullable=False
+    )
+    name = db.Column(db.String, nullable=False, unique=True)
     artist = db.relationship("Artist", back_populates="albums")
     songs = db.relationship(
         "Song", back_populates="album", cascade="all, delete-orphan"
@@ -33,18 +37,20 @@ class Album(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
+            "name": self.name,
             "artist_id": self.artist_id,
-            "artist": self.artist.to_dict(),
+            "artist": self.artist.name,
             "songs": [song.to_dict() for song in self.songs],
         }
 
 
 class Song(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    link = db.Column(db.String)
+    title = db.Column(db.String, nullable=False)
+    file_url = db.Column(db.String(255), nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey("artist.id", ondelete="CASCADE"))
     album_id = db.Column(db.Integer, db.ForeignKey("album.id", ondelete="CASCADE"))
-    genre = db.Column(db.String(255))
+    genre = db.Column(db.String(255), nullable=False)
     playlists = db.relationship(
         "PlaylistSong", back_populates="song", cascade="all, delete-orphan"
     )
@@ -54,19 +60,24 @@ class Song(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "link": self.link,
+            "file_url": self.file_url,
+            "title": self.title,
             "artist_id": self.artist_id,
-            "artist": self.artist.to_dict(),
+            "artist": self.artist.name,
             "album_id": self.album_id,
-            "album": self.album.to_dict() if self.album else None,
+            "album": self.album.name,
             "genre": self.genre,
             "playlists": [playlist.to_dict() for playlist in self.playlists],
+            "file_url": self.file_url,
         }
 
 
 class Playlist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"))
+    name = db.Column(db.String, nullable=False)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
     songs = db.relationship(
         "PlaylistSong", back_populates="playlist", cascade="all, delete-orphan"
     )
@@ -75,25 +86,28 @@ class Playlist(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
+            "name": self.name,
             "user_id": self.user_id,
             "user": self.user.to_dict(),
-            "songs": [song.to_dict() for song in self.songs],
+            "songs": self.songs
         }
 
 
 class PlaylistSong(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    song_id = db.Column(db.Integer, db.ForeignKey("song.id", ondelete="CASCADE"))
+    song_id = db.Column(
+        db.Integer, db.ForeignKey("song.id", ondelete="CASCADE"), nullable=False
+    )
     playlist_id = db.Column(
-        db.Integer, db.ForeignKey("playlist.id", ondelete="CASCADE")
+        db.Integer, db.ForeignKey("playlist.id", ondelete="CASCADE"), nullable=False
     )
     song = db.relationship("Song", back_populates="playlists")
     playlist = db.relationship("Playlist", back_populates="songs")
 
     def to_dict(self):
         return {
-            "id": self.id,
-            "song_id": self.song_id,
-            "song": self.song.to_dict(),
-            "playlist": self.playlist.to_dict(),
+            "id":self.id,
+            "song_id":self.song_id,
+            "playlist_id":self.playlist_id,
+            "song":self.song.title
         }

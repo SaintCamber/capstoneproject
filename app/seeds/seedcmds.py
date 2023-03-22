@@ -3,7 +3,7 @@ import random
 from faker import Faker
 from sqlalchemy.sql import text
 from app.models import db, User, environment, SCHEMA
-from app.models.modelsfile import db, Artist, Album, Song, Playlist, PlaylistSong
+from app.models.models_file import Album, Artist, Playlist, PlaylistSong, Song
 
 fake = Faker()
 
@@ -21,7 +21,7 @@ def create_artists(num_artists):
 def create_albums(num_albums):
     artists = Artist.query.all()
     for i in range(num_albums):
-        album = Album(artist=random.choice(artists))
+        album = Album(artist=random.choice(artists), name=fake.name())
         db.session.add(album)
     db.session.commit()
 
@@ -31,10 +31,11 @@ def create_songs(num_songs):
     albums = Album.query.all()
     for i in range(num_songs):
         song = Song(
-            link=fake.url(),
-            artist=random.choice(artists),
-            album=random.choice(albums),
+            file_url=fake.url(),
+            artist_id=random.choice(artists).id,
+            album_id=random.choice(albums).id,
             genre=random.choice(["Rock", "Pop", "Hip Hop", "Electronic"]),
+            title=fake.name(),
         )
         db.session.add(song)
     db.session.commit()
@@ -43,7 +44,7 @@ def create_songs(num_songs):
 def create_playlists(num_playlists):
     users = User.query.all()
     for i in range(num_playlists):
-        playlist = Playlist(user=random.choice(users))
+        playlist = Playlist(user=random.choice(users), name=fake.name())
         db.session.add(playlist)
     db.session.commit()
 

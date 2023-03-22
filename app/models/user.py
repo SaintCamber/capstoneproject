@@ -13,6 +13,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.String(20), nullable=False, default="user")
     playlists = db.relationship(
         "Playlist", back_populates="user", cascade="all, delete-orphan"
     )
@@ -35,3 +36,10 @@ class User(db.Model, UserMixin):
             "email": self.email,
             "playlists": self.playlists,
         }
+
+
+class Role(db.Model):
+    __tablename__ = "roles"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20), unique=True, nullable=False)
