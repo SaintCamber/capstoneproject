@@ -9,7 +9,7 @@ BUCKET_NAME = os.environ.get("bucket_name")
 B2_LOCATION = "https://s3.us-east-005.backblazeb2.com"
 ALLOWED_EXTENSIONS = {"mp3","wav","flac"}
 
-s3_client = boto3.client(
+b2_client = boto3.client(
     "s3",
     endpoint_url=os.environ.get("s3_api_url"),
     aws_access_key_id=os.environ.get("B2_KEY"),
@@ -27,7 +27,7 @@ def upload_file_to_b2(file, acl="public-read"):
         unique_filename = get_unique_filename(file.filename)
 
         # Upload the file using upload_fileobj
-        s3_client.upload_fileobj(
+        b2_client.upload_fileobj(
             file.stream,
             BUCKET_NAME,
             unique_filename,

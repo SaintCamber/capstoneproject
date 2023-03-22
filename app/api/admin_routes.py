@@ -27,9 +27,9 @@ bucketId = os.getenv("bucketId")
 token = authorize_account(account_id,application_key_id,application_key)["authorizationToken"]
 apiUrl =authorize_account(account_id,application_key_id,application_key)["apiUrl"]
     
-uploadUrl = get_upload_url(apiUrl,token,bucketId)["uploadUrl"]
-# print(uploadUrl)
-uploadAuth = get_upload_url(apiUrl,token,bucketId)["authorizationToken"]
+# uploadUrl = get_upload_url(apiUrl,token,bucketId)["uploadUrl"]
+# # print(uploadUrl)
+# uploadAuth = get_upload_url(apiUrl,token,bucketId)["authorizationToken"]
 # utility validation wrapper
 
 
@@ -47,26 +47,25 @@ def admin_only(func):
 #     if request.method == "POST":
 
 
-@admin_routes.before_request
-def https_redirect():
-    if os.environ.get("FLASK_ENV") == "production":
-        if request.headers.get("X-Forwarded-Proto") == "http":
-            url = request.url.replace("http://", "https://", 1)
-            code = 301
-            return redirect(url, code=code)
+# @admin_routes.before_request
+# def https_redirect():
+#     if os.environ.get("FLASK_ENV") == "production":
+#         if request.headers.get("X-Forwarded-Proto") == "http":
+#             url = request.url.replace("http://", "https://", 1)
+#             code = 301
+#             return redirect(url, code=code)
 
 
-@admin_routes.after_request
-def inject_csrf_token(response):
-    response.set_cookie(
-        "csrf_token",
-        generate_csrf(),
-        secure=True if os.environ.get("FLASK_ENV") == "production" else False,
-        samesite="Strict" if os.environ.get("FLASK_ENV") == "production" else None,
-        httponly=True,
-    )
-    return response
-
+# @admin_routes.after_request
+# def inject_csrf_token(response):
+#     response.set_cookie(
+#         "csrf_token",
+#         generate_csrf(),
+#         secure=True if os.environ.get("FLASK_ENV") == "production" else False,
+#         samesite="Strict" if os.environ.get("FLASK_ENV") == "production" else None,
+#         httponly=True,
+#     )
+#     return response
 
 # Route for uploading songs
 @admin_routes.route("/upload", methods=["POST"])
@@ -76,25 +75,35 @@ def upload_song():
         return jsonify(error="No file provided"), 400
 
     file = request.files["song_file"]
-    print(file)
+    
 
     # Check if file has an allowed extension
     if not allowed_file(file.filename):
         return {"error":"File type not allowed","status_code":400}
 
-    # Upload file to S3
+    # Upload file to B2
     try:
-        url =  upload_file_to_b2(file)
-
+        response = upload_file_to_b2(file)
     except Exception as e:
-        return {"error":str(e), "status_code":500}
+        return {"error": str(e), "status_code": 500}
 
-    return {"url":url}
+    # Check for errors in B2 upload response
+    
+    if "errors" in response:
+        return {"error": response["errors"], "status_code": 500}
+
+    # Get URL from B2 upload response
+    
+    url = response["url"]
+
+    return {"url": url}
+
 
 
 @admin_routes.route("/artists", methods=["GET"])
 def get_artists():
     # Fetch all the artists from the database
+    
     artists = Artist.query.all()
 
     # Serialize the results into JSON format
