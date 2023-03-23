@@ -1,32 +1,40 @@
-from flask import Blueprint, request, abort, session, current_app, flash,redirect,jsonify
+import b2sdk.v2 as b2
+from flask import (
+    Blueprint,
+    request,
+    abort,
+    session,
+    current_app,
+    flash,
+    redirect,
+    jsonify,
+)
 from flask_login import current_user
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from app.models import Song, Album, Artist, db
-
+import hashlib
+import requests
+import boto3
+import json
 from app.forms.upload_song_form import UploadForm
 import os
-from app.utils.b2_helpers import (
-    get_unique_filename,
-    upload_file_to_b2,
-    authorize_account,
-    get_upload_url,
-    allowed_file,
-    # upload_to_b2
-)
+import io
+from app.utils.b2_helpers import *
 from dotenv import load_dotenv
 
 admin_routes = Blueprint("admin", __name__, url_prefix="/admin")
 load_dotenv()
 BUCKET_NAME = os.environ.get("bucket_name")
+BUCKET_ID = os.environ.get("bucket_id")
 account_id = os.getenv("accountId")
-application_key_id = os.getenv("B2_KEY")
-application_key = os.getenv("B2_SECRET")
 
 
-bucketId = os.getenv("bucketId")
-token = authorize_account(account_id,application_key_id,application_key)["authorizationToken"]
-apiUrl =authorize_account(account_id,application_key_id,application_key)["apiUrl"]
-    
+BUCKET_KEY = os.environ.get("B2_KEY")
+BUCKET_ENDPOINT = os.environ.get("B2_LOCATION")
+
+# b2_api = b2.B2Api()
+# b2_api.authorize_account("production", BUCKET_ID, BUCKET_KEY)
+
 # uploadUrl = get_upload_url(apiUrl,token,bucketId)["uploadUrl"]
 # # print(uploadUrl)
 # uploadAuth = get_upload_url(apiUrl,token,bucketId)["authorizationToken"]
@@ -47,63 +55,91 @@ def admin_only(func):
 #     if request.method == "POST":
 
 
-# @admin_routes.before_request
-# def https_redirect():
-#     if os.environ.get("FLASK_ENV") == "production":
-#         if request.headers.get("X-Forwarded-Proto") == "http":
-#             url = request.url.replace("http://", "https://", 1)
-#             code = 301
-#             return redirect(url, code=code)
+@admin_routes.before_request
+def https_redirect():
+    if os.environ.get("FLASK_ENV") == "production":
+        if request.headers.get("X-Forwarded-Proto") == "http":
+            url = request.url.replace("http://", "https://", 1)
+            code = 301
+            return redirect(url, code=code)
 
 
-# @admin_routes.after_request
-# def inject_csrf_token(response):
-#     response.set_cookie(
-#         "csrf_token",
-#         generate_csrf(),
-#         secure=True if os.environ.get("FLASK_ENV") == "production" else False,
-#         samesite="Strict" if os.environ.get("FLASK_ENV") == "production" else None,
-#         httponly=True,
-#     )
-#     return response
+@admin_routes.after_request
+def inject_csrf_token(response):
+    response.set_cookie(
+        "csrf_token",
+        generate_csrf(),
+        secure=True if os.environ.get("FLASK_ENV") == "production" else False,
+        samesite="Strict" if os.environ.get("FLASK_ENV") == "production" else None,
+        httponly=True,
+    )
+    return response
+
 
 # Route for uploading songs
 @admin_routes.route("/upload", methods=["POST"])
 def upload_song():
-    # Check if file was included in request
-    if "song_file" not in request.files:
-        return jsonify(error="No file provided"), 400
+    # Get the values of the application key ID and application key from environment variables
+    application_key_id = os.environ.get("B2_KEY")
+    application_key = os.environ.get("B2_SECRET")
+    bucket_id = os.environ.get("bucketId")
 
-    file = request.files["song_file"]
+    # Encode the application key ID and application key as a basic auth string
+    id_and_key = f"{application_key_id}:{application_key}"
+    basic_auth_string = "Basic " + base64.b64encode(id_and_key.encode()).decode()
+
+    # Add the Authorization header to the request
+    headers = {"Authorization": basic_auth_string}
+
+    # Make the request to the Backblaze B2 API to authorize the account
+    url = "https://api.backblazeb2.com/b2api/v2/b2_authorize_account"
+    response = requests.get(url, headers=headers)
+    response_data = json.loads(response.text)
+
+    # Get the upload URL and authorization token from the response
+    upload_url = response_data["apiUrl"] + "/b2api/v2/b2_get_upload_url"
+    upload_auth_token = response_data["authorizationToken"]
+
+    # Get the file data from the request
+    file_data = request.files["file"]
+    if file_data is None:
+        return jsonify({"error": "No file uploaded"})
+
+    # Get the file name and content type
+    file_name = file_data.filename
+    content_type = file_data.content_type
+
+    # Get the upload URL for the bucket
+    headers = {"Authorization": upload_auth_token}
+    data = {"bucketId": bucket_id}
+    response = requests.post(upload_url, headers=headers, json=data)
+    response_data = json.loads(response.text)
+
+    # Get the upload URL and upload token from the response
+    upload_url = response_data["uploadUrl"]
+    upload_token = response_data["authorizationToken"]
+
     
 
-    # Check if file has an allowed extension
-    if not allowed_file(file.filename):
-        return {"error":"File type not allowed","status_code":400}
+    # Upload the file to the bucket
+    headers = {
+        "Authorization": upload_token,
+        "X-Bz-File-Name": file_name,
+        "Content-Type": content_type,
+        "X-Bz-Content-Sha1": "do_not_verify"
+    }
+    response = requests.post(upload_url, headers=headers, data=file_data.read())
 
-    # Upload file to B2
-    try:
-        response = upload_file_to_b2(file)
-    except Exception as e:
-        return {"error": str(e), "status_code": 500}
+    # Print the response data
+    print(response.text)
 
-    # Check for errors in B2 upload response
-    
-    if "errors" in response:
-        return {"error": response["errors"], "status_code": 500}
-
-    # Get URL from B2 upload response
-    
-    url = response["url"]
-
-    return {"url": url}
-
+    return "File uploaded successfully!"
 
 
 @admin_routes.route("/artists", methods=["GET"])
 def get_artists():
     # Fetch all the artists from the database
-    
+
     artists = Artist.query.all()
 
     # Serialize the results into JSON format
