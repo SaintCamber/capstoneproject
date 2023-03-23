@@ -6,11 +6,13 @@ from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_login import LoginManager
 from .models import *
 from .forms.upload_song_form import UploadForm
+
 # from .models.models_file import Artist, Song, Album, Playlist, PlaylistSong
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .api.admin_routes import admin_routes
 from .api.playlist_routes import playlist_routes
+
 # from .seeds import seed_commands
 from .config import Config
 from .utils.b2_helpers import authorize_account
