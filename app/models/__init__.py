@@ -12,6 +12,6 @@ __all__ = [
     "Playlist",
     "PlaylistSong",
     "db",
-    environment,
-    SCHEMA,
+    "environment",
+    "SCHEMA",
 ]
