@@ -7,7 +7,7 @@ from flask_login import LoginManager
 from .models import *
 from .forms.upload_song_form import UploadForm
 
-# from .models.models_file import Artist, Song, Album, Playlist, PlaylistSong
+from .models.models_file import Artist, Song, Album, Playlist, PlaylistSong
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .api.admin_routes import admin_routes
@@ -15,7 +15,7 @@ from .api.playlist_routes import playlist_routes
 
 # from .seeds import seed_commands
 from .config import Config
-from .utils.b2_helpers import authorize_account
+# from .utils.b2_helpers import authorize_account
 
 app = Flask(__name__, static_folder="../react-app/build", static_url_path="/")
 
@@ -30,7 +30,7 @@ def load_user(id):
 
 
 # Tell flask about our seed commands
-# app.cli.add_command(seed_commands)
+app.cli.add_command(seed_commands)
 
 app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix="/api/users")
