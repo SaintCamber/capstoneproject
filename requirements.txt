@@ -31,3 +31,4 @@ werkzeug==2.2.2
 wtforms==3.0.1
 boto3 == 1.26.96
 backblaze == 0.1.1
+b2sdk == 1.19.0
