@@ -6,7 +6,7 @@ from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_login import LoginManager
 from .models import db, User
 from .forms.upload_song_form import UploadForm
-from .models.models_file import Artist, Song, Playlist, PlaylistSong, Album
+from .models.models_file import Artist, Song, Album, Playlist, PlaylistSong
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
 from .api.admin_routes import admin_routes
@@ -100,6 +100,5 @@ def react_root(path):
 
 
 @app.errorhandler(404)
-
 def not_found(e):
     return app.send_static_file("index.html")

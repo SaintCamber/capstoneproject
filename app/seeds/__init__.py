@@ -1,14 +1,6 @@
 from flask.cli import AppGroup
 from .users import seed_users, undo_users
 
-from .seedcmds import (
-    create_albums,
-    create_artists,
-    create_songs,
-    create_playlists,
-    add_songs_to_playlists,
-    undo_seeds,
-)
 from app.models.db import db, environment, SCHEMA
 
 # Creates a seed group to hold our commands
@@ -26,20 +18,13 @@ def seed():
         # Make sure to add all your other model's undo functions below
         undo_users()
     # seed_roles()
-    seed_users()
     # seed_admin()
-    create_artists(5)
-    create_albums(10)
-    create_songs(30)
-    create_playlists(5)
-    add_songs_to_playlists(15)
-    # Add other seed functions here
+    seed_users()
 
 
 # Creates the `flask seed undo` command
 @seed_commands.command("undo")
 def undo():
     undo_users()
-    undo_seeds()
     # undo_roles()
     # Add other undo functions here

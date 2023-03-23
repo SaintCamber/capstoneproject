@@ -1,11 +1,23 @@
-from .db import db, environment, SCHEMA, add_prefix_for_prod
+from __future__ import annotations
+from .db import db, environment, SCHEMA, add_prefix_for_prod,Base
 from .user import User
+from typing import List
+
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
+
+from sqlalchemy.orm import relationship
 
 
-class Artist(db.Model):
+
+
+class Artist(Base):
+    __tablename__ = "artists"
     if environment == "production":
         __table_args__ = {"schema": SCHEMA}
-    id = db.Column(db.Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
 
     genre = db.Column(db.String(255), nullable=False)
@@ -15,7 +27,6 @@ class Artist(db.Model):
     songs = db.relationship(
         "Song", back_populates="artist", cascade="all, delete-orphan"
     )
-
     def to_dict(self):
         return {
             "id": self.id,
@@ -26,14 +37,12 @@ class Artist(db.Model):
         }
 
 
-class Album(db.Model):
+class Album(Base):
+    __tablename__ = "albums"
     if environment == "production":
         __table_args__ = {"schema": SCHEMA}
-    id = db.Column(db.Integer, primary_key=True)
-    artist_id = db.Column(
-        db.Integer,
-        db.ForeignKey("artist.id", add_prefix_for_prod("album.id"), onDelete="CASCADE"),
-        nullable=False,
+    id: Mapped[int] = mapped_column(primary_key=True)
+    artist_id: Mapped[int]=mapped_column(ForeignKey("artists.id", add_prefix_for_prod("artist.id"), onDelete="CASCADE"),nullable=False,
     )
     name = db.Column(db.String, nullable=False, unique=True)
     artist = db.relationship("Artist", back_populates="albums")
@@ -51,21 +60,22 @@ class Album(db.Model):
         }
 
 
-class Song(db.Model):
+class Song(Base):
+    __tablename__ = "songs"
     if environment == "production":
         __table_args__ = {"schema": SCHEMA}
-    id = db.Column(db.Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     title = db.Column(db.String, nullable=False)
     file_url = db.Column(db.String(255), nullable=False)
     artist_id = db.Column(
         db.Integer,
         db.ForeignKey(
-            "artist.id", add_prefix_for_prod("artist.id"), onDelete="CASCADE"
+            "artists.id", add_prefix_for_prod("artists.id"), onDelete="CASCADE"
         ),
     )
     album_id = db.Column(
         db.Integer,
-        db.ForeignKey("album.id", add_prefix_for_prod("album.id"), onDelete="CASCADE"),
+        db.ForeignKey("albums.id", add_prefix_for_prod("albums.id"), onDelete="CASCADE"),
     )
     genre = db.Column(db.String(255), nullable=False)
     playlists = db.relationship(
@@ -89,10 +99,11 @@ class Song(db.Model):
         }
 
 
-class Playlist(db.Model):
+class Playlist(Base):
+    __tablename__ = "playlists"
     if environment == "production":
         __table_args__ = {"schema": SCHEMA}
-    id = db.Column(db.Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     name = db.Column(db.String, nullable=False)
     user_id = db.Column(
         db.Integer,
@@ -114,19 +125,20 @@ class Playlist(db.Model):
         }
 
 
-class PlaylistSong(db.Model):
+class PlaylistSong(Base):
+    __tablename__ = "playlistsongs"
     if environment == "production":
         __table_args__ = {"schema": SCHEMA}
-    id = db.Column(db.Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     song_id = db.Column(
         db.Integer,
-        db.ForeignKey("song.id", add_prefix_for_prod("song.id"), onDelete="CASCADE"),
+        db.ForeignKey("songs.id", add_prefix_for_prod("songs.id"), onDelete="CASCADE"),
         nullable=False,
     )
     playlist_id = db.Column(
         db.Integer,
         db.ForeignKey(
-            "playlist.id", add_prefix_for_prod("playlist.id"), onDelete="CASCADE"
+            "playlists.id", add_prefix_for_prod("playlists.id"), onDelete="CASCADE"
         ),
         nullable=False,
     )
