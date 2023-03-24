@@ -2,3 +2,4 @@ dev.db
 node_modules/
 .venv
 .vscode
+.env
