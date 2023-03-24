@@ -46,9 +46,8 @@ app.cli.add_command(seed_commands)
 
 app.config.from_object(Config)
 
-db.app = app
 db.init_app(app)
-Migrate(app, db,compare_type=True)
+Migrate(app, db)
 app.register_blueprint(user_routes, url_prefix="/api/users")
 app.register_blueprint(auth_routes, url_prefix="/api/auth")
 app.register_blueprint(admin_routes, url_prefix="/api/admin")
@@ -117,6 +116,3 @@ def react_root(path):
 @app.errorhandler(404)
 def not_found(e):
     return app.send_static_file("index.html")
-
-
-
