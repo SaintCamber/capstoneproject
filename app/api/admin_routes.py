@@ -11,7 +11,8 @@ from flask import (
 )
 from flask_login import current_user
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-from app.models import Song, Album, Artist, db
+from app.models import db, User
+from app.models.models_file import Artist, Song, Album, Playlist, PlaylistSong
 import hashlib
 import requests
 import boto3
@@ -24,13 +25,13 @@ from dotenv import load_dotenv
 
 admin_routes = Blueprint("admin", __name__, url_prefix="/admin")
 load_dotenv()
-BUCKET_NAME = os.environ.get("bucket_name")
-BUCKET_ID = os.environ.get("bucket_id")
-account_id = os.getenv("accountId")
+# BUCKET_NAME = os.environ.get("bucket_name")
+# BUCKET_ID = os.environ.get("bucket_id")
+# account_id = os.getenv("accountId")
 
 
-BUCKET_KEY = os.environ.get("B2_KEY")
-BUCKET_ENDPOINT = os.environ.get("B2_LOCATION")
+# BUCKET_KEY = os.environ.get("B2_KEY")
+# BUCKET_ENDPOINT = os.environ.get("B2_LOCATION")
 
 # b2_api = b2.B2Api()
 # b2_api.authorize_account("production", BUCKET_ID, BUCKET_KEY)
@@ -86,7 +87,9 @@ def upload_song():
 
     # Encode the application key ID and application key as a basic auth string
     id_and_key = f"{application_key_id}:{application_key}"
-    basic_auth_string = "Basic " + base64.b64encode(id_and_key.encode()).decode()
+    print(id_and_key)
+    basic_auth_string = "Basic" + base64.b64encode(id_and_key.encode()).decode()
+    print(basic_auth_string)
 
     # Add the Authorization header to the request
     headers = {"Authorization": basic_auth_string}
@@ -95,7 +98,7 @@ def upload_song():
     url = "https://api.backblazeb2.com/b2api/v2/b2_authorize_account"
     response = requests.get(url, headers=headers)
     response_data = json.loads(response.text)
-
+    print(response_data)
     # Get the upload URL and authorization token from the response
     upload_url = response_data["apiUrl"] + "/b2api/v2/b2_get_upload_url"
     upload_auth_token = response_data["authorizationToken"]
@@ -106,6 +109,7 @@ def upload_song():
         return jsonify({"error": "No file uploaded"})
 
     # Get the file name and content type
+    file_data.filename=get_unique_filename(file_data.filename)
     file_name = file_data.filename
     content_type = file_data.content_type
 
@@ -118,6 +122,37 @@ def upload_song():
     # Get the upload URL and upload token from the response
     upload_url = response_data["uploadUrl"]
     upload_token = response_data["authorizationToken"]
+
+
+    
+    # Get the input data for the artist, album, and song
+    print(request.form,"the request.form")
+    artist_name = request.form.get("artist_name")
+    album_name = request.form.get("album_name")
+    song_name = request.form.get("song_name")
+
+    # Check if the artist already exists in the database
+    existing_artist = db.session.execute(db.select(Artist).filter_by(name=artist_name)).first()
+    if existing_artist:
+        artist_id = existing_artist.id
+    else:
+        # Create a new artist in the database
+        new_artist = Artist(name=artist_name)
+        db.session.add(new_artist)
+        db.session.commit()
+        artist_id = new_artist.id
+
+    # Check if the album already exists in the database
+    existing_album = db.session.execute(db.select(Album)).filter_by(name=album_name, artist_id=artist_id).first()
+    if existing_album:
+        album_id = existing_album.id
+    else:
+        # Create a new album in the database
+        new_album = Album(name=album_name, artist_id=artist_id)
+        db.session.add(new_album)
+        db.session.commit()
+        album_id = new_album.id
+
 
     
 
@@ -132,10 +167,13 @@ def upload_song():
 
     # Print the response data
     print(response.text)
+    song_url = "https://f005.backblazeb2.com/file/capstonestorage/" + f'{file_name}'
 
+    newSong = Song(title=song_name, album_id=album_id,artist_id=artist_id, song_url=song_url)
+    db.session.add(newSong)
+    db.session.commit()
     return "File uploaded successfully!"
-
-
+ 
 @admin_routes.route("/artists", methods=["GET"])
 def get_artists():
     # Fetch all the artists from the database
