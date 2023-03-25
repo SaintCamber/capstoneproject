@@ -4,6 +4,8 @@ const UploadForm = () => {
   const [file, setFile] = useState(null);
   const [name, setName] = useState('');
   const [albumName, setAlbumName] = useState('');
+  const [release_date, setReleaseDate] = useState('');
+  const [album_art,setAlbumArt] = useState('');
   const [artistName, setArtistName] = useState('');
   const [error, setError] = useState('');
   const [songLoading, setSongLoading] = useState(false);
@@ -14,6 +16,8 @@ const UploadForm = () => {
     const formData = new FormData();
     formData.append('song_name', name);
     formData.append('album_name', albumName);
+    formData.append('release_date', release_date);
+    formData.append('album_art', album_art);
     formData.append('artist_name', artistName);
     formData.append('file', file);
 
@@ -46,7 +50,7 @@ const UploadForm = () => {
     <form onSubmit={handleSubmit} enctype="multipart/form-data">
       >
       <div>
-        <label htmlFor="name">Name</label>
+        <label htmlFor="song_name">song Name</label>
         <input
           type="text"
           name="song_name"
@@ -57,7 +61,7 @@ const UploadForm = () => {
         />
       </div>
       <div>
-        <label htmlFor="name">Name</label>
+        <label htmlFor="album_name">Album Name</label>
         <input
           type="text"
           name="album_name"
@@ -68,7 +72,30 @@ const UploadForm = () => {
         />
       </div>
       <div>
-        <label htmlFor="name">Name</label>
+        <label htmlFor="release_date">release_date</label>
+        <input
+          type="text"
+          name="release_date"
+          id="release_date"
+          value={release_date}
+          onChange={(e)=>setReleaseDate(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="albumart">album art</label>
+        <input
+          type="text"
+          name="album_art"
+          id="album_art"
+          value={album_art}
+          onChange={(e)=>setAlbumArt(e.target.value)}
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="artist_name">Artist Name</label>
         <input
           type="text"
           name="artist_name"

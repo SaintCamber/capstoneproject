@@ -4,17 +4,15 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 from flask_login import LoginManager
-from .models import (
+from .models.models import (
     Artist,
     Song,
     Album,
     Playlist,
-    PlaylistSong,
-    User,
-    db,
-    SCHEMA,
-    environment,
+    playlists_songs,
 )
+from .models.user import User
+from .models.db import db
 from .forms.upload_song_form import UploadForm
 from .seeds import seed_commands
 

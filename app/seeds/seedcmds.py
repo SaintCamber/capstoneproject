@@ -2,8 +2,8 @@ from datetime import datetime
 import random
 from faker import Faker
 from sqlalchemy.sql import text
-from app.models import db, User, environment, SCHEMA,Playlist, PlaylistSong
-from app.models.models_file import Song, Album, Artist
+from app.models import db, User, environment, SCHEMA,Playlist,playlistsongs
+from app.models.models import Song, Album, Artist
 
 fake = Faker()
 

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 
-from app.models import Playlist, db
+# from app.models import Playlist, db
 
 playlist_routes = Blueprint("playlists", __name__)
 

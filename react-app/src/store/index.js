@@ -2,9 +2,10 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import session from './session'
 import upload from './upload'
+import albums from './albums'
 
 const rootReducer = combineReducers({
-  session, upload
+  session, upload,albums
 });
 
 

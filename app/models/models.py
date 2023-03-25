@@ -1,13 +1,19 @@
-from __future__ import annotations
+# from __future__ import annotations
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from .user import User
-from typing import List
+
+# from flask_login import UserMixin
+# class Test(db.Model):
+# __tablename__ = "tests"
+# id= db.Column(db.Integer, primary_key=True)
 
 
 class Artist(db.Model):
     __tablename__ = "artists"
+
     if environment == "production":
         __table_args__ = {"schema": SCHEMA}
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
 
@@ -34,13 +40,11 @@ class Album(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     artist_id = db.Column(
         db.Integer,
-        db.ForeignKey(
-            "artists.id", add_prefix_for_prod("artist.id"), onDelete="CASCADE"
-        ),
+        db.ForeignKey(add_prefix_for_prod("artists.id")),
         nullable=False,
     )
-    name = db.Column(db.String, nullable=False, unique=True)
-    release_date = db.Column(db.DateTime, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    release_date = db.Column(db.String, nullable=False)
     album_art = db.Column(db.String(255), nullable=True)
     artist = db.relationship("Artist", back_populates="albums")
 
@@ -67,20 +71,17 @@ class Song(db.Model):
     file_url = db.Column(db.String(255), nullable=False)
     artist_id = db.Column(
         db.Integer,
-        db.ForeignKey(
-            "artists.id", add_prefix_for_prod("artists.id"), onDelete="CASCADE"
-        ),
+        db.ForeignKey(add_prefix_for_prod("artists.id")),
     )
     album_id = db.Column(
         db.Integer,
-        db.ForeignKey(
-            "albums.id", add_prefix_for_prod("albums.id"), onDelete="CASCADE"
-        ),
+        db.ForeignKey(add_prefix_for_prod("albums.id")),
     )
-    genre = db.Column(db.String(255), nullable=False)
+
     playlists = db.relationship(
-        "PlaylistSong", back_populates="song", cascade="all, delete-orphan"
+        "Playlist", secondary="playlists_songs", back_populates="songs"
     )
+
     artist = db.relationship("Artist", back_populates="songs")
     album = db.relationship("Album", back_populates="songs")
 
@@ -91,7 +92,6 @@ class Song(db.Model):
             "title": self.title,
             "artist": self.artist.name,
             "album": self.album.name,
-            "genre": self.genre,
             "playlists": [playlist.to_dict() for playlist in self.playlists],
         }
 
@@ -104,11 +104,11 @@ class Playlist(db.Model):
     name = db.Column(db.String, nullable=False)
     user_id = db.Column(
         db.Integer,
-        db.ForeignKey("users.id", add_prefix_for_prod("users.id"), onDelete="CASCADE"),
+        db.ForeignKey(add_prefix_for_prod("users.id")),
         nullable=False,
     )
     songs = db.relationship(
-        "PlaylistSong", back_populates="playlist", cascade="all, delete-orphan"
+        "Song", secondary="playlists_songs", back_populates="playlists"
     )
     user = db.relationship("User", back_populates="playlists")
 
@@ -122,30 +122,21 @@ class Playlist(db.Model):
         }
 
 
-class PlaylistSong(db.Model):
-    __tablename__ = "playlistsongs"
-    if environment == "production":
-        __table_args__ = {"schema": SCHEMA}
-    id = db.Column(db.Integer, primary_key=True)
-    song_id = db.Column(
+playlists_songs = db.Table(
+    "playlists_songs",
+    db.Model.metadata,
+    db.Column(
+        "song_id",
         db.Integer,
-        db.ForeignKey("songs.id", add_prefix_for_prod("songs.id"), onDelete="CASCADE"),
-        nullable=False,
-    )
-    playlist_id = db.Column(
+        db.ForeignKey(add_prefix_for_prod("songs.id")),
+        primary_key=True,
+    ),
+    db.Column(
+        "playlist_id",
         db.Integer,
-        db.ForeignKey(
-            "playlists.id", add_prefix_for_prod("playlists.id"), onDelete="CASCADE"
-        ),
-        nullable=False,
-    )
-    song = db.relationship("Song", back_populates="playlists")
-    playlist = db.relationship("Playlist", back_populates="songs")
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "song_id": self.song_id,
-            "playlist_id": self.playlist_id,
-            "song": self.song.to_dict(),
-        }
+        db.ForeignKey(add_prefix_for_prod("playlists.id")),
+        primary_key=True,
+    ),
+)
+if environment == "production":
+    playlists_songs.schema = SCHEMA
