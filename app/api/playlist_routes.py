@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import Playlist, Song, db
+from app.models import Playlist, Song, db, Album
 from app.forms.playlist_form import PlaylistForm, AddSongToPlaylist
 from app.utils.b2_helpers import authorize_account
 
@@ -16,10 +16,11 @@ def playlists():
     id = current_user.id
     playlists = Playlist.query.filter(Playlist.user_id == id).all()
     print(playlists)
-    return [ playlist.to_dict() for playlist in playlists]
+    return [playlist.to_dict() for playlist in playlists]
 
 
 @playlist_routes.route("/<int:id>")
+@login_required
 def playlistPage(id):
     playlist = Playlist.query.filter(Playlist.id == id).all()
     if current_user.id == playlist.user_id:
@@ -95,3 +96,10 @@ def delete_playlist(id):
     playlist = Playlist.query.get(id)
     db.session.delete(playlist)
     db.session.commit()
+
+
+# get all albums
+@playlist_routes.route("/albums")
+def get_albums():
+    albums = Album.query.all()
+    return {f"{album.id}": album.to_dict() for album in albums}

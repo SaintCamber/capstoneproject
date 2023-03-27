@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getSinglePlaylist } from '../../store/playlists';
@@ -17,8 +17,11 @@ function PlaylistPage() {
     useEffect(() => {
         dispatch(getSinglePlaylist(id));
     }, [dispatch, id]);
+    
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
 
-    const albumArt = playlist?.songs[0]?.album_art_url || 'default_image_url';
 
     const handleChooseSong = (song) => {
         dispatch(chooseSong(song.file_url));
@@ -27,19 +30,19 @@ function PlaylistPage() {
     const handleShowAllSongs = (e) => {
         e.preventDefault();
         setShowAddSongs(!showAddSongs);
-    }
-
+    };
 
     return (
         <>
-            <div>
-                <img src={albumArt} alt="Album Art" />
-
+            {playlist && (
                 <div>
-                    <h3>{playlist?.name}</h3>
-                    <p>{playlist?.artist}</p>
+                    <img src="../../../public/default_image.PNG"  alt="Album Art" />
+
+                    <div>
+                        <h3>{playlist.name}</h3>
+                    </div>
                 </div>
-            </div>
+            )}
 
             <div>
                 {playlist?.songs.map((song, index) => (
@@ -51,8 +54,8 @@ function PlaylistPage() {
                         />
                     </div>
                 ))}
-                <button onClick={setShowAddSongs}>Add Songs</button>
-                {showAddSongs ? <AddSongToPlaylist playlistId={playlist.id} /> : ""}
+                <button onClick={handleShowAllSongs}>Add Songs</button>
+                {showAddSongs && <AddSongToPlaylist playlistId={playlist.id} />}
             </div>
         </>
     );

@@ -23,7 +23,7 @@ function App() {
     dispatch(authenticate()).then(() => setIsLoaded(true)).then( dispatch(getAllPlaylists(user?.id)))
   }, [dispatch]);
   console.log(playlists, 'playlists in the app.js')
-
+  
   return (
     <div className='App'>
       <Navigation isLoaded={isLoaded} />

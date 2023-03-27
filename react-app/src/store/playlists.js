@@ -15,7 +15,7 @@ const getPlaylists = (playlists) => ({
     payload: playlists
 });
 
-const readSinglePlaylist = (playlist) => ({   
+const readSinglePlaylist = (playlist) => ({
     type: READ_SiNGLE_PLAYLIST,
     payload: playlist
 })
@@ -44,16 +44,16 @@ export const createNewPlaylist = (playlist) => async (dispatch) => {
     return data;
 }
 
-export const getAllPlaylists = () => async (dispatch) => {
-    if (!window.localStorage.getItem('user_id')) {
-        return
+export const getAllPlaylists = () => async (dispatch, getState) => {
+    const user = getState().session.user;
+    if (user) {
+        const res = await fetch(`/api/playlists/user`);
+        const data = await res.json();
+        console.log(data, "data from getAllPlaylists");
+        dispatch(getPlaylists(data));
+        return data;
     }
-    const res = await fetch(`/api/playlists/user`);
-    const data = await res.json();
-    console.log(data, "data from getAllPlaylists")
-    dispatch(getPlaylists(data));
-    return data;
-}
+};
 
 export const getSinglePlaylist = (playlistId) => async (dispatch) => {
     const res = await fetch(`/api/playlists/${playlistId}`);
@@ -102,7 +102,7 @@ export const removeSongFromPlaylist = (songToRemove) => async (dispatch) => {
 
 
 
-const initialState = { user_playlists: {} ,singlePlaylist:{}}
+const initialState = { user_playlists: {}, singlePlaylist: {} }
 
 const playlists = (state = initialState, action) => {
     switch (action.type) {
@@ -124,7 +124,7 @@ const playlists = (state = initialState, action) => {
                 ...state,
                 singlePlaylist: action.payload
             }
-                
+
 
         case REMOVE_SONG_FROM_PLAYLIST:
 

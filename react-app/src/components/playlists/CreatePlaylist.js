@@ -10,7 +10,9 @@ function CreatePlaylist() {
     const user = useSelector(state => state.session.user);
     const playlists = useSelector(state => state.playlists.user_playlists);
     const history = useHistory();
-
+    useEffect(() => {
+        window.scrollTo(0, 0)
+      }, [])
     useEffect(() => {
         if (!user) {
             return
