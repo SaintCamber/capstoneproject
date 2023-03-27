@@ -1,39 +1,91 @@
 
-initialState = { chosenSong: {},PlaylistSongs: {}, Playlist: {}, PlaylistName: '' , PlaylistId: '' };
-// action creator for adding songs to the playbar, and choosing songs from
-export function addSongToPlaybar(song) {
-  return {
-    type: "ADD_SONG_TO_PLAYBAR",
-    song,
-  };
-}
+const PLAY = "music/play";
+const PAUSE = "music/pause";
+const STOP = "music/stop";
+const LOAD_SONG = "music/loadSong";
+const GET_SONGS = "music/getSongs";
 
-//thunk for  adding songs to the playbar
-export function addSongToPlaybarThunk(song) {
-  return function (dispatch) {
-    // accept a song as a parameter, and dispatch the action creator to add the song to the playbar.
-    dispatch(addSongToPlaybar(song));
-  };
-}
-export default function music(state=initialState,action){
-    switch (action.type) {
-      case "ADD_SONG_TO_PLAYBAR":
-        return { ...state, chosenSong: action.song };
-      case "ADD_PLAYLIST_SONGS":
-        return { ...state, PlaylistSongs: action.PlaylistSongs };
-      case "ADD_PLAYLIST":
-        return { ...state, Playlist: action.Playlist };
-      case "ADD_PLAYLIST_NAME":
-        return { ...state, PlaylistName: action.PlaylistName };
-      case "ADD_PLAYLIST_ID":
-        return { ...state, PlaylistId: action.PlaylistId };
-      case "REMOVE_SONG_FROM_PLAYLIST":
-        return { ...state, PlaylistSongs: action.PlaylistSongs };
-      case "REMOVE_SONG_FROM_PLAYLIST_THUNK":
-        return { ...state, PlaylistSongs: action.PlaylistSongs };
-      case "REMOVE_SONG_FROM_PLAYLIST_THUNK_2":
-        return { ...state, PlaylistSongs: action.PlaylistSongs };
-      default:
-        return state;
-    }
-}
+
+
+export const playSong = () => ({
+  type: PLAY,
+});
+
+export const pauseSong = () => ({
+  type: PAUSE,
+});
+
+export const stopSong = () => ({
+  type: STOP,
+});
+
+export const loadSong = (songUrl) => ({
+  type: LOAD_SONG,
+  payload: songUrl,
+});
+
+export const getAllSongs = (songs) => ({
+  type: GET_SONGS,
+  payload: songs,
+});
+
+
+
+// thunk for choosing a song
+export const chooseSong = (songUrl) => async (dispatch) => {
+  dispatch(loadSong(songUrl));
+  dispatch(playSong());
+};
+
+// get all songs from the database
+export const getSongs = () => async (dispatch) => {
+  const response = await fetch("/api/playlists/songs");
+  const data = await response.json();
+  console.log(data, "response from getSongs thunk")
+  dispatch(getAllSongs(data));
+  return data;
+};
+
+
+const initialState = {
+  isPlaying: false,
+  chosenSong: null,
+  songs: {},
+};
+
+const music = (state = initialState, action) => {
+  switch (action.type) {
+    case PLAY:
+      return {
+        ...state,
+        isPlaying: true,
+      };
+    case PAUSE:
+      return {
+        ...state,
+        isPlaying: false,
+      };
+    case STOP:
+      return {
+        ...state,
+        isPlaying: false,
+      };
+    case LOAD_SONG:
+      return {
+        ...state,
+        chosenSong: { ...action.payload },
+      };
+
+    case GET_SONGS:
+      return {
+        ...state,
+        songs: { ...action.payload },
+      };
+
+    default:
+      return state;
+  }
+};
+
+
+export default music;

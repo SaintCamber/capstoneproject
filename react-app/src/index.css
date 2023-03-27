@@ -1,1 +1,41 @@
 /* TODO Add site wide styles */
+.App {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0 20px;
+  }
+  
+  .Navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-bottom: 15px;
+    margin-top: 0px;
+    background-color: #333;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 1000; 
+  }
+  
+  .Navigation button {
+    margin-right: 20px;
+  }
+  
+  .Playbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #333;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  body {
+    padding-top:50px;
+  }
+  

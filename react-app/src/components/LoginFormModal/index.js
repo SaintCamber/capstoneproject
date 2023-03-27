@@ -17,12 +17,18 @@ function LoginFormModal() {
     if (data) {
       setErrors(data);
     } else {
-        closeModal()
+      closeModal()
     }
   };
+  const loginDemo = (e) => {
+    e.preventDefault();
+    dispatch(login("demo@aa.io", "password"));
+    closeModal()
+  }
 
   return (
     <>
+
       <h1>Log In</h1>
       <form onSubmit={handleSubmit}>
         <ul>
@@ -50,6 +56,7 @@ function LoginFormModal() {
         </label>
         <button type="submit">Log In</button>
       </form>
+      <button onClick={loginDemo}>Demo User</button>
     </>
   );
 }

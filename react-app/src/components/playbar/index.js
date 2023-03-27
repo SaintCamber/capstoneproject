@@ -1,55 +1,31 @@
-import React, { useState, useEffect } from "react";
-import WaveSurfer from "wavesurfer.js";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  loadSong,
+  playSong,
+  pauseSong,
+  stopSong,
+} from "../../store/music";
 
-const Playbar = ({ songUrl }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [waveSurfer, setWaveSurfer] = useState(null);
-
-  useEffect(() => {
-    // Initialize WaveSurfer player
-    const waveSurfer = WaveSurfer.create({
-      container: "#waveform",
-      waveColor: "#999",
-      progressColor: "#333",
-    });
-
-    setWaveSurfer(waveSurfer);
-
-    // Load the audio file from S3
-    waveSurfer.load(songUrl);
-
-    // Add event listeners
-    waveSurfer.on("play", () => {
-      setIsPlaying(true);
-    });
-
-    waveSurfer.on("pause", () => {
-      setIsPlaying(false);
-    });
-
-    waveSurfer.on("finish", () => {
-      setIsPlaying(false);
-    });
-
-    // Cleanup
-    return () => waveSurfer.destroy();
-  }, [songUrl]);
+const Playbar = () => {
+  const dispatch = useDispatch();
+  const isPlaying = useSelector(state => state.music.isPlaying);
+  const songUrl = useSelector(state => state.music.chosenSong);
 
   const handlePlay = () => {
-    waveSurfer.play();
+    dispatch(playSong());
   };
 
   const handlePause = () => {
-    waveSurfer.pause();
+    dispatch(pauseSong());
   };
 
   const handleStop = () => {
-    waveSurfer.stop();
-    setIsPlaying(false);
+    dispatch(stopSong());
   };
 
   return (
-    <div>
+    <div className="Playbar">
       <div id="waveform"></div>
       <button onClick={handlePlay}>Play</button>
       <button onClick={handlePause}>Pause</button>

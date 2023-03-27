@@ -5,8 +5,9 @@ const UploadForm = () => {
   const [name, setName] = useState('');
   const [albumName, setAlbumName] = useState('');
   const [release_date, setReleaseDate] = useState('');
-  const [album_art,setAlbumArt] = useState('');
+  const [album_art, setAlbumArt] = useState('');
   const [artistName, setArtistName] = useState('');
+  const [trackNumber, setTrackNumber] = useState('');
   const [error, setError] = useState('');
   const [songLoading, setSongLoading] = useState(false);
 
@@ -15,6 +16,7 @@ const UploadForm = () => {
     setSongLoading(true)
     const formData = new FormData();
     formData.append('song_name', name);
+    formData.append('track_number', '')
     formData.append('album_name', albumName);
     formData.append('release_date', release_date);
     formData.append('album_art', album_art);
@@ -33,10 +35,13 @@ const UploadForm = () => {
       setName("");
       setAlbumName("");
       setArtistName("");
+      setReleaseDate("");
+      setAlbumArt("");
+      setTrackNumber("");
       console.log('File uploaded successfully');
     } catch (err) {
-      console.log(err);
-      setError('Something went wrong. Please try again.');
+     setError(err["error"]);
+    
     }
   };
 
@@ -48,7 +53,6 @@ const UploadForm = () => {
 
   return (
     <form onSubmit={handleSubmit} enctype="multipart/form-data">
-      >
       <div>
         <label htmlFor="song_name">song Name</label>
         <input
@@ -56,7 +60,18 @@ const UploadForm = () => {
           name="song_name"
           id="song_name"
           value={name}
-          onChange={(e)=>setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="song_name">Track Number</label>
+        <input
+          type="Number"
+          name="track_number"
+          id="Track_number"
+          value={trackNumber}
+          onChange={(e) => setTrackNumber(e.target.value)}
           required
         />
       </div>
@@ -67,18 +82,18 @@ const UploadForm = () => {
           name="album_name"
           id="album_name"
           value={albumName}
-          onChange={(e)=>setAlbumName(e.target.value)}
+          onChange={(e) => setAlbumName(e.target.value)}
           required
         />
       </div>
       <div>
         <label htmlFor="release_date">release_date</label>
         <input
-          type="text"
+          type="Date"
           name="release_date"
           id="release_date"
           value={release_date}
-          onChange={(e)=>setReleaseDate(e.target.value)}
+          onChange={(e) => setReleaseDate(e.target.value)}
           required
         />
       </div>
@@ -89,7 +104,7 @@ const UploadForm = () => {
           name="album_art"
           id="album_art"
           value={album_art}
-          onChange={(e)=>setAlbumArt(e.target.value)}
+          onChange={(e) => setAlbumArt(e.target.value)}
           required
         />
       </div>
@@ -101,7 +116,7 @@ const UploadForm = () => {
           name="artist_name"
           id="artist_name"
           value={artistName}
-          onChange={(e)=>setArtistName(e.target.value)}
+          onChange={(e) => setArtistName(e.target.value)}
           required
         />
       </div>

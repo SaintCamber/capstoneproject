@@ -1,7 +1,30 @@
-.profile-dropdown {
-  position: absolute;
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
 }
 
-.hidden {
+.profile-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  list-style-type: none;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.profile-dropdown.hidden {
   display: none;
 }
+
