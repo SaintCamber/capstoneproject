@@ -14,6 +14,7 @@ from .models.models import (
 from .models.user import User
 from .models.db import db
 from .forms.upload_song_form import UploadForm
+from .forms.playlist_form import PlaylistForm, AddSongToPlaylist
 from .seeds import seed_commands
 
 # from .models.models_file import Artist, Song, Album, Playlist, PlaylistSong

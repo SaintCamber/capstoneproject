@@ -44,7 +44,7 @@ class Album(db.Model):
         nullable=False,
     )
     name = db.Column(db.String, nullable=False)
-    release_date = db.Column(db.String, nullable=False)
+    release_date = db.Column(db.String, nullable=True)
     album_art = db.Column(db.String(255), nullable=True)
     artist = db.relationship("Artist", back_populates="albums")
 
@@ -92,7 +92,6 @@ class Song(db.Model):
             "title": self.title,
             "artist": self.artist.name,
             "album": self.album.name,
-            "playlists": [playlist.to_dict() for playlist in self.playlists],
         }
 
 
@@ -100,7 +99,7 @@ class Playlist(db.Model):
     __tablename__ = "playlists"
     if environment == "production":
         __table_args__ = {"schema": SCHEMA}
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String, nullable=False)
     user_id = db.Column(
         db.Integer,

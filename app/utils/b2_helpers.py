@@ -1,4 +1,8 @@
 import os
+import re
+
+import requests
+import os
 import uuid
 import base64
 import requests
@@ -7,6 +11,7 @@ from flask import jsonify
 from werkzeug.utils import secure_filename
 import boto3
 from botocore.exceptions import ClientError
+from app.models import db, Song, Artist, Album
 
 BUCKET_NAME = os.environ.get("BUCKET_NAME")
 ALLOWED_EXTENSIONS = {"mp3", "wav", "flac"}
@@ -17,6 +22,24 @@ b2_client = boto3.client(
     aws_access_key_id=os.environ.get("B2_KEY"),
     aws_secret_access_key=os.environ.get("B2_SECRET"),
 )
+
+
+import requests
+import json
+
+
+def get_bucket_files():
+    api_url = authorize_account()["apiUrl"]
+    account_authorization_token = authorize_account()["authorizationToken"]
+    bucket_id = os.environ.get("bucketId")
+
+    url = f"{api_url}/b2api/v2/b2_list_file_names"
+    data = {"bucketId": bucket_id}
+    headers = {"Authorization": account_authorization_token}
+    response = requests.post(url, headers=headers, json=data)
+    response_data = json.loads(response.text)
+    # print(response_data, "response from b2 api call to get bucket files")
+    return response_data
 
 
 def get_unique_filename(filename):

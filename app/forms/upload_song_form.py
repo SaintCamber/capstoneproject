@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FileField, SubmitField,URLField
+from wtforms import StringField, FileField, SubmitField,URLField,IntegerField
 from wtforms.validators import DataRequired
 
 
@@ -7,7 +7,8 @@ class UploadForm(FlaskForm):
     title = StringField("title", validators=[DataRequired()])
     artist = StringField("artist", validators=[DataRequired()])
     album = StringField("album", validators=[DataRequired()])
-    genre = StringField("genre", validators=[DataRequired()])
+    release_date = StringField("date", validators=[DataRequired()])
+    track_number = IntegerField("track_number", validators=[DataRequired()])
     file = FileField("file", validators=[DataRequired()])
 
 
