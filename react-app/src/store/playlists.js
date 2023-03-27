@@ -2,6 +2,7 @@ let CREATE_PLAYLIST = 'playlists/CREATE_PLAYLIST';
 let READ_PLAYLISTS = 'playlists/READ_PLAYLISTS';
 let REMOVE_SONG_FROM_PLAYLIST = 'playlists/REMOVE_SONG_FROM_PLAYLIST';
 let ADD_SONG_TO_PLAYLIST = 'playlists/ADD_SONG_TO_PLAYLIST';
+let READ_SiNGLE_PLAYLIST = 'playlists/READ_SiNGLE_PLAYLIST';
 
 
 const createPlaylist = (playlist) => ({
@@ -13,6 +14,11 @@ const getPlaylists = (playlists) => ({
     type: READ_PLAYLISTS,
     payload: playlists
 });
+
+const readSinglePlaylist = (playlist) => ({   
+    type: READ_SiNGLE_PLAYLIST,
+    payload: playlist
+})
 
 const remove_song_from_playlist = (playlist, song_id) => ({
     type: REMOVE_SONG_FROM_PLAYLIST,
@@ -39,12 +45,23 @@ export const createNewPlaylist = (playlist) => async (dispatch) => {
 }
 
 export const getAllPlaylists = () => async (dispatch) => {
+    if (!window.localStorage.getItem('user_id')) {
+        return
+    }
     const res = await fetch(`/api/playlists/user`);
     const data = await res.json();
     console.log(data, "data from getAllPlaylists")
     dispatch(getPlaylists(data));
     return data;
 }
+
+export const getSinglePlaylist = (playlistId) => async (dispatch) => {
+    const res = await fetch(`/api/playlists/${playlistId}`);
+    const data = await res.json();
+    dispatch(readSinglePlaylist(data));
+    return data;
+}
+
 
 
 export const deletePlaylist = (playlistId) => async (dispatch) => {
@@ -85,7 +102,7 @@ export const removeSongFromPlaylist = (songToRemove) => async (dispatch) => {
 
 
 
-const initialState = { user_playlists: {} }
+const initialState = { user_playlists: {} ,singlePlaylist:{}}
 
 const playlists = (state = initialState, action) => {
     switch (action.type) {
@@ -96,10 +113,19 @@ const playlists = (state = initialState, action) => {
                 user_playlists: { ...state.user_playlists, [action.payload.id]: action.payload }
             }
         case READ_PLAYLISTS:
+            let newState = { ...state };
+            action.payload.forEach(playlist => {
+                newState.user_playlists[playlist.id] = playlist;
+
+            })
+            return newState;
+        case READ_SiNGLE_PLAYLIST:
             return {
                 ...state,
-                user_playlists: { ...action.payload }
+                singlePlaylist: action.payload
             }
+                
+
         case REMOVE_SONG_FROM_PLAYLIST:
 
             return {

@@ -1,48 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { addSongToPlaylist, getAllPlaylists } from '../../store/playlists';
-import { chooseSong, getSongs } from '../../store/music';
-import SongCard from '../../components/songCard'
-import RenderedSongs from './RenderedSongs';
+import { getSinglePlaylist } from '../../store/playlists';
+import { chooseSong } from '../../store/music';
+import SongCard from '../SongCard';
+import AddSongToPlaylist from './addSongToPlaylist';
+
 function PlaylistPage() {
     const dispatch = useDispatch();
     const { id } = useParams();
-    console.log(id)
-    const [showAllSongs, setShowAllSongs] = useState(false);
-    const user = useSelector(state => state.session.user);
+
+    const playlist = useSelector(state => state.playlists.singlePlaylist);
     const songs = useSelector(state => state.music.songs);
-    const playlists = useSelector(state => state.playlists.user_playlists)
-    const playlist = playlists
+    const [showAddSongs, setShowAddSongs] = useState(false);
 
-    console.log(playlists, 'playlists in the playlist page')
     useEffect(() => {
-        dispatch(getSongs());
-        dispatch(getAllPlaylists(user?.id));
-    }, [dispatch, user?.id, id]);
+        dispatch(getSinglePlaylist(id));
+    }, [dispatch, id]);
 
+    const albumArt = playlist?.songs[0]?.album_art_url || 'default_image_url';
+
+    const handleChooseSong = (song) => {
+        dispatch(chooseSong(song.file_url));
+    };
 
     const handleShowAllSongs = (e) => {
-        e.preventDefault()
-        setShowAllSongs(!showAllSongs);
-        console.log(showAllSongs, 'showAllSongs')
-    };
+        e.preventDefault();
+        setShowAddSongs(!showAddSongs);
+    }
 
 
     return (
         <>
-            <h1>Playlist Page</h1>
-
             <div>
-                <h2>{playlist?.name}</h2>
-                <button onClick={handleShowAllSongs}>Add Song</button>
-                {showAllSongs ? <RenderedSongs playlist={playlist} handleShowAllSongs={handleShowAllSongs} showAllSongs={setShowAllSongs} /> : playlist?.songs.map((song) => {
-                    return <SongCard song={song} />
-                })}
-                {!showAllSongs ? <button onClick={handleShowAllSongs}>done adding songs</button> : ""}
+                <img src={albumArt} alt="Album Art" />
 
+                <div>
+                    <h3>{playlist?.name}</h3>
+                    <p>{playlist?.artist}</p>
+                </div>
             </div>
 
+            <div>
+                {playlist?.songs.map((song, index) => (
+                    <div key={song.id}>
+                        <p>{index + 1}</p>
+                        <SongCard
+                            song={song}
+                            handleChooseSong={handleChooseSong}
+                        />
+                    </div>
+                ))}
+                <button onClick={setShowAddSongs}>Add Songs</button>
+                {showAddSongs ? <AddSongToPlaylist playlistId={playlist.id} /> : ""}
+            </div>
         </>
     );
 }

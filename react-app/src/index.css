@@ -1,9 +1,18 @@
 /* TODO Add site wide styles */
-.App {
+body {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .App {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    margin: 0 20px;
+    margin: 0;
+    background-color: rgb(83, 83, 83);
+    padding-top: 50px; /* height of Navigation */
+    padding-left: 200px; /* width of SideBar */
+    padding-bottom: 50px; /* height of Playbar */
   }
   
   .Navigation {
@@ -13,10 +22,11 @@
     right: 0;
     margin-bottom: 15px;
     margin-top: 0px;
-    background-color: #333;
+    background-color: rgb(12, 12, 12);
     display: flex;
     justify-content: flex-end;
-    z-index: 1000; 
+    z-index: 999;
+    height: 50px;
   }
   
   .Navigation button {
@@ -27,15 +37,37 @@
     position: fixed;
     bottom: 0;
     left: 0;
-    background-color: #333;
+    background-color: rgb(83, 83, 83);
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1001;
+    height: 50px;
+    border-top: .5px solid rgb(110,110,110);
+  }
+  
+  .SideBar {
+    position: fixed;
+    height: 100%;
+    width: 200px;
+    background-color: rgb(12, 12, 12);
+    color: white;
     z-index: 1000;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    
   }
 
-  body {
-    padding-top:50px;
+  .SideBar Link{
+    color: white;
+    text-decoration: none;
+    
+  }
+  
+  /* Add new styles here */
+  .Navigation.scroll {
+    background-color: #f7f7f7;
   }
   

@@ -5,6 +5,8 @@ import SignupFormPage from "./components/SignupFormPage";
 import LoginFormPage from "./components/LoginFormPage";
 import UploadForm from "./components/upload"
 import LandingPage from "./components/LandingPage"
+import SideBar from "./components/SideBar"
+import CreatePlaylist from "./components/playlists/CreatePlaylist.js";
 import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
 import Playbar from "./components/playbar";
@@ -25,6 +27,7 @@ function App() {
   return (
     <div className='App'>
       <Navigation isLoaded={isLoaded} />
+      <SideBar />
       {isLoaded && (
         <Switch>
           <Route exact path='/'>
@@ -39,9 +42,11 @@ function App() {
           <Route path='/upload'>
             {user?.email === 'demo@aa.io' ? <UploadForm /> : <h1>Only the demo user can upload</h1>}
           </Route>
-         
+         <Route path='/newPlaylist'>
+            <CreatePlaylist />
+            </Route>
           <Route path='/user/playlists/:id'>
-            <PlaylistPage playlists={playlists} />
+            <PlaylistPage />
           </Route>
         </Switch>
       )}

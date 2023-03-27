@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createNewPlaylist,getAllPlaylists } from '../../store/playlists';
+import { createNewPlaylist, getAllPlaylists } from '../../store/playlists';
+import { useHistory } from 'react-router-dom';
 
-
-
-export default function CreatePlaylist() {
+function CreatePlaylist() {
     const dispatch = useDispatch();
     const [name, setName] = useState('');
     const [errors, setErrors] = useState([]);
     const user = useSelector(state => state.session.user);
     const playlists = useSelector(state => state.playlists.user_playlists);
+    const history = useHistory();
 
     useEffect(() => {
         if (!user) {
@@ -24,8 +24,9 @@ export default function CreatePlaylist() {
             name: name,
             user_id: user.id
         }
-        dispatch(createNewPlaylist(playlist));
+        let newPlaylist = await dispatch(createNewPlaylist(playlist));
         setName('');
+        history.push(`/playlists/${newPlaylist.id}`)
     }
 
 
@@ -44,3 +45,4 @@ export default function CreatePlaylist() {
     )
 }
 
+export default CreatePlaylist;

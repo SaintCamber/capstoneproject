@@ -1,49 +1,41 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addSongToPlaylist, getAllPlaylists } from '../../store/playlists';
+import { addSongToPlaylist, getSinglePlaylist } from '../../store/playlists';
 import { getSongs } from '../../store/music';
-import { Link } from 'react-router-dom';
 
-function AddSongToPlaylist() {
+import SongCard from '../SongCard';
+
+function AddSongToPlaylist({ playlistId }) {
     const dispatch = useDispatch();
     const [errors, setErrors] = useState([]);
     const user = useSelector(state => state.session.user);
-    const playlists = useSelector(state => state.playlists.user_playlists);
+    const playlist = useSelector(state => state.playlists.current_playlist);
     const songs = useSelector(state => state.music.songs);
-    const [chosenPlaylistId, setChosenPlaylistId] = useState(0)
-    const [songId, setSongId] = useState(0);
+    const [chosenSongId, setChosenSongId] = useState(0);
 
-    const handleAddSong = async (e) => {
+    const addSong = async (e) => {
         e.preventDefault();
-        setSongId(e.target.value);
         const songToAdd = {
-            song_id: songId,
-            playlist_id: chosenPlaylistId
+            song_id: chosenSongId,
+            playlist_id: playlistId
         }
         dispatch(addSongToPlaylist(songToAdd));
     }
 
-    useEffect(() => {
-        dispatch(getAllPlaylists(user?.id));
-        dispatch(getSongs());
-    }, [dispatch, user?.id, chosenPlaylistId])
 
-    return (playlists && songs) && (
+    useEffect(() => {
+        dispatch(getSinglePlaylist(playlistId));
+        dispatch(getSongs());
+    }, [dispatch, playlistId])
+
+    return (playlist && songs) && (
         <div>
-            <h1>Choose a playlist to add songs to:</h1>
-            {Object.values(playlists).map((playlist) => (
-                <div key={playlist.id}>
-                    <h2>{playlist.name}</h2>
-                    <Link to={`api/playlists/${playlist.id}`}>
-                        <button>View Playlist</button>
-                    </Link>
-                    <select onChange={(e) => setChosenPlaylistId(e.target.value)}>
-                        <option value={0}>Select a Song</option>
-                        {Object.values(songs).map((song) => (
-                            <option key={song.id} value={song.id}>{song.title}</option>
-                        ))}
-                    </select>
-                    <button onClick={handleAddSong}>Add Song to Playlist</button>
+            <h1>Choose a song to add to {playlist.name}:</h1>
+
+            {Object.values(songs).map((song) => (
+                <div>
+                    <SongCard key={song.id} value={song.id} >{song.title}</SongCard>
+                    <button onClick={addSong}>add to playlist</button>
                 </div>
             ))}
         </div>

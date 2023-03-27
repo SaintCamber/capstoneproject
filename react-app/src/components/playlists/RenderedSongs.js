@@ -1,12 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import SongCard from '../songCard';
+import SongCard from '../AlbumCard';
 import { addSongToPlaylist } from '../../store/playlists';
 
 
 
 
-const RenderedSongs = (playlist, handleShowAllSongs,showAllSongs) => {
+const RenderedSongs = (playlist, handleShowAllSongs, showAllSongs) => {
     const dispatch = useDispatch();
     const songs = useSelector(state => state.music.songs);
     const handleAddSongToPlaylist = (songId) => {
