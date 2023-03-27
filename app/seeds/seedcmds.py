@@ -21,47 +21,42 @@ def parse_filename(filename):
 
 def seeds():
     # List all the files in the bucket
-    b2_ls_command = f"b2 ls {BUCKET_NAME}"
-    output = subprocess.check_output(b2_ls_command.split()).decode()
-    i = 0
     # Parse the files in the bucket and create a song entry for each
-    while i < 5:
-        for line in output.strip().split("\n"):
-            file_name = line
-            if file_name.endswith(tuple(ALLOWED_EXTENSIONS)):
-                # Extract the song information from the file name
-                artist_name, album_name, song_title = parse_filename(file_name)
-                # Create or retrieve the artist
-                artist = Artist.query.filter_by(name=artist_name).first()
-                if not artist:
-                    artist = Artist(name=artist_name)
-                    db.session.add(artist)
+    files = [
+        "linkin-park_collision-course_Big-Pimpin-Papercut_9817f2cf-5ba0-47ca-86ec-99926d26b089.m4p",
+        "linkin-park_collision-course_Dirt-Off-Your-Shoulder_d60a9d66-390e-4101-9a97-9a041d1b1eeb.m4p",
+        "linkin-park_collision-course_Izzo-In-the-End_c45ae305-02a7-4923-a658-8aa19e6030de.m4p",
+        "linkin-park_collision-course_Jigga-What-Faint_016fef5e-7627-4154-8cf2-99974e9df500.m4p",
+        "linkin-park_collision-course_Points-of-Authority-99_Problems_e9b4d3cf-48d6-4432-9707-b63c9426126e.m4p",
+    ]
 
-                # Create or retrieve the album
-                album = Album.query.filter_by(name=album_name, artist=artist).first()
-                if not album:
-                    album = Album(name=album_name, artist=artist)
-                    db.session.add(album)
+    for file in files:
+        # Extract the song information from the file name
+        artist_name, album_name, song_title = parse_filename(file)
+        # Create or retrieve the artist
+        artist = Artist.query.filter_by(name=artist_name).first()
+        if not artist:
+            artist = Artist(name=artist_name)
+            db.session.add(artist)
 
-                b2_download_url_command = (
-                    f"b2 get-download-url-with-auth {BUCKET_NAME} {file_name}"
-                )
-                output = subprocess.check_output(
-                    b2_download_url_command.split()
-                ).decode()
-                file_url = output.strip()
-                song = Song.query.filter_by(title=song_title, file_url=file_url).first()
-                if song:
-                    continue
-                # Create the song entry
-                song = Song(
-                    title=song_title,
-                    file_url=file_url,
-                    artist=artist,
-                    album=album,
-                )
-                db.session.add(song)
-                i += 1
+        # Create or retrieve the album
+        album = Album.query.filter_by(name=album_name, artist=artist).first()
+        if not album:
+            album = Album(name=album_name, artist=artist)
+            db.session.add(album)
+
+        file_url = f"https://f005.backblazeb2.com/file/capstonestorage/{file}"
+        song = Song.query.filter_by(title=song_title, file_url=file_url).first()
+        if song:
+            continue
+        # Create the song entry
+        song = Song(
+            title=song_title,
+            file_url=file_url,
+            artist=artist,
+            album=album,
+        )
+        db.session.add(song)
 
     # Commit the changes to the database
     db.session.commit()

@@ -26,10 +26,11 @@ python-editor = "==1.0.4"
 greenlet = "==2.0.1"
 Mako = "==1.2.4"
 faker = "==6.1.0"
-b2 = "*"
+b2 == "3.8.0"
 boto3 = "==1.26.96"
 backblaze = "==0.1.1"
-b2sdk = "==1.19.0"
+b2sdk = ">=1.0.0"
+music-tag = "==0.4.3"
 
 [dev-packages]
 ipykernel = "*"
