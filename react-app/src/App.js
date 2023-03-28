@@ -10,6 +10,7 @@ import CreatePlaylist from "./components/playlists/CreatePlaylist.js";
 import { authenticate } from "./store/session";
 import Navigation from "./components/Navigation";
 import Playbar from "./components/playbar";
+import AlbumPage from "./components/AlbumPage";
 import PlaylistPage from "./components/playlists/PlaylistsPage";
 import { getAllPlaylists } from "./store/playlists";
 import './index.css'
@@ -20,7 +21,7 @@ function App() {
   const user = useSelector(state => state.session.user);
   const playlists = useSelector(state => state.playlists.user_playlists)
   useEffect(() => {
-    dispatch(authenticate()).then(() => setIsLoaded(true)).then( dispatch(getAllPlaylists(user?.id)))
+    dispatch(authenticate()).then(() => setIsLoaded(true)).then( dispatch(getAllPlaylists(user?.id))).then(window.scrollTo(0, 0))
   }, [dispatch]);
   console.log(playlists, 'playlists in the app.js')
   
@@ -47,6 +48,9 @@ function App() {
             </Route>
           <Route path='/user/playlists/:id'>
             <PlaylistPage />
+          </Route>
+          <Route path="/albums/:albumId">
+            <AlbumPage />
           </Route>
         </Switch>
       )}

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addSongToPlaylist, getSinglePlaylist } from '../../store/playlists';
 import { getSongs } from '../../store/music';
 
-import SongCard from '../SongCard';
+import SongCard from '../SongRow';
 
 function AddSongToPlaylist({ playlistId }) {
     const dispatch = useDispatch();

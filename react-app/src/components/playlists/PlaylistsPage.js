@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getSinglePlaylist } from '../../store/playlists';
 import { chooseSong } from '../../store/music';
-import SongCard from '../SongCard';
+import SongCard from '../SongRow';
 import AddSongToPlaylist from './addSongToPlaylist';
 
 function PlaylistPage() {
@@ -17,10 +17,10 @@ function PlaylistPage() {
     useEffect(() => {
         dispatch(getSinglePlaylist(id));
     }, [dispatch, id]);
-    
+
     useEffect(() => {
         window.scrollTo(0, 0)
-      }, [])
+    }, [])
 
 
     const handleChooseSong = (song) => {
@@ -36,7 +36,7 @@ function PlaylistPage() {
         <>
             {playlist && (
                 <div>
-                    <img src="../../../public/default_image.PNG"  alt="Album Art" />
+                    <img src="../../../public/default_image.PNG" alt="Album Art" />
 
                     <div>
                         <h3>{playlist.name}</h3>

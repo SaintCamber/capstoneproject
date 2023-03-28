@@ -5,7 +5,7 @@ const STOP = "music/stop";
 const LOAD_SONG = "music/loadSong";
 const GET_SONGS = "music/getSongs";
 const GET_ALBUMS = "music/getAlbums";
-
+const GET_SINGLE_ALBUM = "music/getSingleAlbum";
 
 export const playSong = () => ({
   type: PLAY,
@@ -34,7 +34,9 @@ export const getAllAlbums = (albums) => ({
   payload: albums,
 });
 
-
+export const getAlbum = (album) => ({ 
+  type: GET_SINGLE_ALBUM,
+  payload: album  })
 
 // thunk for choosing a song
 export const chooseSong = (songUrl) => async (dispatch) => {
@@ -60,10 +62,20 @@ export const getAlbums = () => async (dispatch) => {
   return data;
 };
 
+// get a single album from the database
+export const getSingleAlbum = (albumId) => async (dispatch) => {
+  const response = await fetch(`/api/playlists/albums/${albumId}`);
+  const data = await response.json();
+  console.log(data, "response from getSingleAlbum thunk")
+  dispatch(getAlbum(data));
+  return data;
+};
 
 const initialState = {
   isPlaying: false,
   chosenSong: null,
+  albums: {},
+  currentAlbum: {},
   songs: {},
 };
 
@@ -101,7 +113,12 @@ const music = (state = initialState, action) => {
         ...state,
         albums: { ...action.payload },
       };
-      
+      case GET_SINGLE_ALBUM:
+        return {
+          ...state,
+          currentAlbum: { ...action.payload },
+        };
+
     default:
       return state;
   }

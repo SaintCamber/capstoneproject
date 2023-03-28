@@ -68,6 +68,7 @@ def update_playlist(id):
 
 # add song to playlist
 @playlist_routes.route("/addSong/<int:id>/", methods=["PUT"])
+@login_required
 def add_song_to_playlist(id):
     form = AddSongToPlaylist()
     playlist = Playlist.query.get(id)
@@ -82,6 +83,7 @@ def add_song_to_playlist(id):
 
 # remove a song from a playlist
 @playlist_routes.route("/removeSong/<int:id>", methods=["PUT"])
+@login_required
 def remove_song_from_playlist(id):
     playlist = Playlist.query.get(id)
     song_id = request.json["song_id"]
@@ -92,6 +94,8 @@ def remove_song_from_playlist(id):
 
 # Delete a playlist
 @playlist_routes.route("/delete/<int:id>", methods=["DELETE"])
+@login_required
+
 def delete_playlist(id):
     playlist = Playlist.query.get(id)
     db.session.delete(playlist)
@@ -103,3 +107,10 @@ def delete_playlist(id):
 def get_albums():
     albums = Album.query.all()
     return {f"{album.id}": album.to_dict() for album in albums}
+
+
+# get a single album
+@playlist_routes.route("/albums/<int:albumId>")
+def get_album(albumId):
+    album = Album.query.get(albumId)
+    return album.to_dict()
