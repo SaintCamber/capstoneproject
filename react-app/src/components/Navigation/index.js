@@ -8,9 +8,18 @@ function Navigation({ isLoaded }) {
 	const sessionUser = useSelector(state => state.session.user);
 
 	return (
-		<ul className="Navigation" >
+		<ul className="Navigation">
 			{isLoaded && (
+				<li>
 					<ProfileButton user={sessionUser} />
+				</li>
+			)}
+			{sessionUser && sessionUser.email === 'demo@aa.io' && (
+
+				<li>
+					<NavLink to="/AdminPanel">Admin Panel</NavLink>
+				</li>
+
 			)}
 		</ul>
 	);

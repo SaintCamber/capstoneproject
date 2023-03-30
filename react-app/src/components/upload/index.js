@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 
-const UploadForm = () => {
+const UploadForm = ({ albumProp, release_dateProp, album_artProp, artistProp, nameProp, recordType }) => {
   const [file, setFile] = useState(null);
-  const [name, setName] = useState('');
-  const [albumName, setAlbumName] = useState('');
-  const [release_date, setReleaseDate] = useState('');
-  const [album_art, setAlbumArt] = useState('');
-  const [artistName, setArtistName] = useState('');
-  const [trackNumber, setTrackNumber] = useState('');
+  const [name, setName] = useState(nameProp);
+  const [albumName, setAlbumName] = useState(albumProp);
+  const [release_date, setReleaseDate] = useState(release_dateProp);
+  const [album_art, setAlbumArt] = useState(album_artProp);
+  const [artistName, setArtistName] = useState(artistProp);
   const [error, setError] = useState('');
   const [songLoading, setSongLoading] = useState(false);
 
@@ -16,34 +15,69 @@ const UploadForm = () => {
     setSongLoading(true)
     const formData = new FormData();
     formData.append('song_name', name);
-    formData.append('track_number', '')
     formData.append('album_name', albumName);
     formData.append('release_date', release_date);
     formData.append('album_art', album_art);
     formData.append('artist_name', artistName);
     formData.append('file', file);
 
-    try {
-      await fetch("api/admin/upload", {
-        method: "POST",
-        body: formData,
-        headers: {
-          encType: "multipart/form-data",
-        },
-      });
-      setSongLoading(false);
-      setName("");
-      setAlbumName("");
-      setArtistName("");
-      setReleaseDate("");
-      setAlbumArt("");
-      setTrackNumber("");
-      console.log('File uploaded successfully');
-    } catch (err) {
-     setError(err["error"]);
-    
+
+
+    if (recordType == 'Song') {
+      try {
+        await fetch("api/admin/upload", {
+          method: "POST",
+          body: formData,
+          headers: {
+            enctype: "multipart/form-data",
+          },
+        });
+        setSongLoading(false);
+        setName("");
+        setAlbumName("");
+        setArtistName("");
+        setReleaseDate("");
+        setAlbumArt("");
+        console.log('File uploaded successfully');
+      } catch (err) {
+        setError(err["error"]);
+
+      }
     }
-  };
+    else if (recordType == 'Album') {
+      try {
+        await fetch("api/admin/albums", {
+          method: "POST",
+          body: formData,
+          headers: {
+            enctype: "multipart/form-data",
+          }
+        });
+
+      }
+      catch (err) {
+        setError(err["error"]);
+      }
+
+    }
+
+    else if (recordType == 'Artist') {
+      try {
+        await fetch("api/admin/artists", {
+          method: "POST",
+          body: formData,
+          headers: {
+            enctype: "multipart/form-data",
+          }
+        }
+        )
+      } catch (err) {
+        setError(err["error"]);
+      }
+    }
+  }
+
+
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -64,17 +98,7 @@ const UploadForm = () => {
           required
         />
       </div>
-      <div>
-        <label htmlFor="song_name">Track Number</label>
-        <input
-          type="Number"
-          name="track_number"
-          id="Track_number"
-          value={trackNumber}
-          onChange={(e) => setTrackNumber(e.target.value)}
-          required
-        />
-      </div>
+
       <div>
         <label htmlFor="album_name">Album Name</label>
         <input

@@ -14,6 +14,7 @@ import AlbumPage from "./components/AlbumPage";
 import PlaylistPage from "./components/playlists/PlaylistsPage";
 import { getAllPlaylists } from "./store/playlists";
 import './index.css'
+import AdminPanel from "./components/adminPages/AdminPanel";
 
 function App() {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ function App() {
   const user = useSelector(state => state.session.user);
   const playlists = useSelector(state => state.playlists.user_playlists)
   useEffect(() => {
-    dispatch(authenticate()).then(() => setIsLoaded(true)).then( dispatch(getAllPlaylists(user?.id))).then(window.scrollTo(0, 0))
+    dispatch(authenticate()).then(() => setIsLoaded(true)).then(()=>{ if (user ){dispatch(getAllPlaylists(user?.id))}}).then(window.scrollTo(0, 0))
   }, [dispatch]);
   console.log(playlists, 'playlists in the app.js')
   
@@ -40,8 +41,8 @@ function App() {
           <Route path="/signup">
             <SignupFormPage />
           </Route>
-          <Route path='/upload'>
-            {user?.email === 'demo@aa.io' ? <UploadForm /> : <h1>Only the demo user can upload</h1>}
+          <Route path='/AdminPanel'>
+            {user?.email === 'demo@aa.io' ? <AdminPanel /> : <h1>Only the demo user can access admin function</h1>}
           </Route>
          <Route path='/newPlaylist'>
             <CreatePlaylist />
@@ -59,5 +60,5 @@ function App() {
     </div>
   );
 }
-
+// 
 export default App;

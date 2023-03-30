@@ -25,6 +25,7 @@ from app.models import (
 import requests
 import json
 from app.forms.upload_song_form import UploadForm
+from app.forms import ArtistForm, PlaylistForm
 import os
 import base64
 from app.utils.b2_helpers import *
@@ -185,6 +186,20 @@ def delete_song(id):
 
 
 # Create Album
+@admin_routes.route("/albums", methods=["POST"], endpoint="func3")
+def Create_album():
+
+    artist = Artist.query.filter_by(name=request.form.data["artist_name"]).first()
+    newAlbum = Album(
+        name=request.form.data["name"],
+        artist_id=artist.id,
+        release_date=request.form.data["release_date"],
+        album_art=request.form.data["album_art"],
+    )
+    db.session.add(newAlbum)
+    db.session.commit()
+
+
 @admin_routes.route("/albums/<int:id>", methods=["POST"], endpoint="func5")
 
 
@@ -235,7 +250,7 @@ def delete_artist(id):
     return
 
 
-@admin_routes.route("/artists", methods=["GET"], endpoint="func14")
+@admin_routes.route("/artists/all", methods=["GET"], endpoint="func14")
 def get_artists():
     # Fetch all the artists from the database
 
@@ -252,9 +267,21 @@ def get_artists():
 def get_albums():
     # Fetch all the albums from the database
     albums = Album.query.all()
-    albumsdicts = [album.to_dict() for album in albums]
+
     # Serialize the results into JSON format
-    albums_json = {int(album["id"]): album for album in albumsdicts}
+    albums_json = [album.to_dict() for album in albums]
 
     # Return the results as a JSON response
     return jsonify(albums_json)
+
+
+@admin_routes.route("/songs/all", methods=["GET"], endpoint="func15")
+def get_Songs():
+    # Fetch all the Songs from the database
+    Songs = Song.query.all()
+    SongDicts = [song.to_dict() for song in Songs]
+    # Serialize the results into JSON format
+    Songs_json = [song for song in SongDicts]
+
+    # Return the results as a JSON response
+    return jsonify(Songs_json)

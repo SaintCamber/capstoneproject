@@ -49,7 +49,7 @@ def create_playlist():
 @login_required
 def get_songs():
     songs = Song.query.all()
-    return {f"{song.id}": song.to_dict() for song in songs}
+    return [{f"{song.id}": song.to_dict()} for song in songs]
 
 
 # Update a playlist info
@@ -95,7 +95,6 @@ def remove_song_from_playlist(id):
 # Delete a playlist
 @playlist_routes.route("/delete/<int:id>", methods=["DELETE"])
 @login_required
-
 def delete_playlist(id):
     playlist = Playlist.query.get(id)
     db.session.delete(playlist)
@@ -106,7 +105,7 @@ def delete_playlist(id):
 @playlist_routes.route("/albums")
 def get_albums():
     albums = Album.query.all()
-    return {f"{album.id}": album.to_dict() for album in albums}
+    return [album.to_dict() for album in albums]
 
 
 # get a single album
