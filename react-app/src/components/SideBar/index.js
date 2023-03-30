@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getAllPlaylists } from '../../store/playlists';
+import { getAllPlaylists, getSinglePlaylist } from '../../store/playlists';
 import { getAllSongs } from '../../store/music';
 import { useHistory } from 'react-router-dom';
 import './SideBar.css';
@@ -23,7 +23,10 @@ export default function SideBar() {
     }, [dispatch, user]);
 
     console.log(userPlaylists, 'user playlists in the sidebar');
-
+    const playlistClick = (e, id) => {
+        e.preventDefault();
+        history.push(`/playlists/${id}`)
+    };
     if (!user) {
         return (
             <div className="SideBar">
@@ -66,7 +69,7 @@ export default function SideBar() {
                 ) : (
                     userPlaylists && Object.values(userPlaylists).map((playlist) => {
                         return (
-                            <div key={playlist.id} onClick={() => history.push(`/playlists/${playlist.id}`)}>
+                            <div key={playlist.id} onClick={(e) => playlistClick(e, playlist.id)}>
                                 <div>{playlist.name}</div>
                             </div>
                         );
@@ -74,5 +77,6 @@ export default function SideBar() {
                 )}
             </div>
         </div>
-    );
+    )
 }
+

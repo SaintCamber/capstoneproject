@@ -1,7 +1,13 @@
+import { initWaveSurfer, playWaveSurfer, pauseWaveSurfer, stopWaveSurfer } from '../components/playbar/wavesurferUtils'
+
+
+
+
 const PLAY = "music/play";
 const PAUSE = "music/pause";
 const STOP = "music/stop";
 const LOAD_SONG = "music/loadSong";
+const PLAY_ALBUM = "music/playAlbum";
 const GET_SONGS = "music/getSongs";
 const GET_ALBUMS = "music/getAlbums";
 const GET_ARTISTS = "music/getArtists";
@@ -12,12 +18,11 @@ const DELETE_ARTIST = "music/deleteArtist";
 const UPDATE_ALBUM = "music/updateAlbum";
 const UPDATE_ARTIST = "music/updateArtist";
 const UPDATE_SONG = "music/updateSong";
-const ADD_ALBUM = "music/addAlbum";
-const ADD_ARTIST = "music/addArtist";
-const ADD_SONG = "music/addSong";
-const GET_SINGLE_SONG = "music/getSingleSong";
-const GET_SINGLE_ARTIST = "music/getSingleArtist";
+const CLEAR_QUEUE = "music/clearQueue";
 
+const ADD_SONG_TO_QUEUE_NEXT = "music/addSongToQueueNext";
+const ADD_SONG_TO_QUEUE_LAST = "music/addSongToQueueLast";
+const REMOVE_SONG_FROM_QUEUE = "music/removeSongFromQueue";
 
 export const playSong = () => ({
   type: PLAY,
@@ -36,10 +41,53 @@ export const loadSong = (songUrl) => ({
   payload: songUrl,
 });
 
+export const playAlbum = (album) => ({
+  type: PLAY_ALBUM,
+  payload: album,
+});
+
+export const addSongToQueueNext = (song) => ({
+  type: ADD_SONG_TO_QUEUE_NEXT,
+  payload: song,
+});
+export const addSongToQueueLast = (song) => ({
+  type: ADD_SONG_TO_QUEUE_LAST,
+  payload: song,
+});
+export const removeSongFromQueue = (index) => ({
+  type: REMOVE_SONG_FROM_QUEUE,
+  payload: index,
+});
+
+export const clearQueue = () => ({
+  type: CLEAR_QUEUE,
+});
+
 export const getAllSongs = (songs) => ({
   type: GET_SONGS,
   payload: songs,
 });
+
+
+export const addSongToQueueNextThunk = (song) => (dispatch) => {
+  dispatch(addSongToQueueNext(song));
+};
+
+export const addSongToQueueLastThunk = (song) => (dispatch) => {
+  dispatch(addSongToQueueLast(song));
+
+};
+
+export const removeSongFromQueueThunk = (index) => (dispatch) => {
+  dispatch(removeSongFromQueue(index));
+};
+
+export const clearQueueThunk = () => (dispatch) => {
+  dispatch(clearQueue());
+};
+
+
+
 export const deleteSong = (songId, albumId, artistId) => {
   return {
     type: DELETE_SONG,
@@ -78,6 +126,12 @@ export const getArtists = (artists) => ({
   payload: artists
 })
 
+export const playAlbumThunk = (album) => async (dispatch) => {
+  const response = await fetch(`/api/admin/albums/${album.id}`)
+  const data = await response.json()
+  dispatch(playAlbum(album.songs))
+  dispatch(playSong())
+}
 export const updateAlbum = (albumId, updatedAlbumData) => async (dispatch) => {
   try {
     const response = await fetch(`/api/admin/albums/${albumId}`, {
@@ -123,6 +177,14 @@ export const getSingleArtist = (artistId) => async (dispatch) => {
   const data = await response.json();
   console.log(data, "response from getSingleArtist thunk")
   dispatch(getArtists(data));
+  return data;
+};
+
+export const getSingleAlbumThunk = (albumId) => async (dispatch) => {
+  const response = await fetch(`/api/admin/albums/${albumId}`);
+  const data = await response.json();
+  console.log(data, "response from getSingleAlbum thunk")
+  dispatch(getSingleAlbum(data));
   return data;
 };
 
@@ -256,14 +318,60 @@ export const createNewArtist = (artist) => async (dispatch) => {
 // reducer function
 const initialState = {
   isPlaying: false,
-  currentSong: "",
+  songUrl: null,
+  currentlyPlaying: null,
   songs: [],
   albums: [],
   artists: [],
+  currentAlbum: null,
+  currentTrackIndex: null,
+  wavesurfer: null,
+  queue: [],
 };
 
 const music = (state = initialState, action) => {
   switch (action.type) {
+    case 'PLAY_TRACK': {
+      const { album, trackIndex } = action.payload;
+      const track = album.tracks[trackIndex];
+      const url = track.audioUrl;
+
+      const wavesurfer = initWaveSurfer('waveform', url, () => {
+        // Playback started
+      });
+
+      return {
+        ...state,
+        currentAlbum: album,
+        currentTrackIndex: trackIndex,
+        wavesurfer,
+      };
+    }
+    case 'PAUSE_TRACK': {
+      const { wavesurfer } = state;
+      pauseWaveSurfer(wavesurfer);
+
+      return {
+        ...state,
+      };
+    }
+    case 'STOP_TRACK': {
+      const { wavesurfer } = state;
+      stopWaveSurfer(wavesurfer);
+
+      return {
+        ...state,
+      };
+    }
+    case 'RESUME_TRACK': {
+      const { wavesurfer } = state;
+      playWaveSurfer(wavesurfer);
+
+      return {
+        ...state,
+      };
+    }
+
     case PLAY:
       return { ...state, isPlaying: true };
     case PAUSE:
@@ -356,6 +464,26 @@ const music = (state = initialState, action) => {
           }
         }),
       };
+    case ADD_SONG_TO_QUEUE_NEXT:
+      return {
+        ...state,
+        queue: [action.payload, ...state.queue],
+      };
+    case ADD_SONG_TO_QUEUE_LAST:
+      return {
+        ...state,
+        queue: [...state.queue, action.payload],
+      };
+    case REMOVE_SONG_FROM_QUEUE:
+      return {
+        ...state,
+        queue: state.queue.filter(song => song.id !== action.payload),
+      };
+    case CLEAR_QUEUE:
+      return {
+        ...state,
+        queue: [],
+      };
     case UPDATE_SONG:
       return {
         ...state,
@@ -371,6 +499,24 @@ const music = (state = initialState, action) => {
           }
         }),
       };
+      case PLAY_ALBUM:
+        const currentlyPlaying = [];
+        action.payload.forEach(song => {
+          currentlyPlaying.push({
+            id: song.id,
+            title: song.title,
+            artist: song.artist,
+            album: song.album,
+            duration: song.duration,
+            audioUrl: song.audioUrl,
+          });
+        });
+        return {
+          ...state,
+          currentAlbum: action.payload,
+          currentlyPlaying: currentlyPlaying,
+          isPlaying: true,
+        };
     default:
       return state;
   }

@@ -1,64 +1,62 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { getSinglePlaylist } from '../../store/playlists';
-import { chooseSong } from '../../store/music';
-import SongCard from '../SongRow';
-import AddSongToPlaylist from './addSongToPlaylist';
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+import { getSongs } from "../../store/music";
+import { getSinglePlaylist } from "../../store/playlists";
+import SongRow from "../SongRow";
+import "./PlaylistPage.css";
 
-function PlaylistPage() {
+const PlaylistPage = () => {
     const dispatch = useDispatch();
-    const { id } = useParams();
+    const Playlist = useSelector((state) => state.playlists.SinglePlaylist);
+    const [errors, setErrors] = useState([]);
+    const user = useSelector((state) => state.session.user);
+    const songs = Playlist?.songs;
+    const { PlaylistId } = useParams();
 
-    const playlist = useSelector(state => state.playlists.singlePlaylist);
-    const songs = useSelector(state => state.music.songs);
-    const [showAddSongs, setShowAddSongs] = useState(false);
 
     useEffect(() => {
-        dispatch(getSinglePlaylist(id));
-    }, [dispatch, id]);
-
-    useEffect(() => {
-        window.scrollTo(0, 0)
-    }, [])
-
-
-    const handleChooseSong = (song) => {
-        dispatch(chooseSong(song.file_url));
-    };
-
-    const handleShowAllSongs = (e) => {
-        e.preventDefault();
-        setShowAddSongs(!showAddSongs);
-    };
+        dispatch(getSinglePlaylist(PlaylistId));
+        dispatch(getSongs());
+    }, [dispatch, PlaylistId]);
 
     return (
-        <>
-            {playlist && (
-                <div>
-                    <img src="../../../public/default_image.PNG" alt="Album Art" />
-
-                    <div>
-                        <h3>{playlist.name}</h3>
+        <div className="PlaylistPage">
+            {Playlist && (
+                <div className="PlaylistPage__top">
+                    <div className="PlaylistPage__art">
+                        {Playlist?.art ? (
+                            <img src={Playlist?.art} alt="Playlist art" />
+                        ) : (
+                            <svg
+                                role="img"
+                                height="64"
+                                width="64"
+                                aria-hidden="true"
+                                data-testid="card-image-fallback"
+                                viewBox="0 0 24 24"
+                                data-encore-id="icon"
+                                className="Svg-sc-ytk21e-0 gQUQL"
+                            >
+                                <path d="M6 3h15v15.167a3.5 3.5 0 1 1-3.5-3.5H19V5H8v13.167a3.5 3.5 0 1 1-3.5-3.5H6V3zm0 13.667H4.5a1.5 1.5 0 1 0 1.5 1.5v-1.5zm13 0h-1.5a1.5 1.5 0 1 0 1.5 1.5v-1.5z"></path>
+                            </svg>
+                        )}
+                    </div>
+                    <div className="PlaylistPage__details">
+                        <h1>{Playlist?.name}</h1>
+                        <h2>{Playlist?.artist}</h2>
+                        <h3>{songs?.length} Songs</h3>
                     </div>
                 </div>
             )}
+            <div className="PlaylistPage__songs">
+                {songs?.map((song, i = 1) => {
 
-            <div>
-                {playlist?.songs.map((song, index) => (
-                    <div key={song.id}>
-                        <p>{index + 1}</p>
-                        <SongCard
-                            song={song}
-                            handleChooseSong={handleChooseSong}
-                        />
-                    </div>
-                ))}
-                <button onClick={handleShowAllSongs}>Add Songs</button>
-                {showAddSongs && <AddSongToPlaylist playlistId={playlist.id} />}
+                    return <SongRow key={i} song={song} trackNumber={++i} />
+                })}
             </div>
-        </>
+        </div>
     );
-}
+};
 
 export default PlaylistPage;

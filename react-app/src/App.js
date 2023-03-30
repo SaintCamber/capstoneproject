@@ -47,7 +47,7 @@ function App() {
          <Route path='/newPlaylist'>
             <CreatePlaylist />
             </Route>
-          <Route path='/user/playlists/:id'>
+          <Route path='/user/playlists/:PlaylistId'>
             <PlaylistPage />
           </Route>
           <Route path="/albums/:albumId">

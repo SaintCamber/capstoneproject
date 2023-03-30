@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getSingleAlbum, getSongs } from "../../store/music";
+import { getSingleAlbumThunk, getSongs } from "../../store/music";
 import SongRow from "../SongRow";
 import "./AlbumPage.css";
 
@@ -10,12 +10,12 @@ const AlbumPage = () => {
     const album = useSelector((state) => state.music.currentAlbum);
     const [errors, setErrors] = useState([]);
     const user = useSelector((state) => state.session.user);
-    const songs = album.songs;
+    const songs = album?.songs;
     const { albumId } = useParams();
 
 
     useEffect(() => {
-        dispatch(getSingleAlbum(albumId));
+        dispatch(getSingleAlbumThunk(albumId));
         dispatch(getSongs());
     }, [dispatch, albumId]);
 
@@ -49,7 +49,7 @@ const AlbumPage = () => {
                 </div>
             )}
             <div className="AlbumPage__songs">
-                {songs?.map((song, i=1) => {
+                {songs?.map((song, i = 1) => {
 
                     return <SongRow key={i} song={song} trackNumber={++i} />
                 })}

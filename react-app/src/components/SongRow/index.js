@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { playSong, addSongToQueueNextThunk } from '../../store/music';
+import { initWaveSurfer } from '../../components/playbar/wavesurferUtils';
 import "./SongRow.css"
 
 function SongRow({ song, trackNumber }) {
@@ -10,15 +12,17 @@ function SongRow({ song, trackNumber }) {
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const songRef = useRef();
+  const waveformRef = useRef();
+
   const openMenu = () => {
     if (showMenu) return;
     setShowMenu(true);
   };
 
   // create a regex that removes any numbers or special characters from the song
-
-  const regex =/^\d+\s/
+  const regex = /^\d+\s/
   let title = song.title.replace(regex, ``)
+
   useEffect(() => {
     if (!showMenu) return;
 
@@ -26,6 +30,7 @@ function SongRow({ song, trackNumber }) {
       if (!songRef.current.contains(e.target)) {
         setShowMenu(false);
       }
+      
     };
 
     document.addEventListener("click", closeMenu);
@@ -33,15 +38,22 @@ function SongRow({ song, trackNumber }) {
     return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
 
+  
+
   const SongClassName = "actions-dropdown" + (showMenu ? "" : " hidden");
   const closeMenu = () => setShowMenu(false);
 
   const PlaySong = () => {
-
+    dispatch(playSong(song));
+    initWaveSurfer(waveformRef.current, song.audioUrl);
   }
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
+  }
+
+  const handleAddToQueue = () => {
+    dispatch(addSongToQueueNextThunk(song));
   }
 
   return (
@@ -61,10 +73,11 @@ function SongRow({ song, trackNumber }) {
         <i className={isFavorite ? "fas fa-heart" : "far fa-heart"} onClick={toggleFavorite} />
         <i className="fas fa-ellipsis-h" onClick={openMenu} />
         <div className={SongClassName} ref={songRef}>
-
+          <button onClick={handleAddToQueue}>Add to queue</button>
+          {/* Add other song related actions here */}
         </div>
-
       </div>
+      <div className="SongRow__waveform" ref={waveformRef}></div>
     </div>
   );
 }

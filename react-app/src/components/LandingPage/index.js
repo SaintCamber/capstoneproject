@@ -28,7 +28,8 @@ export default function LandingPage() {
           </div>
         </div>
         <div className="LandingPage__container__right">
-          <img src="https://i.imgur.com/8QZQY0C.png" alt="songify logo" />
+          <img src="../../../public/default_image.png"></img>
+
         </div>
         <div>
           <h1>Popular Albums</h1>

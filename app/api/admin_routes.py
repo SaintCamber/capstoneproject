@@ -220,29 +220,32 @@ def Create_album():
     "/albums/<int:id>", methods=["GET", "PUT", "DELETE"], endpoint="func5"
 )
 @admin_only
+def read_album(id):
+        if request.method == "GET":
+            album = Album.query.get_or_404(id)
+            return album.to_dict()
 
 
 # Read Album
-def read_album(id):
-    album = Album.query.get_or_404(id)
-    return album.to_dict()
 
 
 # Update Album
 def update_album(id):
-    album = Album.query.get_or_404(id)
-    album.title = request.json.get("title", album.title)
-    album.artist_id = request.json.get("artist_id", album.artist_id)
-    db.session.commit()
-    return album.to_dict()
+    if request.method== "PUT":
+         album = Album.query.get_or_404(id)
+         album.title = request.json.get("title", album.title)
+         album.artist_id = request.json.get("artist_id", album.artist_id)
+         db.session.commit()
+         return album.to_dict()
 
 
 # Delete Album
 def delete_album(id):
-    album = Album.query.get_or_404(id)
-    db.session.delete(album)
-    db.session.commit()
-    return "", 204
+        if request.method == "DELETE":
+            album = Album.query.get_or_404(id)
+            db.session.delete(album)
+            db.session.commit()
+            return "", 204
 
 
 @admin_routes.route(

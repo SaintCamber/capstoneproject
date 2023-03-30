@@ -1,5 +1,6 @@
 let CREATE_PLAYLIST = 'playlists/CREATE_PLAYLIST';
 let READ_PLAYLISTS = 'playlists/READ_PLAYLISTS';
+let DELETE_PLAYLIST = 'playlists/DELETE_PLAYLIST';
 let REMOVE_SONG_FROM_PLAYLIST = 'playlists/REMOVE_SONG_FROM_PLAYLIST';
 let ADD_SONG_TO_PLAYLIST = 'playlists/ADD_SONG_TO_PLAYLIST';
 let READ_SiNGLE_PLAYLIST = 'playlists/READ_SiNGLE_PLAYLIST';
@@ -29,6 +30,10 @@ const add_song_to_playlist = (playlist, song) => ({
     type: ADD_SONG_TO_PLAYLIST,
     payload: { playlist, song }
 })
+const deletePlaylist = (playlist) => ({
+    type: DELETE_PLAYLIST,
+    payload: playlist
+});
 
 
 export const createNewPlaylist = (playlist) => async (dispatch) => {
@@ -63,16 +68,16 @@ export const getSinglePlaylist = (playlistId) => async (dispatch) => {
 }
 
 
-
-export const deletePlaylist = (playlistId) => async (dispatch) => {
-    const res = await fetch(`/api/playlists/delete/${playlistId}`, {
-        method: 'DELETE'
+export const deletePlaylistThunk = (playlistId) => async (dispatch) => {
+    const res = await fetch(`/api/playlists/${playlistId}`, {
+        method: 'DELETE',
+        headers: { "content-type": 'application/json' },
     });
     const data = await res.json();
-    dispatch(getPlaylists(data));
+    dispatch(deletePlaylist(data));
     return data;
-
 }
+
 
 export const addSongToPlaylist = (songToAdd) => async (dispatch) => {
     let { song_id, playlist_id } = songToAdd;
@@ -97,6 +102,7 @@ export const removeSongFromPlaylist = (songToRemove) => async (dispatch) => {
     dispatch(getPlaylists(data));
     return data;
 }
+
 
 
 
@@ -149,6 +155,10 @@ const playlists = (state = initialState, action) => {
                     }
                 }
             }
+        case DELETE_PLAYLIST:
+            let newState2 = { ...state };
+            delete newState2.user_playlists[action.payload.id];
+            return newState2;
         default:
             return state;
     }

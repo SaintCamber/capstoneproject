@@ -4,8 +4,10 @@
   padding: 16px;
   border-bottom: 1px solid #282828;
   margin-left: -4px;
+  width: 100%;
+  max-height: 60px;
+  position: relative;
 }
-
 .SongRow__track {
   flex-shrink: 0;
   width: 48px;
@@ -45,117 +47,41 @@
 .SongRow__actions i:last-child {
   margin-right: 0;
 }
-
 .actions-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
+  position: relative;
+  top: -100%;
+  left: 0;
   z-index: 10;
-  display: flex;
   flex-direction: column;
   align-items: flex-end;
+  justify-content: center;
   background-color: #282828;
+  box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.25);
+  border-top: 2px solid #1db954;
+  width: 150px;
+  height: 200px;
 }
+
+.actions-dropdown li {
+  padding: 8px;
+  border-bottom: 1px solid #b3b3b3;
+  font-size: 14px;
+  color: #b3b3b3;
+  cursor: pointer;
+  width: 100%;
+  text-align: right;
+}
+
+.actions-dropdown li:hover {
+  background-color: #1db954;
+  color: #fff;
+}
+
 .actions-dropdown li:last-child {
   margin-bottom: 0;
+  border-bottom: none;
 }
 
-.actions-dropdown::before {
-  content: "";
-  position: absolute;
-  top: -8px;
-  right: 16px;
-  border: 8px solid transparent;
-  border-bottom-color: #282828;
-}
-
-.actions-dropdown::after {
-  content: "";
-  position: absolute;
-  top: -7px;
-  right: 16px;
-  border: 7px solid transparent;
-  border-bottom-color: #282828;
-}
-
-@media (max-width: 768px) {
-  .SongRow {
-    padding: 16px 12px;
-  }
-
-  .SongRow__track {
-    width: 32px;
-    margin-right: 12px;
-  }
-
-  .SongRow__track i {
-    font-size: 20px;
-  }
-
-  .SongRow__info {
-    margin-right: 12px;
-  }
-
-  .SongRow__title {
-    font-size: 14px;
-    margin-bottom: 2px;
-  }
-
-  .SongRow__artist {
-    font-size: 12px;
-  }
-
-  .SongRow__actions i {
-    font-size: 20px;
-  }
-
-  .actions-dropdown {
-    right: 8px;
-    padding: 8px 4px;
-  }
-
-  .actions-dropdown li {
-    font-size: 12px;
-    margin-bottom: 4px;
-  }
-
-  .actions-dropdown::before {
-    right: 8px;
-    border-width: 7px;
-  }
-
-  .actions-dropdown::after {
-    right: 8px;
-    border-width: 6px;
-  }
-}
-
-@media (max-width: 480px) {
-  .SongRow__title {
-    font-size: 12px;
-    margin-bottom: 0;
-  }
-
-  .SongRow__artist {
-    display: none;
-  }
-
-  .actions-dropdown {
-    padding: 8px 4px;
-  }
-
-  .actions-dropdown li {
-    font-size: 12px;
-    margin-bottom: 4px;
-  }
-
-  .actions-dropdown::before {
-    right: 4px;
-    border-width: 7px;
-  }
-
-  .actions-dropdown::after {
-    right: 4px;
-    border-width: 6px;
-  }
+.hidden {
+  display: none;
 }
