@@ -9,8 +9,9 @@ from flask import (
     redirect,
     jsonify,
 )
-from flask_login import current_user
 from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask_login import current_user
+from functools import wraps
 from app.models import (
     Artist,
     Song,
@@ -59,8 +60,19 @@ def inject_csrf_token(response):
     return response
 
 
-# Route for uploading songs
+def admin_only(func):
+    @wraps(func)
+    def wrapped_function(*args, **kwargs):
+        if current_user.is_authenticated and current_user.email == "demo@aa.io":
+            return func(*args, **kwargs)
+        else:
+            abort(403)
+
+    return wrapped_function
+
+
 @admin_routes.route("/upload", methods=["POST"], endpoint="upload_song")
+# Route for u@admin_onlyploading songs
 def upload_song():
     print(session.get("email"))
     # Get the values of the application key ID and application key from environment variables
@@ -160,6 +172,7 @@ def upload_song():
 
 
 @admin_routes.route("/songs/<int:id>", methods=["GET"], endpoint="func2")
+@admin_only
 
 # Read Song
 def read_song(id):
@@ -185,8 +198,8 @@ def delete_song(id):
     return "", 204
 
 
-# Create Album
 @admin_routes.route("/albums", methods=["POST"], endpoint="func3")
+# Create Albu@admin_onlym
 def Create_album():
 
     artist = Artist.query.filter_by(name=request.form.data["artist_name"]).first()
@@ -201,6 +214,7 @@ def Create_album():
 
 
 @admin_routes.route("/albums/<int:id>", methods=["POST"], endpoint="func5")
+@admin_only
 
 
 # Read Album
@@ -227,6 +241,7 @@ def delete_album(id):
 
 
 @admin_routes.route("/artists/<int:id>", methods=["POST"], endpoint="func9")
+@admin_only
 
 # Read Artist
 def read_artist(id):
@@ -251,6 +266,7 @@ def delete_artist(id):
 
 
 @admin_routes.route("/artists/all", methods=["GET"], endpoint="func14")
+@admin_only
 def get_artists():
     # Fetch all the artists from the database
 
@@ -264,6 +280,7 @@ def get_artists():
 
 
 @admin_routes.route("/albums/all", methods=["GET"], endpoint="func13")
+@admin_only
 def get_albums():
     # Fetch all the albums from the database
     albums = Album.query.all()
@@ -276,6 +293,7 @@ def get_albums():
 
 
 @admin_routes.route("/songs/all", methods=["GET"], endpoint="func15")
+@admin_only
 def get_Songs():
     # Fetch all the Songs from the database
     Songs = Song.query.all()
