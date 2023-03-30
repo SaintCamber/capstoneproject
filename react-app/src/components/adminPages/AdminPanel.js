@@ -87,7 +87,13 @@ export const AdminPanel = () => {
                           {openAlbum === album.id && (
                             <ul>
                               {album.songs.map((song) => (
-                                <li key={song.id}>{song.title}</li>
+                                <li key={song.id}>{song.title}
+                                  <OpenModalButton
+                                    buttonText="Log In"
+                                    onItemClick={closeMenu}
+                                    modalComponent={<DeleteSongModal songId={song.id} />}
+                                  />
+                                </li>
                               ))}
                             </ul>
                           )}
