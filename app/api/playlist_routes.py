@@ -1,12 +1,63 @@
-from flask import Blueprint, jsonify, request
-from flask_login import login_required, current_user
-from app.models import Playlist, Song, db, Album
-from app.forms.playlist_form import PlaylistForm, AddSongToPlaylist
-from app.utils.b2_helpers import authorize_account
+import b2sdk.v2 as b2
+from flask import (
+    Blueprint,
+    request,
+    abort,
+    session,
+    current_app,
+    flash,
+    redirect,
+    jsonify,
+)
+from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask_login import current_user, login_required
+from functools import wraps
+from app.models import (
+    Artist,
+    Song,
+    Album,
+    Playlist,
+    playlists_songs,
+    User,
+    db,
+    environment,
+    SCHEMA,
+)
+import requests
+import json
+from app.forms.upload_song_form import UploadForm
+from app.forms import ArtistForm, PlaylistForm
+import os
+import base64
+from app.utils.b2_helpers import *
+from dotenv import load_dotenv
+from sqlalchemy import select
+from flask_login import current_user
 
 # from app.models import Playlist, db
 
-playlist_routes = Blueprint("playlists", __name__)
+playlist_routes = Blueprint("playlists", __name__, url_prefix="/api/playlists")
+
+
+@playlist_routes.before_request
+def https_redirect():
+    if os.environ.get("FLASK_ENV") == "production":
+        if request.headers.get("X-Forwarded-Proto") == "http":
+            url = request.url.replace("http://", "https://", 1)
+            code = 301
+            return redirect(url, code=code)
+
+
+@playlist_routes.after_request
+def inject_csrf_token(response):
+    response.set_cookie(
+        "csrf_token",
+        generate_csrf(),
+        secure=True if os.environ.get("FLASK_ENV") == "production" else False,
+        samesite="Strict" if os.environ.get("FLASK_ENV") == "production" else None,
+        httponly=True,
+    )
+    return response
 
 
 # grab a users playlists
@@ -20,13 +71,9 @@ def playlists():
 
 
 @playlist_routes.route("/<int:id>")
-@login_required
 def playlistPage(id):
-    playlist = Playlist.query.filter(Playlist.id == id).all()
-    if current_user.id == playlist.user_id:
-        return playlist.to_dict()
-    else:
-        return {"errors": "You are not authorized to view this playlist"}
+    playlist = Playlist.query.filter(Playlist.id == id).first()
+    return playlist.to_dict()
 
 
 # create a playlist
@@ -57,11 +104,10 @@ def get_songs():
 @login_required
 def update_playlist(id):
     playlist = Playlist.query.get(id)
-    form = PlaylistUpdateForm()
+    form = PlaylistForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
     if form.validate_on_submit():
         playlist.name = form.data["name"]
-        playlist.description = form.data["description"]
         db.session.commit()
         return playlist.to_dict()
 

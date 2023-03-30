@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { playSong, stopSong, pauseSong, removeSongFromQueue } from "../../store/music";
+import { play, stop, pause, removeFromQueueThunk } from "../../store/wavesurfer";
 import WaveSurfer from "wavesurfer.js";
 import { getAlbums } from "../../store/music";
 
@@ -50,13 +50,13 @@ const Playbar = () => {
         waveSurfer.play();
       }
     } else if (queue.length > 0) {
-      dispatch(playSong(queue[0]));
-      dispatch(removeSongFromQueue(0));
+      dispatch(play(queue[0]));
+      dispatch(removeFromQueueThunk(0));
     }
   }, [waveSurfer, currentlyPlaying, isPlaying, queue]);
 
   const handlePlay = () => {
-    dispatch(playSong());
+    dispatch(play());
 
     if (waveSurfer && currentlyPlaying) {
       waveSurfer.play();
@@ -65,7 +65,7 @@ const Playbar = () => {
 
   const handlePause = () => {
     if (waveSurfer && currentlyPlaying) {
-      dispatch(pauseSong());
+      dispatch(pause());
       waveSurfer.pause();
     }
   };
@@ -73,12 +73,12 @@ const Playbar = () => {
 
   const handleStop = () => {
     if (waveSurfer && isPlaying) {
-      dispatch(stopSong());
+      dispatch(stop());
       waveSurfer.stop();
 
       if (queue.length > 0) {
-        dispatch(playSong(queue[0]));
-        dispatch(removeSongFromQueue(0));
+        dispatch(play(queue[0]));
+        dispatch(removeFromQueueThunk(0));
       }
     }
   };

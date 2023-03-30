@@ -25,7 +25,9 @@ export default function SideBar() {
     console.log(userPlaylists, 'user playlists in the sidebar');
     const playlistClick = (e, id) => {
         e.preventDefault();
-        history.push(`/playlists/${id}`)
+        dispatch(getSinglePlaylist(id));
+        console.log(id, 'id in the playlist click');
+        history.push(`playlists/${id}`)
     };
     if (!user) {
         return (

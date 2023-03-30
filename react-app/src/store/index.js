@@ -1,12 +1,12 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import session from './session'
-import upload from './upload'
 import music from './music';
 import playlists from './playlists';
+import waveform from './wavesurfer';
 
 const rootReducer = combineReducers({
-  session, upload, music, playlists
+  session, music, playlists, waveform
 });
 
 

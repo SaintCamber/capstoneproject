@@ -75,7 +75,7 @@ export const deletePlaylistThunk = (playlistId) => async (dispatch) => {
     });
     const data = await res.json();
     dispatch(deletePlaylist(data));
-    return data;
+    return data;    
 }
 
 
@@ -87,25 +87,32 @@ export const addSongToPlaylist = (songToAdd) => async (dispatch) => {
         body: JSON.stringify({ song_id, playlist_id })
     });
     const data = await res.json();
-    dispatch(getPlaylists(data));
+    dispatch(add_song_to_playlist(data));
     return data;
+    
 
 }
 
-export const removeSongFromPlaylist = (songToRemove) => async (dispatch) => {
-    const res = await fetch('/api/playlists/${songToRemove.playlist_id}/removesong', {
+export const removeSongFromPlaylist = (playlist,songToRemove) => async (dispatch) => {
+    const res = await fetch(`/api/playlists/${playlist.id}/${songToRemove.id}`, {
         method: 'DELETE',
         headers: { "content-type": 'application/json' },
         body: JSON.stringify(songToRemove)
     });
     const data = await res.json();
-    dispatch(getPlaylists(data));
+    dispatch(remove_song_from_playlist(data));
     return data;
 }
 
 
 
 
+export const  playPlaylistThunk = (playlistId) => async (dispatch) => {
+    const res = await fetch(`/api/playlists/${playlistId}`);
+    const data = await res.json();
+    dispatch(readSinglePlaylist(data));
+    return data;
+}
 
 
 const initialState = { user_playlists: {}, singlePlaylist: {} }
@@ -119,6 +126,7 @@ const playlists = (state = initialState, action) => {
                 user_playlists: { ...state.user_playlists, [action.payload.id]: action.payload }
             }
         case READ_PLAYLISTS:
+            console.log(action.payload, "action.payload in READ_PLAYLISTS")
             let newState = { ...state };
             action.payload.forEach(playlist => {
                 newState.user_playlists[playlist.id] = playlist;
@@ -126,6 +134,7 @@ const playlists = (state = initialState, action) => {
             })
             return newState;
         case READ_SiNGLE_PLAYLIST:
+            console.log(action.payload, "action.payload in READ_SiNGLE_PLAYLIST")
             return {
                 ...state,
                 singlePlaylist: action.payload
@@ -158,7 +167,7 @@ const playlists = (state = initialState, action) => {
         case DELETE_PLAYLIST:
             let newState2 = { ...state };
             delete newState2.user_playlists[action.payload.id];
-            return newState2;
+            return newState2;    
         default:
             return state;
     }

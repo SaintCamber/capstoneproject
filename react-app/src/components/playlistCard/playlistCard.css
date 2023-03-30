@@ -72,10 +72,19 @@
   white-space: nowrap;
   overflow: hidden;
 }
-
-
+.PlaylistCard_play {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(88, 211, 16, 0.5);
+  transition: background-color 0.3s ease;
+  opacity: 1;
+}
 .hidden {
   display: none;
 }
-
-.playbar__

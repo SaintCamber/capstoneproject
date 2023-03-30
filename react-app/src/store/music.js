@@ -129,7 +129,7 @@ export const getArtists = (artists) => ({
 export const playAlbumThunk = (album) => async (dispatch) => {
   const response = await fetch(`/api/admin/albums/${album.id}`)
   const data = await response.json()
-  dispatch(playAlbum(album.songs))
+  dispatch(playAlbum(data.songs))
   dispatch(playSong())
 }
 export const updateAlbum = (albumId, updatedAlbumData) => async (dispatch) => {

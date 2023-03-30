@@ -232,11 +232,11 @@ def read_album(id):
 # Update Album
 def update_album(id):
     if request.method== "PUT":
-         album = Album.query.get_or_404(id)
-         album.title = request.json.get("title", album.title)
-         album.artist_id = request.json.get("artist_id", album.artist_id)
-         db.session.commit()
-         return album.to_dict()
+        album = Album.query.get_or_404(id)
+        album.title = request.json.get("title", album.title)
+        album.artist_id = request.json.get("artist_id", album.artist_id)
+        db.session.commit()
+        return album.to_dict()
 
 
 # Delete Album

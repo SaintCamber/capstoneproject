@@ -1,218 +1,209 @@
 /* TODO Add site wide styles */
 body {
-    padding: 0;
-    margin: 0;
-  }
-  
-  .App {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-    background-color: rgb(83, 83, 83);
-    padding-top: 50px; /* height of Navigation */
-    padding-left: 200px; /* width of SideBar */
-    padding-bottom: 50px; /* height of Playbar */
-  }
-  
-  .Navigation {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    margin-bottom: 15px;
-    margin-top: 0px;
-    background-color: rgb(12, 12, 12);
-    display: flex;
-    justify-content: flex-end;
-    z-index: 999;
-    height: 50px;
-  }
-  
-  .Navigation button {
-    margin-right: 20px;
-  }
-  /* TODO Add site wide styles */
+  padding: 0;
+  margin: 0;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background-color: rgb(83, 83, 83);
+  padding-top: 50px; /* height of Navigation */
+  padding-left: 200px; /* width of SideBar */
+  padding-bottom: 50px; /* height of Playbar */
+}
+
+.Navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-bottom: 15px;
+  margin-top: 0px;
+  background-color: rgb(12, 12, 12);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 999;
+  height: 50px;
+}
+
+.Navigation button {
+  margin-right: 20px;
+}
+/* TODO Add site wide styles */
 body {
-    padding: 0;
-    margin: 0;
-  }
-  
-  .App {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-    background-color: rgb(83, 83, 83);
-    padding-top: 50px; /* height of Navigation */
-    padding-left: 200px; /* width of SideBar */
-    padding-bottom: 80px; /* height of Playbar */
-  }
-  
-  .Navigation {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    margin-bottom: 15px;
-    margin-top: 0px;
-    background-color: rgb(12, 12, 12);
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    z-index: 999;
-    height: 50px;
-  }
-  
-  .Navigation button {
-    margin-right: 20px;
-    margin-top: 5px;
+  padding: 0;
+  margin: 0;
+}
 
-  }
-  
-  .playbar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to bottom, #55CDFC, #FFFFFF, #FF7FBA);
-    opacity: 0.6;
-    color: #020101;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: 'Circular Spotify Tx T Light', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
-    font-size: 14px;
-    z-index: 1001;
-  }
-  
-  .playbar__song-info {
-    display: flex;
-    align-items: center;
-  }
-  
-  .playbar__song-image {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-  }
-  
-  .playbar__song-image img {
-    width: 100%;
-    height: 100%;
-  }
-  
-  .playbar__song-details {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .playbar__song-details p {
-    margin: 0;
-    line-height: 1;
-  }
-  
-  .playbar__center {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    flex-grow: 2;
-  }
-  .playbar__controls {
-    display: flex;
-    align-items: center;
-  }
-  
-  .playbar__button {
-    border: none;
-    background-color: transparent;
-    color: #020101;
-    font-size: 18px;
-    margin-right: 15px;
-    cursor: pointer;
-  }
-  
-  .playbar__button:last-child {
-    margin-right: 0;
-  }
-  
-  .playbar__progress {
-    position: relative;
-    height: 5px;
-    width: 100%;
-    margin: 0 15px;
-  }
-  
-  .playbar__progress-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    background-color: #1db954;
-  }
-  
-  .playbar__volume {
-    display: flex;
-    align-items: center;
-  }
-  
-  .playbar__volume input[type='range'] {
-    height: 5px;
-    width: 50px;
-    margin-left: 10px;
-    background-color: #020101;
-    outline: none;
-    border-radius: 3px;
-  }
-  
-  .playbar__volume input[type='range'] {
-    width: 10px;
-    height: 10px;
-    background-color: #020101;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  
-  
-  .SideBar {
-    position: fixed;
-    height: 100%;
-    width: 200px;
-    background-color: rgb(12, 12, 12);
-    color: white;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    bottom: 0;
-  }
-  
-  .SideBar Link {
-    color: #020101;
-    text-decoration: none;
-  }
-  
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background-color: rgb(83, 83, 83);
+  padding-top: 50px; /* height of Navigation */
+  padding-left: 200px; /* width of SideBar */
+  padding-bottom: 80px; /* height of Playbar */
+}
 
-  
-  .SideBar {
-    position: fixed;
-    height: 100%;
-    width: 200px;
-    background-color: rgb(12, 12, 12);
-    color: white;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    
-  }
+.Navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-bottom: 15px;
+  margin-top: 0px;
+  background-color: rgb(12, 12, 12);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  z-index: 999;
+  height: 50px;
+}
 
-  .SideBar NavLink{
-    color: white;
-    text-decoration: none;
+.Navigation button {
+  margin-right: 20px;
+  margin-top: 5px;
+}
 
-  }
-  
+.playbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to bottom, #55cdfc, #ffffff, #ff7fba);
+  opacity: 0.6;
+  color: #020101;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Circular Spotify Tx T Light", "Helvetica Neue", "Helvetica",
+    "Arial", sans-serif;
+  font-size: 14px;
+  z-index: 1001;
+}
 
+.playbar__song-info {
+  display: flex;
+  align-items: center;
+}
 
-  
+.playbar__song-image {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.playbar__song-image img {
+  width: 100%;
+  height: 100%;
+}
+
+.playbar__song-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.playbar__song-details p {
+  margin: 0;
+  line-height: 1;
+}
+
+.playbar__center {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.playbar__controls {
+  display: flex;
+  align-items: center;
+}
+
+.playbar__button {
+  border: none;
+  background-color: transparent;
+  color: #020101;
+  font-size: 18px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.playbar__button:last-child {
+  margin-right: 0;
+}
+
+.playbar__progress {
+  position: relative;
+  height: 5px;
+  width: 100%;
+  margin: 0 15px;
+}
+
+.playbar__progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: #1db954;
+}
+
+.playbar__volume {
+  display: flex;
+  align-items: center;
+}
+
+.playbar__volume input[type="range"] {
+  height: 5px;
+  width: 50px;
+  margin-left: 10px;
+  background-color: #020101;
+  outline: none;
+  border-radius: 3px;
+}
+
+.playbar__volume input[type="range"] {
+  width: 10px;
+  height: 10px;
+  background-color: #020101;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.SideBar {
+  position: fixed;
+  height: 100%;
+  width: 200px;
+  background-color: rgb(12, 12, 12);
+  color: white;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.SideBar Link {
+  color: #020101;
+  text-decoration: none;
+}
+
+.SideBar {
+  position: fixed;
+  height: 100%;
+  width: 200px;
+  background-color: rgb(12, 12, 12);
+  color: white;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.SideBar NavLink {
+  color: white;
+  text-decoration: none;
+}
