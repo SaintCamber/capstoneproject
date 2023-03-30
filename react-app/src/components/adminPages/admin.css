@@ -1,8 +1,8 @@
 .selected-entity {
     background-color: #eee;
-  }
-  
-  .AdminPanel {
+    }
+    
+    .AdminPanel {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,67 +11,94 @@
     padding: 40px;
     font-family: Arial, sans-serif;
     font-size: 16px;
-  }
-  
-  .AdminPanel__container {
+    }
+    
+    .AdminPanel__container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     width: 100%;
     max-width: 1200px;
-  }
-  
-  .AdminPanel__container__left {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    width: 50%;
-    margin-right: 40px;
-  }
-  
-  .AdminPanel__container__left__text {
-    margin-bottom: 40px;
-  }
-  
-  .AdminPanel__container__right {
+    }
+    
+    .AdminPanel__container__left,
+    .AdminPanel__container__right {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 50%;
-  }
-  
-  .AdminPanel__container__artists {
+    }
+    
+    .AdminPanel__container__left {
+    align-items: flex-start;
+    margin-right: 40px;
+    }
+    
+    .AdminPanel__container__left__text {
+    margin-bottom: 40px;
+    }
+    
+    .AdminPanel__container__artists {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
-  }
-  
-  .AdminPanel__container__artists__row {
+    }
+    
+    .AdminPanel__container__artists__heading {
+    width: calc(100% - 24px);
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    display: inline-block;
+    }
+    
+    .AdminPanel__container__artists__heading::after {
+    content: "";
+    display: block;
+    height: 1px;
+    background-color: #ccc;
+    width: 100%;
+    margin-top: 5px;
+    }
+    
+    .AdminPanel__container__artists__row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     margin-bottom: 30px;
-  }
-  
-  .AdminPanel__container__artists__name {
+    }
+    
+    .AdminPanel__container__artists__name,
+    .AdminPanel__container__artists__album__title {
     font-size: 24px;
-    margin-right: 20px;
-  }
-  
-  .AdminPanel__container__artists__albums {
+    text-decoration: none;
+    }
+    
+    .AdminPanel__container__artists__name:hover,
+    .AdminPanel__container__artists__album:hover,
+    .AdminPanel__container__artists__album__title:hover {
+    cursor: pointer;
+    color: #00ff7f;
+    }
+    
+    .AdminPanel__container__artists__name:hover {
+    text-decoration: underline;
+    }
+    
+    .AdminPanel__container__artists__albums {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     width: calc(100% - 24px);
-  }
-  
-  .AdminPanel__container__artists__album {
+    }
+    
+    .AdminPanel__container__artists__album {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -85,29 +112,18 @@
     margin-bottom: 20px;
     padding: 20px;
     text-align: center;
-  }
-  
-  .AdminPanel__container__artists__album__title {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .AdminPanel__container__artists__album__info {
+    }
+    
+    .AdminPanel__container__artists__album__info {
     font-size: 16px;
     margin-bottom: 10px;
-  }
-  
-  .AdminPanel__container__artists__album__songs {
-    font-size: 14px;
-    text-align: left;
-    margin-top: 10px;
-  }
-  
-  .AdminPanel__container__artists__album__songs ul {
-    list-style-type: none;
-    margin-left: 0;
-  }
-  
-  .AdminPanel__container__artists__album__songs li {
-    margin-bottom: 5px;
-  }
+    }
+    
+    .AdminPanel__container__artists__album__songs {
+    font-size: 1rem;
+    }
+    
+    .AdminPanel__container__artists__album:hover,
+    .AdminPanel__container__artists__album__title:hover {
+    box-shadow: 0 8px 16px rgba(0, 255, 127, 0.2);
+    }

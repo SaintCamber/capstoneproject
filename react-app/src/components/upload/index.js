@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-const UploadForm = ({ albumProp, release_dateProp, album_artProp, artistProp, nameProp, recordType }) => {
+const UploadForm = ({closeModal}) => {
   const [file, setFile] = useState(null);
-  const [name, setName] = useState(nameProp);
-  const [albumName, setAlbumName] = useState(albumProp);
-  const [release_date, setReleaseDate] = useState(release_dateProp);
-  const [album_art, setAlbumArt] = useState(album_artProp);
-  const [artistName, setArtistName] = useState(artistProp);
+  const [name, setName] = useState("");
+  const [albumName, setAlbumName] = useState("");
+  const [release_date, setReleaseDate] = useState("");
+  const [album_art, setAlbumArt] = useState("");
+  const [artistName, setArtistName] = useState("");
   const [error, setError] = useState('');
   const [songLoading, setSongLoading] = useState(false);
 
@@ -23,66 +23,31 @@ const UploadForm = ({ albumProp, release_dateProp, album_artProp, artistProp, na
 
 
 
-    if (recordType == 'Song') {
-      try {
-        await fetch("api/admin/upload", {
-          method: "POST",
-          body: formData,
-          headers: {
-            enctype: "multipart/form-data",
-          },
-        });
-        setSongLoading(false);
-        setName("");
-        setAlbumName("");
-        setArtistName("");
-        setReleaseDate("");
-        setAlbumArt("");
-        console.log('File uploaded successfully');
-      } catch (err) {
-        setError(err["error"]);
-
-      }
-    }
-    else if (recordType == 'Album') {
-      try {
-        await fetch("api/admin/albums", {
-          method: "POST",
-          body: formData,
-          headers: {
-            enctype: "multipart/form-data",
-          }
-        });
-
-      }
-      catch (err) {
-        setError(err["error"]);
-      }
+    try {
+      await fetch("api/admin/upload", {
+        method: "POST",
+        body: formData,
+        headers: {
+          enctype: "multipart/form-data",
+        },
+      });
+      setSongLoading(false);
+      setName("");
+      setAlbumName("");
+      setArtistName("");
+      setReleaseDate("");
+      setAlbumArt("");
+      console.log('File uploaded successfully');
+      closeModal();
+    } catch (err) {
+      setError(err["error"]);
 
     }
-
-    else if (recordType == 'Artist') {
-      try {
-        await fetch("api/admin/artists", {
-          method: "POST",
-          body: formData,
-          headers: {
-            enctype: "multipart/form-data",
-          }
-        }
-        )
-      } catch (err) {
-        setError(err["error"]);
-      }
-    }
-  }
-
-
+  };
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
-
 
 
   return (
@@ -96,6 +61,7 @@ const UploadForm = ({ albumProp, release_dateProp, album_artProp, artistProp, na
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
+          placeholder={"song name"}
         />
       </div>
 
@@ -108,6 +74,7 @@ const UploadForm = ({ albumProp, release_dateProp, album_artProp, artistProp, na
           value={albumName}
           onChange={(e) => setAlbumName(e.target.value)}
           required
+          placeholder={"album name"}
         />
       </div>
       <div>
@@ -119,6 +86,7 @@ const UploadForm = ({ albumProp, release_dateProp, album_artProp, artistProp, na
           value={release_date}
           onChange={(e) => setReleaseDate(e.target.value)}
           required
+          placeholder={"release date"}
         />
       </div>
       <div>
@@ -130,6 +98,7 @@ const UploadForm = ({ albumProp, release_dateProp, album_artProp, artistProp, na
           value={album_art}
           onChange={(e) => setAlbumArt(e.target.value)}
           required
+          placeholder={"album art"}
         />
       </div>
 
@@ -142,6 +111,7 @@ const UploadForm = ({ albumProp, release_dateProp, album_artProp, artistProp, na
           value={artistName}
           onChange={(e) => setArtistName(e.target.value)}
           required
+          placeholder={"artist name"}
         />
       </div>
       <div>
@@ -153,6 +123,7 @@ const UploadForm = ({ albumProp, release_dateProp, album_artProp, artistProp, na
           onChange={handleFileChange}
           accept="audio/*"
           required
+          placeholder={"please choose a file, mp3 are supported"}
         />
       </div>
       <div>

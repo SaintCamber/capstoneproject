@@ -9,6 +9,14 @@ const GET_SINGLE_ALBUM = "music/getSingleAlbum";
 const DELETE_SONG = "music/deleteSong";
 const DELETE_ALBUM = "music/deleteAlbum";
 const DELETE_ARTIST = "music/deleteArtist";
+const UPDATE_ALBUM = "music/updateAlbum";
+const UPDATE_ARTIST = "music/updateArtist";
+const UPDATE_SONG = "music/updateSong";
+const ADD_ALBUM = "music/addAlbum";
+const ADD_ARTIST = "music/addArtist";
+const ADD_SONG = "music/addSong";
+const GET_SINGLE_SONG = "music/getSingleSong";
+const GET_SINGLE_ARTIST = "music/getSingleArtist";
 
 
 export const playSong = () => ({
@@ -32,11 +40,12 @@ export const getAllSongs = (songs) => ({
   type: GET_SONGS,
   payload: songs,
 });
-
-export const deleteSong = (songId) => ({
-  type: DELETE_SONG,
-  payload: songId,
-});
+export const deleteSong = (songId, albumId, artistId) => {
+  return {
+    type: DELETE_SONG,
+    payload: { songId, albumId, artistId },
+  };
+};
 
 export const deleteAlbum = (albumId) => ({
   type: DELETE_ALBUM,
@@ -141,14 +150,15 @@ export const updateSong = (songId, updatedSongData) => async (dispatch) => {
 
 
 
-export const deleteASong = (songId) => async (dispatch) => {
+export const deleteASong = (songId, albumId, artistId) => async (dispatch) => {
   const response = await fetch(`/api/admin/songs/${songId}`, {
     method: "DELETE",
   });
   const data = await response.json();
-  dispatch(deleteSong(songId));
+  dispatch(deleteSong(songId, albumId, artistId));
   return data;
 };
+
 export const deleteAnAlbum = (albumId) => async (dispatch) => {
   const response = await fetch(`/api/admin/albums/${albumId}`, {
     method: "DELETE",
@@ -231,13 +241,13 @@ export const createNewAlbum = (album) => async (dispatch) => {
 };
 
 
-export const createNewArtist = (album) => async (dispatch) => {
-  const response = await fetch("/api/admin/albums", {
+export const createNewArtist = (artist) => async (dispatch) => {
+  const response = await fetch("/api/admin/artists", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(album),
+    body: JSON.stringify(artist),
   });
   const data = await response.json();
   dispatch(getAllArtistsThunk(data));
@@ -259,17 +269,108 @@ const music = (state = initialState, action) => {
     case PAUSE:
       return { ...state, isPlaying: false };
     case STOP:
-      return { ...state, isPlaying: false, currentSong: "" };
+      return { ...state, isPlaying: false, songUrl: null };
     case LOAD_SONG:
-      return { ...state, currentSong: action.payload };
+      return { ...state, songUrl: action.payload };
     case GET_SONGS:
       return { ...state, songs: action.payload };
     case GET_ALBUMS:
       return { ...state, albums: action.payload };
-    case GET_SINGLE_ALBUM:
-      return { ...state, currentAlbum: action.payload };
     case GET_ARTISTS:
       return { ...state, artists: action.payload };
+    case GET_SINGLE_ALBUM:
+      return { ...state, currentAlbum: action.payload };
+    case DELETE_SONG:
+      const updatedAlbums1 = state.albums.map(album => {
+        return {
+          ...album,
+          songs: album.songs.filter(songId => songId !== action.payload)
+        };
+      });
+      const updatedArtists1 = state.artists.map(artist => {
+        return {
+          ...artist,
+          albums: artist.albums.map(album => {
+            if (album.songs.includes(action.payload)) {
+              return {
+                ...album,
+                songs: album.songs.filter(songId => songId !== action.payload)
+              };
+            } else {
+              return album;
+            }
+          })
+        };
+      });
+      return {
+        ...state,
+        songs: state.songs.filter(song => song.id !== action.payload),
+        albums: updatedAlbums1,
+        artists: updatedArtists1
+      };
+    case DELETE_ALBUM:
+      const updatedAlbums2 = state.albums.filter(album => album.id !== action.payload);
+      const updatedArtists2 = state.artists.map(artist => {
+        if (artist.albums.includes(action.payload)) {
+          return { ...artist, albums: artist.albums.filter(id => id !== action.payload) };
+        }
+        return artist;
+      });
+      return { ...state, albums: updatedAlbums2, artists: updatedArtists2 };
+
+    case DELETE_ARTIST:
+      const updatedArtists = state.artists.filter(artist => artist.id !== action.payload);
+      const updatedAlbums = state.albums.map(album => {
+        if (album.artist === action.payload) {
+          return { ...album, artist: null };
+        }
+        return album;
+      });
+      return { ...state, artists: updatedArtists, albums: updatedAlbums };
+    case UPDATE_ALBUM:
+      return {
+        ...state,
+        albums: state.albums.map(album => {
+          if (album.id === action.payload.id) {
+            return {
+              ...album,
+              title: action.payload.title,
+              artistId: action.payload.artistId,
+            };
+          } else {
+            return album;
+          }
+        }),
+      };
+    case UPDATE_ARTIST:
+      return {
+        ...state,
+        artists: state.artists.map(artist => {
+          if (artist.id === action.payload.id) {
+            return {
+              ...artist,
+              name: action.payload.name,
+            };
+          } else {
+            return artist;
+          }
+        }),
+      };
+    case UPDATE_SONG:
+      return {
+        ...state,
+        songs: state.songs.map(song => {
+          if (song.id === action.payload.id) {
+            return {
+              ...song,
+              title: action.payload.title,
+              albumId: action.payload.albumId,
+            };
+          } else {
+            return song;
+          }
+        }),
+      };
     default:
       return state;
   }

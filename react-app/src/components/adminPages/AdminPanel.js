@@ -1,6 +1,11 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef,forwardRef } from "react";
 import * as musicActions from "../../store/music";
+import OpenModalButton from "../OpenModalButton";
+import DeleteSongModal from "./delete_song_modal";
+import { useModal } from "../../context/Modal";
+import UploadForm from "../upload";
+
 import "./admin.css"
 
 export const AdminPanel = () => {
@@ -10,9 +15,10 @@ export const AdminPanel = () => {
   const songs = useSelector((state) => state.music.songs);
   const [loading, setLoading] = useState(true);
   const [openArtist, setOpenArtist] = useState(null);
+  const [showUploadForm, setShowUploadForm] = useState(false);
   const [openAlbum, setOpenAlbum] = useState(null);
   const containerRef = useRef(null);
-
+  const closeMenu = useModal()
   useEffect(() => {
     window.scrollTo(0, 0)
   }, []);
@@ -23,6 +29,10 @@ export const AdminPanel = () => {
     dispatch(musicActions.getSongs());
     setLoading(false);
   }, []);
+
+  const handleUploadFormSuccess = () => {
+    setShowUploadForm(false); 
+  };
 
   const handleArtistClick = (artistId) => {
     if (openArtist === artistId) {
@@ -42,12 +52,16 @@ export const AdminPanel = () => {
   };
 
   const handleClickOutside = (e) => {
-    if (containerRef.current && !containerRef.current.contains(e.target)) {
+    const modalContainer = document.querySelector(".ReactModal__Overlay");
+    if (
+      containerRef.current &&
+      !containerRef.current.contains(e.target) &&
+      (!modalContainer || !modalContainer.contains(e.target))
+    ) {
       setOpenArtist(null);
       setOpenAlbum(null);
     }
   };
-
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -69,6 +83,10 @@ export const AdminPanel = () => {
         </div>
         <div>
           <h1>Artists</h1>
+          <h3 onClick={() => setShowUploadForm(true)}>click here to upload a song!</h3>
+          {showUploadForm && (
+            <UploadForm onSuccess={handleUploadFormSuccess} />)}
+
           <div className="AdminPanel__container__artists">
             {artists &&
               Object.values(artists).map((artist) => (
@@ -89,10 +107,28 @@ export const AdminPanel = () => {
                               {album.songs.map((song) => (
                                 <li key={song.id}>{song.title}
                                   <OpenModalButton
-                                    buttonText="Log In"
-                                    onItemClick={closeMenu}
+                                    buttonText="X"
+                                    onItemClick={(e) => (e.preventDefault(), e.stopPropagation(), closeMenu())}
                                     modalComponent={<DeleteSongModal songId={song.id} />}
-                                  />
+                                    style={{
+                                      position: 'absolute',
+                                      top: '-10px',
+                                      right: '0',
+                                      color: '#fff',
+                                      backgroundColor: 'transparent',
+                                      border: 'none',
+                                      cursor: 'pointer',
+                                      fontSize: '24px',
+                                      outline: 'none',
+                                      transition: 'color 0.2s ease-in-out',
+                                      zIndex: 1, // added z-index
+                                    }}
+                                    hoverStyle={{
+                                      color: 'red',
+                                    }}
+                                  >
+
+                                  </OpenModalButton>
                                 </li>
                               ))}
                             </ul>

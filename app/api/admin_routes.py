@@ -171,8 +171,11 @@ def upload_song():
     return "File uploaded successfully!"
 
 
-@admin_routes.route("/songs/<int:id>", methods=["GET"], endpoint="func2")
+@admin_routes.route(
+    "/songs/<int:id>", methods=["GET", "PUT", "DELETE"], endpoint="func2"
+)
 @admin_only
+
 
 # Read Song
 def read_song(id):
@@ -199,7 +202,7 @@ def delete_song(id):
 
 
 @admin_routes.route("/albums", methods=["POST"], endpoint="func3")
-# Create Albu@admin_onlym
+@admin_only
 def Create_album():
 
     artist = Artist.query.filter_by(name=request.form.data["artist_name"]).first()
@@ -213,7 +216,9 @@ def Create_album():
     db.session.commit()
 
 
-@admin_routes.route("/albums/<int:id>", methods=["POST"], endpoint="func5")
+@admin_routes.route(
+    "/albums/<int:id>", methods=["GET", "PUT", "DELETE"], endpoint="func5"
+)
 @admin_only
 
 
@@ -240,7 +245,9 @@ def delete_album(id):
     return "", 204
 
 
-@admin_routes.route("/artists/<int:id>", methods=["POST"], endpoint="func9")
+@admin_routes.route(
+    "/artists/<int:id>", methods=["GET", "PUT", "DELETE"], endpoint="func9"
+)
 @admin_only
 
 # Read Artist
@@ -266,7 +273,6 @@ def delete_artist(id):
 
 
 @admin_routes.route("/artists/all", methods=["GET"], endpoint="func14")
-@admin_only
 def get_artists():
     # Fetch all the artists from the database
 
@@ -280,7 +286,6 @@ def get_artists():
 
 
 @admin_routes.route("/albums/all", methods=["GET"], endpoint="func13")
-@admin_only
 def get_albums():
     # Fetch all the albums from the database
     albums = Album.query.all()
@@ -293,7 +298,6 @@ def get_albums():
 
 
 @admin_routes.route("/songs/all", methods=["GET"], endpoint="func15")
-@admin_only
 def get_Songs():
     # Fetch all the Songs from the database
     Songs = Song.query.all()

@@ -94,7 +94,6 @@ def seeds():
         "Gin-Blossoms_Follow-You-Down_1-Follow-You-Down_7a27140f-6ca5-4fdc-b92c-e14d2bb0b814.mp3",
         "Gin-Blossoms_Follow-You-Down_2-Til-I-Hear-It-From-You_1a906762-86c7-41aa-abad-d350b0526672.mp3",
         "Gorillaz_Demon-Days_12-DARE_df371630-4c59-4685-89e0-287ec05f4f3f.mp3",
-        "Gorillaz_Demon-Days_6-Feel-Good-Inc._eedef4fc-4429-42a9-a34b-d7995d4cbc59.mp3",
         "Gorillaz_Gorillaz_1-Re-Hash_9ced041b-5832-46d4-bc4b-96ec8a65c52d.mp3",
         "Gorillaz_Gorillaz_5-Clint-Eastwood_2c09df24-d43c-4594-b94c-bc80c0ca9c63.mp3",
         "Gorillaz_Plastic-Beach_10-On-Melancholy-Hill_ce9fc11f-283e-4899-860b-0619f4269206.mp3",
@@ -316,6 +315,9 @@ def seed_playlists():
 def undo_seeds():
     if environment == "production":
         db.session.execute(
+            f"TRUNCATE table {SCHEMA}.playlists_songs RESTART IDENTITY CASCADE;"
+        ),
+        db.session.execute(
             f"TRUNCATE table {SCHEMA}.playlists RESTART IDENTITY CASCADE;"
         ),
         db.session.execute(f"TRUNCATE table {SCHEMA}.songs RESTART IDENTITY CASCADE;"),
@@ -324,6 +326,10 @@ def undo_seeds():
             f"TRUNCATE table {SCHEMA}.artists RESTART IDENTITY CASCADE;"
         ),
     else:
-        db.session.execute(text("DELETE FROM users"))
+        db.session.execute(text("DELETE FROM playlists_songs")),
+        db.session.execute(text("DELETE FROM playlists")),
+        db.session.execute(text("DELETE FROM songs")),
+        db.session.execute(text("DELETE FROM albums")),
+        db.session.execute(text("DELETE FROM artists")),
 
     db.session.commit()
