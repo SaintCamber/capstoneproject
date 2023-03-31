@@ -113,15 +113,19 @@ def update_playlist(id):
 
 
 # add song to playlist
-@playlist_routes.route("/addSong/<int:id>/", methods=["POST"])
-@login_required
+@playlist_routes.route("/addSong/<int:id>", methods=["POST"])
+# @login_required
 def add_song_to_playlist(id):
     playlist = Playlist.query.get(id)
+    print(request.json)
 
-    song_id = request.json["song_id"]
+    song1 = request.json["song"]
+    print(song1, "the song -------------------------------------------------")
+    song_id = song1["id"]
+    print(song_id, "the song ifd ")
     song = Song.query.get(song_id)
-    playlist.songs.append(song_id)
-    song.playlists.append(id)
+    playlist.songs.append(song1)
+    song.playlists.append(playlist)
     db.session.commit()
     return playlist.to_dict()
 

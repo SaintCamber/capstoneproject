@@ -1,18 +1,66 @@
 import React, { useState } from 'react';
 
-const UploadForm = ({closeModal}) => {
+const UploadForm = ({ closeModal }) => {
   const [file, setFile] = useState(null);
   const [name, setName] = useState("");
   const [albumName, setAlbumName] = useState("");
   const [release_date, setReleaseDate] = useState("");
   const [album_art, setAlbumArt] = useState("");
   const [artistName, setArtistName] = useState("");
-  const [error, setError] = useState('');
+  const [error, setError] = useState([]);
   const [songLoading, setSongLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const isValidUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError([]);
+    const errors = [];
+    const selectedFile = file
+    const maxSize = 10000000; // 10MB
     setSongLoading(true)
+    const allowedTypes = ['.mp3'];
+
+
+    if (!name || !albumName || !release_date || !album_art || !artistName || !file) {
+      errors.push("All fields are required");
+      setSongLoading(false);
+
+    }
+    if (selectedFile.size > maxSize) {
+      errors.push("File size can't exceed 10MB");
+      setSongLoading(false);
+
+    }
+
+    if (!allowedTypes.includes(selectedFile.type)) {
+      errors.push("Only mp3 files are allowed");
+      setSongLoading(false);
+
+
+    }
+
+    const releaseDateTimestamp = new Date(release_date).getTime();
+    if (releaseDateTimestamp > Date.now()) {
+      errors.push("Release date can't be in the future");
+      setSongLoading(false);
+
+
+    }
+    if (!isValidUrl(album_art)) {
+      errors.push('Please provide a valid album art URL');
+      setSongLoading(false);
+
+    }
     const formData = new FormData();
     formData.append('song_name', name);
     formData.append('album_name', albumName);
@@ -37,21 +85,26 @@ const UploadForm = ({closeModal}) => {
       setArtistName("");
       setReleaseDate("");
       setAlbumArt("");
-      console.log('File uploaded successfully');
-      closeModal();
+      setFile(null);
+      if (!errors.length) {
+        setSuccess(true);
+      }
     } catch (err) {
-      setError(err["error"]);
+      return error
 
     }
   };
 
   const handleFileChange = (e) => {
+
     setFile(e.target.files[0]);
   };
 
 
   return (
     <form onSubmit={handleSubmit} enctype="multipart/form-data">
+      <h7>add a song to create an artist's entry in the database</h7>
+      <div><p></p></div>
       <div>
         <label htmlFor="song_name">song Name</label>
         <input
@@ -129,8 +182,9 @@ const UploadForm = ({closeModal}) => {
       <div>
         <button type="submit">Upload</button>
       </div>
-      {error && <p>{error}</p>}
+      {error.map(err => <p>{err}</p>)}
       {songLoading && <p>Loading...</p>}
+      {success && <p>song uploaded successfully</p>}
     </form>
   );
 };

@@ -21,10 +21,7 @@ const readSinglePlaylist = (playlist) => ({
     payload: playlist
 })
 
-const remove_song_from_playlist = (playlist, song_id) => ({
-    type: REMOVE_SONG_FROM_PLAYLIST,
-    payload: { playlist, song_id }
-})
+
 
 const add_song_to_playlist = (playlistId, song) => ({
     type: ADD_SONG_TO_PLAYLIST,
@@ -80,12 +77,14 @@ export const deletePlaylistThunk = (playlistId) => async (dispatch) => {
 
 
 export const addSongToPlaylist = (song, playlistId) => async (dispatch) => {
+    console.log(song, playlistId, "song, playlistId")
     const res = await fetch(`/api/playlists/addSong/${playlistId}`, {
         method: 'POST',
         headers: { "content-type": 'application/json' },
         body: JSON.stringify({ song, playlistId })
     });
     const data = await res.json();
+    console.log(data, "data from addSongToPlaylist")
     dispatch(add_song_to_playlist(data));
     return data;
 
@@ -158,7 +157,7 @@ const playlists = (state = initialState, action) => {
                     songs: [...state.singlePlaylist.songs, action.payload.song]
                 }
             }
-            
+
         case DELETE_PLAYLIST:
                 let newState2 = { ...state };
                 delete newState2.user_playlists[action.payload.id];
