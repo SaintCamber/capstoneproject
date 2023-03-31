@@ -31,8 +31,12 @@ def upgrade():
                existing_type=sa.DATETIME(),
                type_=sa.String(),
                existing_nullable=False)
+    bind = op.get_bind()
+    if bind.engine.name == 'postgresql':
+        with op.batch_alter_table('albums',schema="projects") as batch_op:
+            batch_op.drop_constraint("albums_name_key", type_="unique")
+        
 
-    op.drop_constraint("albums_name_key", "albums", type_="unique")
     # ### end Alembic commands ###
 
 

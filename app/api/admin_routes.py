@@ -75,6 +75,10 @@ def admin_only(func):
 # Route for u@admin_onlyploading songs
 def upload_song():
     print(session.get("email"))
+
+    form = UploadForm()
+    if not form.validate_on_submit():
+        return jsonify(form.errors)
     # Get the values of the application key ID and application key from environment variables
     application_key_id = os.environ.get("B2_KEY")
     application_key = os.environ.get("B2_SECRET")

@@ -83,7 +83,7 @@ export const AdminPanel = () => {
         </div>
         <div>
           <h1>Artists</h1>
-          <h3 onClick={() => setShowUploadForm(true)}>click here to upload a song!</h3>
+          <h3 onClick={() => setShowUploadForm(true)}>Add a song</h3>
           {showUploadForm && (
             <UploadForm onSuccess={handleUploadFormSuccess} />)}
 
