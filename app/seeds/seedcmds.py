@@ -5,6 +5,7 @@ from app.models.db import environment, SCHEMA, db
 from sqlalchemy.sql import text
 from faker import Faker
 import random
+import psycopg2
 
 fake = Faker()
 BUCKET_NAME = os.environ.get("bucket_name")
@@ -279,16 +280,23 @@ def seeds():
         if song:
             continue
         # Create the song entry
-        song = Song(
-            title=song_title,
-            file_url=file_url,
-            artist=artist,
-            album=album,
-        )
-        db.session.add(song)
-
-    # Commit the changes to the database
-    db.session.commit()
+         try:
+            song = Song(
+                title=song_title,
+                file_url=file_url,
+                artist=artist,
+                album=album,
+            )
+            db.session.add(song)
+            # Commit the changes to the database
+            db.session.commit()
+            
+        except psycopg2.errors.UniqueViolation as e:
+            # Handle the unique constraint violation error
+            # Rollback the transaction and continue with the next file
+            db.session.rollback()
+            print(f"Skipping file {file}: {e}")
+            continue
 
 
 def seed_playlists():

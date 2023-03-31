@@ -85,7 +85,7 @@ function SongRow({ song, trackNumber, PlaylistId }) {
         <i className="fas fa-ellipsis-h" onClick={openMenu} />
         <div className={SongClassName} ref={songRef}>
           <button onClick={handleAddToQueue}>Add to queue</button>
-          <button onClick={handleRemoveSong}>Remove from playlist</button>
+          {PlaylistId ? <button onClick={handleRemoveSong}>Remove from playlist</button>:""}
           {/* Add other song related actions here */}
         </div>
       </div>

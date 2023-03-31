@@ -34,7 +34,7 @@ export default function SideBar() {
             <div className="SideBar">
                 <h1 onClick={() => history.push('/')}>Songify</h1>
                 <div className="SideBar__navItem">
-                    <p>Log in to see your playlists</p>
+                    <p>Log in to continue</p>
                 </div>
             </div>
         );
@@ -55,7 +55,7 @@ export default function SideBar() {
                 <i className="fas fa-search"></i>
                 <span>Search</span>
             </div>
-            <div className="SideBar__navItem" onClick={() => history.push('/library')}>
+            <div className="SideBar__navItem" onClick={() => alert("Library coming soon! please pick a playlist instead!")}>
                 <i className="fas fa-book"></i>
                 <span>Your Library</span>
             </div>

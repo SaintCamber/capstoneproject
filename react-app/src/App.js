@@ -15,7 +15,7 @@ import PlaylistPage from "./components/playlists/PlaylistPage";
 import { getAllPlaylists } from "./store/playlists";
 import './index.css'
 import AdminPanel from "./components/adminPages/AdminPanel";
-
+import AddSongs from "./components/playlists/Addsongs";
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -49,6 +49,9 @@ function App() {
           </Route>
           <Route path='/playlists/:PlaylistId'>
             <PlaylistPage />
+          </Route>
+          <Route path='/playlist/add/:PlaylistId'>
+            <AddSongs />
           </Route>
           <Route path="/albums/:albumId">
             <AlbumPage />
