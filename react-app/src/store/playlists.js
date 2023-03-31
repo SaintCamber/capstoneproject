@@ -26,9 +26,9 @@ const remove_song_from_playlist = (playlist, song_id) => ({
     payload: { playlist, song_id }
 })
 
-const add_song_to_playlist = (playlist, song) => ({
+const add_song_to_playlist = (playlistId, song) => ({
     type: ADD_SONG_TO_PLAYLIST,
-    payload: { playlist, song }
+    payload: { playlistId, song }
 })
 const deletePlaylist = (playlist) => ({
     type: DELETE_PLAYLIST,
@@ -79,12 +79,11 @@ export const deletePlaylistThunk = (playlistId) => async (dispatch) => {
 }
 
 
-export const addSongToPlaylist = (songToAdd) => async (dispatch) => {
-    let { song_id, playlist_id } = songToAdd;
-    const res = await fetch(`/api/playlists/${songToAdd["playlist_Id"]}`, {
+export const addSongToPlaylist = (song, playlistId) => async (dispatch) => {
+    const res = await fetch(`/api/playlists/addSong/${playlistId}`, {
         method: 'POST',
         headers: { "content-type": 'application/json' },
-        body: JSON.stringify({ song_id, playlist_id })
+        body: JSON.stringify({ song, playlistId })
     });
     const data = await res.json();
     dispatch(add_song_to_playlist(data));
@@ -154,22 +153,20 @@ const playlists = (state = initialState, action) => {
         case ADD_SONG_TO_PLAYLIST:
             return {
                 ...state,
-                user_playlists: {
-                    ...state.user_playlists,
-                    [action.payload.playlist.id]: {
-                        ...state.user_playlists[action.payload.playlist.id],
-                        songs: [...state.user_playlists[action.payload.playlist.id].songs, action.payload.song]
-                    }
+                singlePlaylist: {
+                    ...state.singlePlaylist,
+                    songs: [...state.singlePlaylist.songs, action.payload.song]
                 }
             }
+            
         case DELETE_PLAYLIST:
-            let newState2 = { ...state };
-            delete newState2.user_playlists[action.payload.id];
-            return newState2;
-        default:
+                let newState2 = { ...state };
+                delete newState2.user_playlists[action.payload.id];
+                return newState2;
+                default:
             return state;
+            }
     }
-}
 
 
-export default playlists;
+    export default playlists;

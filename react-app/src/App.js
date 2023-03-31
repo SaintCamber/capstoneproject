@@ -47,11 +47,11 @@ function App() {
           <Route path='/newPlaylist'>
             <CreatePlaylist />
           </Route>
+          <Route path='/add/:PlaylistId'>
+            <AddSongs />
+          </Route>
           <Route path='/playlists/:PlaylistId'>
             <PlaylistPage />
-          </Route>
-          <Route path='/playlist/add/:PlaylistId'>
-            <AddSongs />
           </Route>
           <Route path="/albums/:albumId">
             <AlbumPage />

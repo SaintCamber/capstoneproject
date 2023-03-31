@@ -113,10 +113,9 @@ def update_playlist(id):
 
 
 # add song to playlist
-@playlist_routes.route("/addSong/<int:id>/", methods=["PUT"])
+@playlist_routes.route("/addSong/<int:id>/", methods=["POST"])
 @login_required
 def add_song_to_playlist(id):
-    form = AddSongToPlaylist()
     playlist = Playlist.query.get(id)
 
     song_id = request.json["song_id"]

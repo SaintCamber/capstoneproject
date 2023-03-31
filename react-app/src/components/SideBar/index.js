@@ -27,7 +27,7 @@ export default function SideBar() {
         e.preventDefault();
         dispatch(getSinglePlaylist(id));
         console.log(id, 'id in the playlist click');
-        history.push(`playlists/${id}`)
+        history.push(`/playlists/${id}`)
     };
     if (!user) {
         return (

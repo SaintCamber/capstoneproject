@@ -32,6 +32,7 @@ def upgrade():
                type_=sa.String(),
                existing_nullable=False)
 
+    op.drop_constraint("albums_name_key", "albums", type_="unique")
     # ### end Alembic commands ###
 
 

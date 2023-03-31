@@ -15,8 +15,9 @@ const PlaylistPage = () => {
     const [errors, setErrors] = useState([]);
     const user = useSelector((state) => state.session.user);
 
-    const addSongs = () => {
-        history.push(`/playlists/add/${PlaylistId}`);
+    const addSongs = (e) => {
+        e.preventDefault();
+       return history.push(`/add/${PlaylistId}`);
     }
 
     useEffect(() => {
@@ -34,7 +35,7 @@ const PlaylistPage = () => {
                 <h1>{playlist?.name}</h1>
                 {playlist?.user && <p>Created by {playlist.user.username}</p>}
             </div>
-            <button onClick={addSongs}>Add Songs</button>
+            <button className="addButton" onClick={addSongs}>+</button>
             {songs && Object.values(songs).map((song) => (
                 <SongRow key={song.id} song={song} PlaylistId={PlaylistId} />
             ))}
