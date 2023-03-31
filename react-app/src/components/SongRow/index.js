@@ -3,9 +3,13 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { playSong, addSongToQueueNextThunk } from '../../store/music';
 import { initWaveSurfer } from '../../components/playbar/wavesurferUtils';
+import { removeSongFromPlaylist } from '../../store/playlists';
+import { getSinglePlaylist } from '../../store/playlists';
+
+
 import "./SongRow.css"
 
-function SongRow({ song, trackNumber }) {
+function SongRow({ song, trackNumber, PlaylistId }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
@@ -30,7 +34,7 @@ function SongRow({ song, trackNumber }) {
       if (!songRef.current.contains(e.target)) {
         setShowMenu(false);
       }
-      
+
     };
 
     document.addEventListener("click", closeMenu);
@@ -38,7 +42,13 @@ function SongRow({ song, trackNumber }) {
     return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
 
-  
+  const handleRemoveSong = () => {
+    dispatch(removeSongFromPlaylist(PlaylistId, song.id));
+    dispatch(getSinglePlaylist(PlaylistId))
+  }
+
+
+
 
   const SongClassName = "actions-dropdown" + (showMenu ? "" : " hidden");
   const closeMenu = () => setShowMenu(false);
@@ -55,6 +65,7 @@ function SongRow({ song, trackNumber }) {
   const handleAddToQueue = () => {
     dispatch(addSongToQueueNextThunk(song));
   }
+
 
   return (
     <div className="SongRow" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
@@ -74,6 +85,7 @@ function SongRow({ song, trackNumber }) {
         <i className="fas fa-ellipsis-h" onClick={openMenu} />
         <div className={SongClassName} ref={songRef}>
           <button onClick={handleAddToQueue}>Add to queue</button>
+          <button onClick={handleRemoveSong}>Remove from playlist</button>
           {/* Add other song related actions here */}
         </div>
       </div>

@@ -128,12 +128,11 @@ def add_song_to_playlist(id):
 
 
 # remove a song from a playlist
-@playlist_routes.route("/removeSong/<int:id>", methods=["PUT"])
+@playlist_routes.route("/<int:playlistId>/songs/<int:songId>", methods=["DELETE"])
 @login_required
-def remove_song_from_playlist(id):
-    playlist = Playlist.query.get(id)
-    song_id = request.json["song_id"]
-    playlist.songs.remove(song_id)
+def remove_song_from_playlist(playlistId, songId):
+    playlist = Playlist.query.get(playlistId)
+    playlist.songs = [song for song in playlist.songs if song.id != songId]
     db.session.commit()
     return playlist.to_dict()
 

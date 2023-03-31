@@ -9,37 +9,44 @@ const Playbar = () => {
   const { isPlaying, currentlyPlaying, songTitle, songArtist, songAlbum, queue } = useSelector(state => state.music);
   const wavesurferRef = useRef(null);
   const [waveSurfer, setWaveSurfer] = useState(null);
+  console.log("currentlyPlaying", currentlyPlaying)
+  console.log("queue", queue)
+  console.log(wavesurferRef.current, "wavesurferRef.current");
 
+  console.log(useSelector(state => state), "useSelector(state => state)")
   useEffect(() => {
-    const waveSurferInstance = WaveSurfer.create({
-      container: wavesurferRef.current,
-      waveColor: "#B3B3B3",
-      progressColor: "#1DB954",
-      height: 5,
-      barWidth: 1,
-      barHeight: 5,
-      cursorWidth: 1,
-      normalize: true,
-      responsive: true,
-      backend: "WebAudio",
-    });
+    if (wavesurferRef.current) {
+      const waveSurferInstance = WaveSurfer.create({
+        container: wavesurferRef.current,
+        waveColor: "#B3B3B3",
+        progressColor: "#1DB954",
+        height: 5,
+        barWidth: 1,
+        barHeight: 5,
+        cursorWidth: 1,
+        normalize: true,
+        responsive: true,
+        backend: "WebAudio",
+      });
 
-    if (currentlyPlaying) {
-      waveSurferInstance.load(currentlyPlaying[0], null, "cors");
-      waveSurferInstance.on("finish", handleStop);
-      setWaveSurfer(waveSurferInstance);
+      if (currentlyPlaying && currentlyPlaying[0]) {
+        waveSurferInstance.load(currentlyPlaying[0], null, "cors");
+        waveSurferInstance.on("finish", handleStop);
+        setWaveSurfer(waveSurferInstance);
 
-      if (isPlaying) {
-        waveSurferInstance.play();
+        if (isPlaying) {
+          waveSurferInstance.play();
+        }
       }
+
+      return () => {
+        if (waveSurferInstance) {
+          waveSurferInstance.destroy();
+        }
+      };
     }
+  }, [currentlyPlaying, isPlaying, wavesurferRef]);
 
-    return () => {
-      if (waveSurferInstance) {
-        waveSurferInstance.destroy();
-      }
-    };
-  }, [currentlyPlaying]);
 
   useEffect(() => {
     if (waveSurfer && currentlyPlaying) {
