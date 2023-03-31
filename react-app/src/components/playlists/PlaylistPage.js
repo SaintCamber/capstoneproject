@@ -12,28 +12,30 @@ const PlaylistPage = () => {
     const songs = useSelector((state) => state.playlists.singlePlaylist.songs);
     const [errors, setErrors] = useState([]);
     const user = useSelector((state) => state.session.user);
+    const addSongs = () => {
+        history.push(`/playlists/add/${PlaylistId}`);
 
+        useEffect(() => {
+            console.log(playlist, "playlist in the playlist page");
+            dispatch(getSinglePlaylist(PlaylistId));
+        }, [dispatch, PlaylistId]);
 
-    useEffect(() => {
-        console.log(playlist, "playlist in the playlist page");
-        dispatch(getSinglePlaylist(PlaylistId));
-    }, [dispatch, PlaylistId]);
+        if (!playlist) {
+            return null;
+        }
 
-    if (!playlist) {
-        return null;
-    }
-
-    return (
-        <div className="PlaylistPage">
-            <div className="PlaylistPage__header">
-                <h1>{playlist?.name}</h1>
-                {playlist?.user && <p>Created by {playlist.user.username}</p>}
+        return (
+            <div className="PlaylistPage">
+                <div className="PlaylistPage__header">
+                    <h1>{playlist?.name}</h1>
+                    {playlist?.user && <p>Created by {playlist.user.username}</p>}
+                </div>
+                <button onClick={addSongs}>Add Songs</button>
+                {songs && Object.values(songs).map((song) => (
+                    <SongRow key={song.id} song={song} PlaylistId={PlaylistId} />
+                ))}
             </div>
-            {songs && Object.values(songs).map((song) => (
-                <SongRow key={song.id} song={song} PlaylistId={PlaylistId} />
-            ))}
-        </div>
-    );
-};
+        );
+    };
 
-export default PlaylistPage;
+    export default PlaylistPage;
