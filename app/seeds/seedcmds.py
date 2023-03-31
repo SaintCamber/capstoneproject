@@ -280,7 +280,7 @@ def seeds():
         if song:
             continue
         # Create the song entry
-         try:
+        try:
             song = Song(
                 title=song_title,
                 file_url=file_url,
