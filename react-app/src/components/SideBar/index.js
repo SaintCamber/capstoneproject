@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
 import { getAllPlaylists, getSinglePlaylist } from '../../store/playlists';
 import { getAllSongs } from '../../store/music';
 import { useHistory } from 'react-router-dom';
@@ -77,6 +77,11 @@ export default function SideBar() {
                         );
                     })
                 )}
+            </div>
+            <div className="SideBar__devInfo">
+                <p>Developed by: Sarah Nodwell</p>
+                <><Link className="Links" to={{ pathname : "https://www.linkedin.com/in/sarah-nodwell-77a171217"}} target="_blank">linkedin</Link></>
+                <><Link className="Links" to={{ pathname : "https://github.com/SaintCamber"}} target="_blank">github</Link></>
             </div>
         </div>
     )

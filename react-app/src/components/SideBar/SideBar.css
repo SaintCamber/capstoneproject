@@ -53,3 +53,26 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
 }
+
+
+.SideBar__devInfo{
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;}
+
+
+    .Links {
+        color: white;
+        text-decoration: underline;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        margin: 5px;
+    }    
+
+    .Links:hover {
+        color: #1db954;
+    }

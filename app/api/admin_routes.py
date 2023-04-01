@@ -72,7 +72,7 @@ def admin_only(func):
 
 
 @admin_routes.route("/upload", methods=["POST"], endpoint="upload_song")
-# Route for u@admin_onlyploading songs
+# @admin_only
 def upload_song():
     print(session.get("email"))
 
@@ -225,9 +225,9 @@ def Create_album():
 )
 @admin_only
 def read_album(id):
-        if request.method == "GET":
-            album = Album.query.get_or_404(id)
-            return album.to_dict()
+    if request.method == "GET":
+        album = Album.query.get_or_404(id)
+        return album.to_dict()
 
 
 # Read Album
@@ -235,7 +235,7 @@ def read_album(id):
 
 # Update Album
 def update_album(id):
-    if request.method== "PUT":
+    if request.method == "PUT":
         album = Album.query.get_or_404(id)
         album.title = request.json.get("title", album.title)
         album.artist_id = request.json.get("artist_id", album.artist_id)
@@ -245,15 +245,15 @@ def update_album(id):
 
 # Delete Album
 def delete_album(id):
-        if request.method == "DELETE":
-            album = Album.query.get_or_404(id)
-            db.session.delete(album)
-            db.session.commit()
-            return "", 204
+    if request.method == "DELETE":
+        album = Album.query.get_or_404(id)
+        db.session.delete(album)
+        db.session.commit()
+        return "", 204
 
 
 @admin_routes.route(
-    "/artists/<int:id>", methods=["GET", "PUT", "DELETE"], endpoint="func9"
+    "/artists/<int:id>", methods=["GET", "POST", "DELETE"], endpoint="func9"
 )
 @admin_only
 
@@ -271,12 +271,31 @@ def update_artist(id):
     return artist.to_dict()
 
 
-# Delete Artist
+@admin_routes.route(
+    "/delete_artist/<int:id>", methods=["POST"], endpoint="delete_artist"
+)
+@admin_only
 def delete_artist(id):
-    artist = Artist.query.get_or_404(id)
+    artist = Artist.query.get(id)
+    if not artist:
+        abort(404)
+    # remove all songs by that artist from playlists
+    songs = Song.query.filter_by(artist_id=id).all()
+    for song in songs:
+        playlists = song.playlists
+        for playlist in playlists:
+            playlist.songs.remove(song)
+    # delete all songs by that artist
+    for song in songs:
+        db.session.delete(song)
+    # delete all albums by that artist
+    albums = Album.query.filter_by(artist_id=id).all()
+    for album in albums:
+        db.session.delete(album)
+    # delete the artist
     db.session.delete(artist)
     db.session.commit()
-    return
+    return jsonify("Artist deleted", 200)
 
 
 @admin_routes.route("/artists/all", methods=["GET"], endpoint="func14")

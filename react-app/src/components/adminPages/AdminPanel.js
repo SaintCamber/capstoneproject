@@ -5,6 +5,7 @@ import OpenModalButton from "../OpenModalButton";
 import DeleteSongModal from "./delete_song_modal";
 import { useModal } from "../../context/Modal";
 import UploadForm from "../upload";
+import {deleteAnArtist} from '../../store/music'
 
 import "./admin.css"
 
@@ -69,6 +70,13 @@ export const AdminPanel = () => {
     };
   }, []);
 
+  const handleDeleteArtist = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    dispatch(deleteAnArtist(e.target.value))
+  }
+
+
   return (
     <div className="AdminPanel" ref={containerRef}>
       <div className="AdminPanel__container">
@@ -93,6 +101,7 @@ export const AdminPanel = () => {
                 <div key={artist.id}>
                   <h2 onClick={() => handleArtistClick(artist.id)}>
                     {artist.name}
+                    <button value={artist.id} onClick={handleDeleteArtist}>Delete Artist</button>
                   </h2>
                   {openArtist === artist.id && (
                     <ul>

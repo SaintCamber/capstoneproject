@@ -233,17 +233,17 @@ export const deleteAnAlbum = (albumId) => async (dispatch) => {
 }
 
 
-
 export const deleteAnArtist = (artistId) => async (dispatch) => {
-  const response = await fetch(`/api/admin/artists/${artistId}`, {
-    method: "DELETE",
+  const response = await fetch(`/api/admin/delete_artist/${artistId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    }
   });
   const data = await response.json();
   dispatch(deleteArtist(artistId));
   return data;
 }
-
-
 
 
 export const playSongThunk=(song)=> async (dispatch) =>{

@@ -31,15 +31,36 @@ function CreatePlaylist() {
         dispatch(getAllPlaylists(user?.id));
     }, [dispatch, user?.id]);
 
+    const validate = () => {
+        const errors = [];
+
+        if (name.length < 7) {
+            errors.push("Playlist name must be at least 7 characters long");
+        }
+
+        if (!/^[a-zA-Z\s]+$/.test(name)) {
+            errors.push("Playlist name must not contain special characters or numbers");
+        }
+
+        if (name.length > 30) {
+            errors.push("Playlist name cannot exceed 30 characters");
+        }
+
+        setErrors(errors);
+        return errors.length === 0;
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const playlist = {
-            name: name,
-            user_id: user.id
+        if (validate()) {
+            const playlist = {
+                name: name,
+                user_id: user.id
+            }
+            let newPlaylist = await dispatch(createNewPlaylist(playlist));
+            setName('');
+            history.push(`/playlists/${newPlaylist.id}`)
         }
-        let newPlaylist = await dispatch(createNewPlaylist(playlist));
-        setName('');
-        history.push(`/playlists/${newPlaylist.id}`)
     }
 
     return (
@@ -47,6 +68,15 @@ function CreatePlaylist() {
             <div className="create-playlist-header">
                 <h1>Create Playlist</h1>
             </div>
+            {errors.length > 0 && (
+                <div className="form-errors">
+                    <ul>
+                        {errors.map((error, idx) => (
+                            <li key={idx}>{error}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="playlist-name">Playlist Name</label>
