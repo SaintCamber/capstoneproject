@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNewPlaylist, getAllPlaylists } from '../../store/playlists';
 import { useHistory } from 'react-router-dom';
+import "./createPlaylist.css"
 
 function CreatePlaylist() {
     const dispatch = useDispatch();
@@ -10,15 +11,25 @@ function CreatePlaylist() {
     const user = useSelector(state => state.session.user);
     const playlists = useSelector(state => state.playlists.user_playlists);
     const history = useHistory();
+
     useEffect(() => {
         window.scrollTo(0, 0)
-      }, [])
+    }, []);
+
+    useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+
     useEffect(() => {
         if (!user) {
             return
         }
         dispatch(getAllPlaylists(user?.id));
-    }, [dispatch, user?.id])
+    }, [dispatch, user?.id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,17 +42,26 @@ function CreatePlaylist() {
         history.push(`/playlists/${newPlaylist.id}`)
     }
 
-
     return (
-        <div>
+        <div className="create-playlist-container">
+            <div className="create-playlist-header">
+                <h1>Create Playlist</h1>
+            </div>
             <form onSubmit={handleSubmit}>
-                <input
-                    type='text'
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                />
-                <button type='submit'>Create Playlist</button>
+                <div className="form-group">
+                    <label htmlFor="playlist-name">Playlist Name</label>
+                    <input
+                        type='text'
+                        id="playlist-name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="form-actions">
+                    <button type='submit'>Create</button>
+                    <button>Cancel</button>
+                </div>
             </form>
         </div>
     )
