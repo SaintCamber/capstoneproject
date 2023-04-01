@@ -19,13 +19,15 @@ const UPDATE_ALBUM = "music/updateAlbum";
 const UPDATE_ARTIST = "music/updateArtist";
 const UPDATE_SONG = "music/updateSong";
 const CLEAR_QUEUE = "music/clearQueue";
+const PLAY_TRACK = "music/playTrack";
 
 const ADD_SONG_TO_QUEUE_NEXT = "music/addSongToQueueNext";
 const ADD_SONG_TO_QUEUE_LAST = "music/addSongToQueueLast";
 const REMOVE_SONG_FROM_QUEUE = "music/removeSongFromQueue";
 
-export const playSong = () => ({
-  type: PLAY,
+export const playSong = (song) => ({
+  type: PLAY_TRACK,
+  payload:song
 });
 
 export const pauseSong = () => ({
@@ -244,11 +246,10 @@ export const deleteAnArtist = (artistId) => async (dispatch) => {
 
 
 
-// thunk for choosing a song
-export const chooseSong = (songUrl) => async (dispatch) => {
-  dispatch(loadSong(songUrl));
-  dispatch(playSong());
-};
+export const playSongThunk=(song)=> async (dispatch) =>{
+    dispatch(playSong(song))
+}
+
 
 // get all songs from the database
 export const getSongs = () => async (dispatch) => {
@@ -325,26 +326,19 @@ const initialState = {
   artists: [],
   currentAlbum: null,
   currentTrackIndex: null,
-  wavesurfer: null,
   queue: [],
 };
 
 const music = (state = initialState, action) => {
   switch (action.type) {
-    case 'PLAY_TRACK': {
-      const { album, trackIndex } = action.payload;
-      const track = album.tracks[trackIndex];
-      const url = track.audioUrl;
-
-      const wavesurfer = initWaveSurfer('waveform', url, () => {
-        // Playback started
-      });
+    case PLAY_TRACK: {
+      console.log("playTrack called")
+      console.log(action.payload,"payload for playTrack")
 
       return {
         ...state,
-        currentAlbum: album,
-        currentTrackIndex: trackIndex,
-        wavesurfer,
+        currentlyPlaying: action.payload,
+        songUrl:action.payload.fileUrl
       };
     }
     case 'PAUSE_TRACK': {
@@ -361,6 +355,8 @@ const music = (state = initialState, action) => {
 
       return {
         ...state,
+        currentlyPlaying:null,
+        songUrl:null
       };
     }
     case 'RESUME_TRACK': {
@@ -499,24 +495,24 @@ const music = (state = initialState, action) => {
           }
         }),
       };
-      case PLAY_ALBUM:
-        const currentlyPlaying = [];
-        action.payload.forEach(song => {
-          currentlyPlaying.push({
-            id: song.id,
-            title: song.title,
-            artist: song.artist,
-            album: song.album,
-            duration: song.duration,
-            audioUrl: song.audioUrl,
-          });
+    case PLAY_ALBUM:
+      const currentlyPlaying = [];
+      action.payload.forEach(song => {
+        currentlyPlaying.push({
+          id: song.id,
+          title: song.title,
+          artist: song.artist,
+          album: song.album,
+          duration: song.duration,
+          audioUrl: song.audioUrl,
         });
-        return {
-          ...state,
-          currentAlbum: action.payload,
-          currentlyPlaying: currentlyPlaying,
-          isPlaying: true,
-        };
+      });
+      return {
+        ...state,
+        currentAlbum: action.payload,
+        currentlyPlaying: currentlyPlaying,
+        isPlaying: true,
+      };
     default:
       return state;
   }

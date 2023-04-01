@@ -17,7 +17,7 @@ const PlaylistPage = () => {
 
     const addSongs = (e) => {
         e.preventDefault();
-       return history.push(`/add/${PlaylistId}`);
+        return history.push(`/add/${PlaylistId}`);
     }
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const PlaylistPage = () => {
             </div>
             <button className="addButton" onClick={addSongs}>+</button>
             {songs && Object.values(songs).map((song) => (
-                <SongRow key={song.id} song={song} PlaylistId={PlaylistId} />
+                <SongRow key={song?.id} song={song} PlaylistId={PlaylistId} />
             ))}
         </div>
     );

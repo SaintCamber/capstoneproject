@@ -45,10 +45,7 @@ function PlaylistCard({ playlist }) {
           </div>
         )}
       </div>
-      <div className={`${className} `}>
-        <i className="fas fa-play " onClick={playPlaylist}></i>
-
-      </div>
+     
       <div className="PlaylistCard__details">
         <h3>{playlist?.name}</h3>
         <p>{playlist?.artist}</p>

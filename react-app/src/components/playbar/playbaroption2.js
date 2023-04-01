@@ -15,9 +15,9 @@ const Playbar = () => {
     const [waveSurfer, setWaveSurfer] = useState(null);
 
     useEffect(() => {
-       
+        if (!source) {
             setSource(songUrl||fileUrl ||  "");
-        
+        }
     }, [fileUrl, songUrl, source]);
 
     useEffect(() => {
@@ -46,46 +46,28 @@ const Playbar = () => {
     }, [source, waveSurfer]);
 
     const togglePlay = () => {
-      if(waveSurfer){
-
-      
         if (isPlaying) {
             waveSurfer.pause();
         } else {
             waveSurfer.play();
         }
-        setIsPlaying(!isPlaying)
-      } else {
-          return
-        }
+        setIsPlaying(!isPlaying);
     };
-    const regex = /^\d+\s/;
-  return (
-    <div className="playbar">
-      <div className="playbar__song-info">
-        <div className="playbar__song-image">
-          <img src={currentlyPlaying?.album_art || "https://f005.backblazeb2.com/file/capstonestorage/default_image.PNG"} alt={currentlyPlaying?.title || ""} />
+
+    return (
+        <div>
+            {source ? (
+                <>
+                    <div ref={waveformRef} />
+                    <button onClick={togglePlay}>
+                        {isPlaying ? "Pause" : "Play"}
+                    </button>
+                </>
+            ) : (
+                <p>No audio source available</p>
+            )}
         </div>
-        <div className="playbar__song-details">
-          <p>{currentlyPlaying?.title.replace(regex, ``) ||""}</p>
-          <p>{currentlyPlaying?.artist || ""}</p>
-        </div>
-      </div>
-      <div className="playbar__center">
-        <div className="playbar__controls">
-          <button className="playbar__button" onClick={togglePlay}>
-            <i className="fas fa-play"></i>
-          </button>
-          <button className="playbar__button" onClick={togglePlay}>
-            <i className="fas fa-pause"></i>
-          </button>
-        </div>
-        <div className="playbar__progress">
-          <div className="playbar__progress-bar" ref={waveformRef} />
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Playbar;

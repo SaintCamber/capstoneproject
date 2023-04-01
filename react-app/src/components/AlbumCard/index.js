@@ -41,10 +41,7 @@ function AlbumCard({ album }) {
           </div>
         )}
       </div>
-      <div className={`${className} `}>
-        <i className="fas fa-play " onClick={playAlbum}></i>
-
-      </div>
+    
       <div className="AlbumCard__details">
         <h3>{album.name}</h3>
         <p>{album.artist}</p>

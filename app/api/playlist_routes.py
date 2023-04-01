@@ -124,7 +124,7 @@ def add_song_to_playlist(id):
     song_id = song1["id"]
     print(song_id, "the song ifd ")
     song = Song.query.get(song_id)
-    playlist.songs.append(song1)
+    playlist.songs.append(song)
     song.playlists.append(playlist)
     db.session.commit()
     return playlist.to_dict()
