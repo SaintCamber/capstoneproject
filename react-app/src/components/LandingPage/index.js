@@ -4,12 +4,14 @@ import { getAlbums } from '../../store/music';
 import { getAllPlaylists } from '../../store/playlists';
 import AlbumCard from '../AlbumCard';
 import PlaylistCard from '../playlistCard/playlistcard';
+import LoginPrompt from './loginPrompt';
 export default function LandingPage() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const user = useSelector(state => state.session.user);
   const albums = useSelector(state => state.music.albums);
   const playlists = useSelector(state => state.playlists.user_playlists);
+
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -22,6 +24,9 @@ export default function LandingPage() {
     console.log(playlists, 'playlists in the landing page')
     setLoading(false)
   }, []);
+
+  if (!user) {
+    return (<LoginPrompt />)}
 
   return (
     <div className="LandingPage">

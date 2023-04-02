@@ -43,7 +43,7 @@ export default function SideBar() {
     return (
         <div className="SideBar">
             <h1 onClick={() => history.push('/')}>Songify</h1>
-
+            <div className="SideBar__navContainer">
             <div className="SideBar__navItem" onClick={() => history.push('/')}>
                 <i className="fas fa-home"></i>
                 <span>Home</span>
@@ -59,29 +59,31 @@ export default function SideBar() {
                 <i className="fas fa-book"></i>
                 <span>Your Library</span>
             </div>
-            <Link to={"/newPlaylist"} className="SideBar__navItem SideBar__createPlaylist">
+            <Link to={"/newPlaylist"} className="SideBar__navItem">
                 <i className="fas fa-plus"></i>
                 <span>Create a Playlist</span>
-            </Link>
+            </Link></div>
 
-            <div className="SideBar__navHeader">PLAYLISTS</div>
-            <div className="Scrollable">
-                {loading ? (
-                    <div>Loading...</div>
-                ) : (
-                    userPlaylists && Object.values(userPlaylists).map((playlist) => {
-                        return (
-                            <div key={playlist.id} onClick={(e) => playlistClick(e, playlist.id)}>
-                                <div>{playlist.name}</div>
-                            </div>
-                        );
-                    })
-                )}
+            <div className="SideBar__playlist-container">
+                <div className="Scrollable">
+                    {loading ? (
+                        <div>Loading...</div>
+                    ) : (
+                        userPlaylists && Object.values(userPlaylists).map((playlist) => {
+                            return (
+                                <div key={playlist.id} onClick={(e) => playlistClick(e, playlist.id)}>
+                                    <div className="SideBar__playlistEntry">{playlist.name}</div>
+                                </div>
+                            );
+                        })
+                    )}
+                </div>
             </div>
+
             <div className="SideBar__devInfo">
                 <p>Developed by: Sarah Nodwell</p>
-                <><Link className="Links" to={{ pathname : "https://www.linkedin.com/in/sarah-nodwell-77a171217"}} target="_blank">linkedin</Link></>
-                <><Link className="Links" to={{ pathname : "https://github.com/SaintCamber"}} target="_blank">github</Link></>
+                <><Link className="Links" to={{ pathname: "https://www.linkedin.com/in/sarah-nodwell-77a171217" }} target="_blank">linkedin</Link></>
+                <><Link className="Links" to={{ pathname: "https://github.com/SaintCamber" }} target="_blank">github</Link></>
             </div>
         </div>
     )

@@ -1,0 +1,72 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: rgb(83, 83, 83);
+    font-family: "Circular Spotify Tx T Light", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+}
+
+.login-prompt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-prompt__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px;
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.1);
+}
+
+.login-prompt__title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 32px;
+    text-align: center;
+    color: #f5f5f5;
+}
+
+.login-prompt__message {
+    font-size: 24px;
+    margin-bottom: 32px;
+    text-align: center;
+    color: #f5f5f5;
+}
+
+.login-prompt__buttons {
+    display: flex;
+    gap: 32px;
+}
+
+.login-prompt__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 64px;
+    border-radius: 32px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: #f5f5f5;
+    background-color: #1db954;
+    transition: background-color 0.2s ease-out, color 0.2s ease-out;
+}
+
+.login-prompt__button:hover {
+    background-color: #55cdfc;
+    color: #f5f5f5;
+}
+
+.login-prompt__button--signup {
+    background-color: #ff7fba;
+}

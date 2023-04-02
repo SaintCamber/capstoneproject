@@ -1,0 +1,69 @@
+:root {
+    --bg: rgb(83, 83, 83);
+    --primary: #1db954;
+    --secondary: #55cdfc;
+    --tertiary: #ff7fba;
+    --text: #020101;
+    --font: "Circular Spotify Tx T Light", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    background-color: var(--bg);
+    font-family: var(--font);
+  }
+  
+  .login-prompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .login-prompt__title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 32px;
+    color: var(--text);
+  }
+  
+  .login-prompt__message {
+    font-size: 24px;
+    margin-bottom: 32px;
+    color: var(--text);
+  }
+  
+  .login-prompt__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .login-prompt__button {
+    display: inline-block;
+    padding: 16px 32px;
+    border-radius: 999px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text);
+    background-color: var(--primary);
+    transition: background-color 0.2s ease-out, color 0.2s ease-out;
+  }
+  
+  .login-prompt__button:hover {
+    background-color: var(--secondary);
+    color: var(--text);
+  }
+  
+  .lp-button--signup {
+    background-color: var(--tertiary);
+  }
+  
