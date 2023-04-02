@@ -119,7 +119,7 @@ export const AdminPanel = () => {
                                     buttonText="X"
                                     onItemClick={(e) => (e.preventDefault(), e.stopPropagation(), closeMenu())}
                                     modalComponent={<DeleteSongModal songId={song.id} />}
-                                    style={{
+                                    styles={{
                                       position: 'absolute',
                                       top: '-10px',
                                       right: '0',

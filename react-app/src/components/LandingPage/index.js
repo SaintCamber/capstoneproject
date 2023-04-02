@@ -44,13 +44,13 @@ export default function LandingPage() {
         <div>
           <h1>your Playlists</h1>
           <div className="LandingPage__container__playlists">
-            {playlists && Object.values(playlists).map((playlist) => (
-              <PlaylistCard key={playlist.id} playlist={playlist} />
-            ))}
+            {Object.values(playlists).length ? Object.values(playlists).map((playlist) => (
+              <PlaylistCard key={playlist?.id} playlist={playlist} />
+            )) : <h2>You don't have any playlists yet!</h2>}
           <h1>Popular Albums</h1>
           <div className="LandingPage__container__albums">
             {albums && Object.values(albums).map((album) => (
-              <AlbumCard key={album.id} album={album} />
+              <AlbumCard key={album?.id} album={album} />
             ))}
           </div>
         </div>

@@ -71,8 +71,8 @@ export default function SideBar() {
                     ) : (
                         userPlaylists && Object.values(userPlaylists).map((playlist) => {
                             return (
-                                <div key={playlist.id} onClick={(e) => playlistClick(e, playlist.id)}>
-                                    <div className="SideBar__playlistEntry">{playlist.name}</div>
+                                <div key={playlist?.id} onClick={(e) => playlistClick(e, playlist?.id)}>
+                                    <div className="SideBar__playlistEntry">{playlist?.name}</div>
                                 </div>
                             );
                         })

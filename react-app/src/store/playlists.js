@@ -66,12 +66,12 @@ export const getSinglePlaylist = (playlistId) => async (dispatch) => {
 
 
 export const deletePlaylistThunk = (playlistId) => async (dispatch) => {
-    const res = await fetch(`/api/playlists/${playlistId}`, {
+    const res = await fetch(`/api/playlists/delete/${playlistId}`, {
         method: 'DELETE',
         headers: { "content-type": 'application/json' },
     });
     const data = await res.json();
-    dispatch(deletePlaylist(data));
+    dispatch(deletePlaylist(playlistId));
     return data;
 }
 
@@ -159,13 +159,18 @@ const playlists = (state = initialState, action) => {
             }
 
         case DELETE_PLAYLIST:
-                let newState2 = { ...state };
-                delete newState2.user_playlists[action.payload.id];
-                return newState2;
-                default:
-            return state;
+            console.log(action.payload, "action.payload in DELETE_PLAYLIST")
+            const state2 = { ...state };
+            delete state2.user_playlists[action.payload];
+            return {
+                ...state,
+                user_playlists: { ...state.user_playlists } 
+
             }
+        default:
+            return state;
     }
+}
 
 
     export default playlists;

@@ -1,0 +1,54 @@
+.modal-content{
+  border-radius: 10px;
+}
+
+.delete-playlist-modal {
+    background-color: #282828;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    width: 300px;
+  }
+  
+  .delete-playlist-modal__title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .delete-playlist-modal__message {
+    margin-bottom: 20px;
+  }
+  
+  .delete-playlist-modal__buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .delete-playlist-modal__cancel-button,
+  .delete-playlist-modal__delete-button {
+    border-radius: 20px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    height: 40px;
+    padding: 0 20px;
+  }
+  
+  .delete-playlist-modal__cancel-button {
+    background-color: #1DB954;
+  }
+  
+  .delete-playlist-modal__cancel-button:hover {
+    background-color: #15743c;
+  }
+  
+  .delete-playlist-modal__delete-button {
+    background-color: #FF0000;
+  }
+  
+  .delete-playlist-modal__delete-button:hover {
+    background-color: #b30000;
+  }
+  
