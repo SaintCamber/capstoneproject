@@ -178,34 +178,33 @@ def upload_song():
     )
 
 
+@admin_routes.route("/songs/<int:id>", methods=["PUT"])
+def update_song(id):
+    song = Song.query.get_or_404(id)
+    print(request.form, "REQUEST")
+    song.title = request.form.data["title"]
+    db.session.commit()
+    return jsonify({"message": "Song updated"})
+
+
 @admin_routes.route(
     "/songs/<int:id>", methods=["GET", "PUT", "DELETE"], endpoint="func2"
 )
 @admin_only
+def songsPaths(id):
+    # Read Song
+    if request.method == "GET":
 
+        song = Song.query.get_or_404(id)
+        return song.to_dict()
 
-# Read Song
-def read_song(id):
-    song = Song.query.get_or_404(id)
-    return song.to_dict()
+    # Delete Song
+    if request.method == "DELETE":
 
-
-# update song
-def update_song(id):
-    song = Song.query.get_or_404(id)
-    song.title = request.json.get("title", song.title)
-    song.artist_id = request.json.get("artist_id", song.artist_id)
-    song.album_id = request.json.get("album_id", song.album_id)
-    db.session.commit()
-    return song.to_dict()
-
-
-# Delete Song
-def delete_song(id):
-    song = Song.query.get_or_404(id)
-    db.session.delete(song)
-    db.session.commit()
-    return jsonify({"message": "Song deleted"})
+        song = Song.query.get_or_404(id)
+        db.session.delete(song)
+        db.session.commit()
+        return jsonify({"message": "Song deleted"})
 
 
 @admin_routes.route("/albums", methods=["POST"], endpoint="func3")
