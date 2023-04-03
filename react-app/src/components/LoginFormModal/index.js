@@ -12,9 +12,23 @@ function LoginFormModal() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let errors=[]
+    setErrors([]);
+    if(!email || !password) {
+      errors.push(['Please fill out all fields'])
+    if (password.length < 6) {
+      errors.push(['Password must be at least 6 characters long'])
+    }  
+    if (password.length > 50) {
+      errors.push(['Password must be less than 50 characters long'])
+    }
+    if (email.length > 255) {
+      errors.push(['Email must be less than 255 characters long'])
+    }
+    setErrors(errors)
     const data = await dispatch(login(email, password));
     if (data) {
-      setErrors(data);
+      errors.push(data);
     } else {
       closeModal()
     }

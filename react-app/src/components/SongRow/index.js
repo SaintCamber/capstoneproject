@@ -89,7 +89,7 @@ return (
       />
       <i className="fas fa-ellipsis-h" onClick={openMenu} />
       <div className={SongClassName} ref={songRef}>
-        <button onClick={handleAddToQueue}>Add to Queue</button>
+        {/* <button onClick={handleAddToQueue}>Add to Queue</button> */}
         <button onClick={handleRemoveSong}>Remove from Playlist</button>
       </div>
     </div>

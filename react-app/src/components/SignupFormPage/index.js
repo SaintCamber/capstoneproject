@@ -88,5 +88,5 @@ if (errors.length) {
     </div>
   );
 }
-
+}
 export default SignupFormPage;
