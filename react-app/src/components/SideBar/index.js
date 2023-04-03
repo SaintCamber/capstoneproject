@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { Link, redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { getAllPlaylists, getSinglePlaylist } from '../../store/playlists';
 import { getAllSongs } from '../../store/music';
 import { useHistory } from 'react-router-dom';
@@ -34,7 +34,7 @@ export default function SideBar() {
             <div className="SideBar">
                 <h1 onClick={() => history.push('/')}>Songify</h1>
                 <div className="SideBar__navItem">
-                    <p>Log in to continue</p>
+                    <p onClick={()=>{history.push('/login')}}>Log in to continue</p>
                 </div>
             </div>
         );

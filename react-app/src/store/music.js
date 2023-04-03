@@ -528,8 +528,7 @@ const music = (state = initialState, action) => {
       };
 
     case 'DELETE_ARTIST': {
-      
-      const artistId = action.payload;
+      const artistId = +action.payload;
       const updatedArtists = state.artists.filter(artist => artist.id !== artistId);
       const updatedAlbums = state.albums.filter(album => album.artist_id !== artistId);
       const updatedSongs = state.songs.filter(song => song.artist_id !== artistId);
@@ -541,7 +540,13 @@ const music = (state = initialState, action) => {
         songs: updatedSongs,
       };
 
+
+
+     
+      
     }
+      
+     
 
     case ADD_SONG_TO_QUEUE_NEXT:
       return {

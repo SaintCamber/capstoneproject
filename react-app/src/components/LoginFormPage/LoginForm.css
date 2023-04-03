@@ -1,0 +1,35 @@
+.LoginForm {
+    background-image: url(https://wallpapercave.com/wp/wp2086847.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Helvetica Neue', sans-serif;
+  }
+  
+ 
+  .formTitle {
+    font-size: 36px;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  
+  .formLabel {
+    font-size: 24px;
+    color: #fff;
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .formInput {
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    margin-bottom: 20px;
+    width: 300px;
+    }
+    

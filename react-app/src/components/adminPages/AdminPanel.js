@@ -1,12 +1,14 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect, useRef,forwardRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as musicActions from "../../store/music";
 import OpenModalButton from "../OpenModalButton";
 import DeleteSongModal from "./delete_song_modal";
 import { useModal } from "../../context/Modal";
 import UploadForm from "../upload";
 import {deleteAnArtist} from '../../store/music'
-import { DeleteAlbumModal } from "./delete_song_modal";
+import { DeleteAlbumModal,DeleteArtistModal } from "./delete_song_modal";
+import { Redirect, useHistory } from "react-router-dom";
+
 
 import "./admin.css"
 
@@ -31,6 +33,8 @@ export const AdminPanel = () => {
     dispatch(musicActions.getSongs());
     setLoading(false);
   }, []);
+
+  
 
   const handleUploadFormSuccess = () => {
     setShowUploadForm(false); 
@@ -73,10 +77,9 @@ export const AdminPanel = () => {
     };
   }, []);
 
-  const handleDeleteArtist = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    dispatch(deleteAnArtist(e.target.value))
+  const handleDeleteArtist =  (artistId) => {
+    dispatch(deleteAnArtist(artistId))
+
   }
 
 
@@ -105,10 +108,10 @@ export const AdminPanel = () => {
                 <div className="AdminPanel__artist-entry" key={artist.id}>
                   <h2 onClick={() => handleArtistClick(artist.id)}>
                     {artist.name}
+                  
                   </h2>
                   {openArtist === artist.id && (
                     <ul>
-                    <button value={artist.id} onClick={handleDeleteArtist}>Delete Artist</button>
                       <h3>Albums</h3>
                       {artist.albums.map((album) => (
                         <li key={album.id}>
