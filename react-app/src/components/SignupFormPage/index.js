@@ -17,13 +17,21 @@ function SignupFormPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const errors = [];
-    setErrors([])
-    if (password === confirmPassword) {
-        const data = await dispatch(signUp(username, email, password));
-        if (data) {
-          errors.push(data)
-        }
+    let errors = [];
+		setErrors([]);
+		if (password.length < 6) {
+			errors.push(["Password must be at least 6 characters long"]);
+		} else if (password.length > 50) {
+			errors.push(["Password must be less than 50 characters long"]);
+		} else if (email.length > 255) {
+			errors.push(["Email must be less than 255 characters long"]);
+		} else
+
+		if (password === confirmPassword) {
+			const data = await dispatch(signUp(username, email, password));
+			if (data) {
+				errors.push(data);
+			}
     } else {
         setErrors(['Confirm Password field must be the same as the Password field']);
     }
