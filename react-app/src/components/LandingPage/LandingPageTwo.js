@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAlbums } from '../../store/music';
+import { getAlbumsPages } from '../../store/music';
 import { getAllPlaylists } from '../../store/playlists';
 import AlbumCard from '../AlbumCard';
 import PlaylistCard from '../playlistCard/playlistcard';
 import './LandingPage.css';
 import LoginPrompt from './loginPrompt';
+import useInfiniteScrollContext from '../../context/scroll';
 export default function LandingPage() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [albumsLoaded, setAlbumsLoaded] = useState(false);
+  const [page, setPage] = useState(1);
+  const { isFetching, setIsFetching } = useInfiniteScrollContext(getAlbumsPages);
   const user = useSelector(state => state.session.user);
   const albums = useSelector(state => state.music.albums);
   const playlists = useSelector(state => state.playlists.user_playlists);
@@ -19,16 +22,21 @@ export default function LandingPage() {
     window.scrollTo(0, 0)
   }, []);
 
-  useEffect(() => {
-    async function fetchData() {
-      await dispatch(getAllPlaylists(user?.id));
-      await dispatch(getAlbums());
-      setAlbumsLoaded(true);
-      setLoading(false);
+//   useEffect(() => {
+//     async function fetchData() {
+//       await dispatch(getAllPlaylists(user?.id));
+//       await dispatch(getAlbums());
+//       setAlbumsLoaded(true);
+//       setLoading(false);
+//     }
+//     fetchData();
+//   }, [dispatch, user?.id]);
+useEffect(() => {
+    if (isFetching) {
+      dispatch(getAlbumsPages());
+      setIsFetching(false);
     }
-    fetchData();
-  }, [dispatch, user?.id]);
-  
+  }, [isFetching, dispatch, setIsFetching]);
 
    const randomAlbums = albums ? Object.values(albums).sort(() => 0.5 - Math.random()).slice(0, 15) : [];
    

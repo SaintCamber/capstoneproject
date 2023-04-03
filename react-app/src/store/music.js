@@ -235,10 +235,11 @@ export const deleteAnAlbum = (albumId) => async (dispatch) => {
 
 export const deleteAnArtist = (artistId) => async (dispatch) => {
   const response = await fetch(`/api/admin/delete_artist/${artistId}`, {
-    method: "POST",
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json"
-    }
+    },
+    body: JSON.stringify({artistId})
   });
   const data = await response.json();
   dispatch(deleteArtist(artistId));
@@ -274,6 +275,31 @@ export const getAllArtistsThunk = () => async (dispatch) => {
   dispatch(getArtists(data));
   return data;
 }
+
+//paginated versions of the above
+export const getSongsPages = (page) => async (dispatch) => {
+  const response = await fetch(`/api/admin/songs/pages/all?page=${page}`);
+  const data = await response.json();
+  console.log(data, "response from getSongs thunk")
+  dispatch(getAllSongs(data.items));
+  return data;
+};
+
+export const getAlbumsPages = (page) => async (dispatch) => {
+  const response = await fetch(`/api/admin/albums/pages/all?page=${page}`);
+  const data = await response.json();
+  console.log(data, "response from getAlbums thunk")
+  dispatch(getAllAlbums(data.items));
+  return data;
+};
+
+export const getAllArtistsPages = (page) => async (dispatch) => {
+  const response = await fetch(`/api/admin/artists/pages/all?page=${page}`);
+  const data = await response.json();
+  dispatch(getArtists(data.items));
+  return data;}
+
+
 
 
 export const createNewSong = (song) => async (dispatch) => {
@@ -422,15 +448,16 @@ const music = (state = initialState, action) => {
       });
       return { ...state, albums: updatedAlbums2, artists: updatedArtists2 };
 
-    case DELETE_ARTIST:
-      const updatedArtists = state.artists.filter(artist => artist.id !== action.payload);
-      const updatedAlbums = state.albums.map(album => {
-        if (album.artist === action.payload) {
-          return { ...album, artist: null };
-        }
-        return album;
-      });
-      return { ...state, artists: updatedArtists, albums: updatedAlbums };
+      case DELETE_ARTIST:
+        const deletedArtistId = +action.payload;
+        const filteredArtists = state.artists.filter(
+          artist => artist.id !== deletedArtistId
+        );
+        return {
+          ...state,
+            artists: filteredArtists,
+        };
+     
     case UPDATE_ALBUM:
       return {
         ...state,

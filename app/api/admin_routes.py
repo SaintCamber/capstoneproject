@@ -272,7 +272,7 @@ def update_artist(id):
 
 
 @admin_routes.route(
-    "/delete_artist/<int:id>", methods=["POST"], endpoint="delete_artist"
+    "/delete_artist/<int:id>", methods=["DELETE"], endpoint="delete_artist"
 )
 @admin_only
 def delete_artist(id):
@@ -333,3 +333,48 @@ def get_Songs():
 
     # Return the results as a JSON response
     return jsonify(Songs_json)
+
+
+@admin_routes.route("/artists/pages/all", methods=["GET"], endpoint="func41")
+def get_artists():
+    page = request.args.get("page", 1, type=int)
+    artists = Artist.query.paginate(page, per_page=10)
+    artists_json = [artist.to_dict() for artist in artists.items]
+    return jsonify(
+        {
+            "items": artists_json,
+            "hasNextPage": artists.has_next,
+            "currentPage": artists.page,
+            "totalPages": artists.pages,
+        }
+    )
+
+
+@admin_routes.route("/albums/pages/all", methods=["GET"], endpoint="func31")
+def get_albums():
+    page = request.args.get("page", 1, type=int)
+    albums = Album.query.paginate(page, per_page=10)
+    albums_json = [album.to_dict() for album in albums.items]
+    return jsonify(
+        {
+            "items": albums_json,
+            "hasNextPage": albums.has_next,
+            "currentPage": albums.page,
+            "totalPages": albums.pages,
+        }
+    )
+
+
+@admin_routes.route("/songs/pages/all", methods=["GET"], endpoint="func51")
+def get_songs():
+    page = request.args.get("page", 1, type=int)
+    songs = Song.query.paginate(page, per_page=10)
+    song_dicts = [song.to_dict() for song in songs.items]
+    return jsonify(
+        {
+            "items": song_dicts,
+            "hasNextPage": songs.has_next,
+            "currentPage": songs.page,
+            "totalPages": songs.pages,
+        }
+    )

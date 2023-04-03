@@ -17,7 +17,7 @@ function Navigation({ isLoaded }) {
 			{sessionUser && sessionUser.email === 'demo@aa.io' && (
 
 				<li>
-					<NavLink to="/AdminPanel">Admin Panel</NavLink>
+					<NavLink className="ToAdmin" to="/AdminPanel">Admin Panel</NavLink>
 				</li>
 
 			)}

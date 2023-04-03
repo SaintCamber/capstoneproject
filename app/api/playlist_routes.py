@@ -147,6 +147,7 @@ def delete_playlist(id):
     playlist = Playlist.query.get(id)
     db.session.delete(playlist)
     db.session.commit()
+    return {"message": "Playlist deleted"}
 
 
 # get all albums

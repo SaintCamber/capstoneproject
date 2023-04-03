@@ -29,9 +29,9 @@ const Playbar = () => {
       } else {
         const ws = WaveSurfer.create({
           container: waveformRef.current,
-          waveColor: "gray",
-          progressColor: "orange",
-          cursorColor: "black",
+          waveColor: "transparent",
+          progressColor: "transparent",
+          cursorColor: "transparent",
           barWidth: 2,
           barRadius: 3,
           responsive: true,

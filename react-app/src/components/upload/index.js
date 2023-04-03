@@ -5,7 +5,7 @@ const UploadForm = ({ closeModal }) => {
   const [name, setName] = useState("");
   const [albumName, setAlbumName] = useState("");
   const [release_date, setReleaseDate] = useState("");
-  const [album_art, setAlbumArt] = useState("");
+  // const [album_art, setAlbumArt] = useState("");
   const [artistName, setArtistName] = useState("");
   const [error, setError] = useState([]);
   const [songLoading, setSongLoading] = useState(false);
@@ -31,7 +31,7 @@ const UploadForm = ({ closeModal }) => {
     const allowedTypes = ['.mp3'];
 
 
-    if (!name || !albumName || !release_date || !album_art || !artistName || !file) {
+    if (!name || !albumName || !release_date || !artistName || !file) {
       errors.push("All fields are required");
       setSongLoading(false);
 
@@ -56,16 +56,16 @@ const UploadForm = ({ closeModal }) => {
 
 
     }
-    if (!isValidUrl(album_art)) {
-      errors.push('Please provide a valid album art URL');
-      setSongLoading(false);
+    // if (!isValidUrl(album_art)) {
+    //   errors.push('Please provide a valid album art URL');
+    //   setSongLoading(false);
 
-    }
+    // }
     const formData = new FormData();
     formData.append('song_name', name);
     formData.append('album_name', albumName);
     formData.append('release_date', release_date);
-    formData.append('album_art', album_art);
+    // formData.append('album_art', album_art);
     formData.append('artist_name', artistName);
     formData.append('file', file);
 
@@ -84,7 +84,7 @@ const UploadForm = ({ closeModal }) => {
       setAlbumName("");
       setArtistName("");
       setReleaseDate("");
-      setAlbumArt("");
+      // setAlbumArt("");
       setFile(null);
       if (!errors.length) {
         setSuccess(true);
@@ -103,7 +103,7 @@ const UploadForm = ({ closeModal }) => {
 
   return (
     <form onSubmit={handleSubmit} enctype="multipart/form-data">
-      <h7>add a song to create an artist's entry in the database</h7>
+      <h7>add a song to create an artist and album entry in the database</h7>
       <div><p></p></div>
       <div>
         <label htmlFor="song_name">song Name</label>
@@ -142,7 +142,7 @@ const UploadForm = ({ closeModal }) => {
           placeholder={"release date"}
         />
       </div>
-      <div>
+      {/* <div>
         <label htmlFor="albumart">album art</label>
         <input
           type="text"
@@ -153,7 +153,7 @@ const UploadForm = ({ closeModal }) => {
           required
           placeholder={"album art"}
         />
-      </div>
+      </div> */}
 
       <div>
         <label htmlFor="artist_name">Artist Name</label>

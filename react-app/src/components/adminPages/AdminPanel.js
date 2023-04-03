@@ -87,9 +87,8 @@ export const AdminPanel = () => {
           </div>
         </div>
         <div className="AdminPanel__container__right">
-          <img src="https://i.imgur.com/8QZQY0C.png" alt="songify logo" />
         </div>
-        <div>
+        <div >
           <h1>Artists</h1>
           <h3 onClick={() => setShowUploadForm(true)}>Add Music</h3>
           {showUploadForm && (
@@ -98,13 +97,13 @@ export const AdminPanel = () => {
           <div className="AdminPanel__container__artists">
             {artists &&
               Object.values(artists).map((artist) => (
-                <div key={artist.id}>
+                <div className="AdminPanel__artist-entry" key={artist.id}>
                   <h2 onClick={() => handleArtistClick(artist.id)}>
                     {artist.name}
-                    <button value={artist.id} onClick={handleDeleteArtist}>Delete Artist</button>
                   </h2>
                   {openArtist === artist.id && (
                     <ul>
+                    <button value={artist.id} onClick={handleDeleteArtist}>Delete Artist</button>
                       <h3>Albums</h3>
                       {artist.albums.map((album) => (
                         <li key={album.id}>
@@ -112,6 +111,7 @@ export const AdminPanel = () => {
                             {album.name}
                           </h4>
                           {openAlbum === album.id && (
+                            <div className="album_entry">
                             <ul>
                               {album.songs.map((song) => (
                                 <li key={song.id}>{song.title}
@@ -127,9 +127,11 @@ export const AdminPanel = () => {
                                       backgroundColor: 'transparent',
                                       border: 'none',
                                       cursor: 'pointer',
-                                      fontSize: '24px',
+                                      fontSize: '12px',
                                       outline: 'none',
                                       transition: 'color 0.2s ease-in-out',
+                                      height: '20px',
+                                      width: '20px',
                                       zIndex: 1, // added z-index
                                     }}
                                     hoverStyle={{
@@ -141,6 +143,7 @@ export const AdminPanel = () => {
                                 </li>
                               ))}
                             </ul>
+                            </div>
                           )}
                         </li>
                       ))}

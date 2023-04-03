@@ -41,7 +41,18 @@
 }
 
 .fa-user-circle {
-  font-size: 1.4em;
+  font-size: 0.75em;
   margin-right: 0.5em;
 }
 
+.ToAdmin {
+  color: white;
+  text-decoration: none;
+  font-size: 0.75em;
+
+  
+}
+
+.ToAdmin:hover {
+  color: #1db954;
+}
