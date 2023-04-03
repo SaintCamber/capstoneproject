@@ -17,14 +17,27 @@ function SignupFormPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const errors = [];
+    setErrors([])
     if (password === confirmPassword) {
         const data = await dispatch(signUp(username, email, password));
         if (data) {
-          setErrors(data)
+          errors.push(data)
         }
     } else {
         setErrors(['Confirm Password field must be the same as the Password field']);
     }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+  errors.push(['Invalid email address']);
+}
+const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+if (!passwordRegex.test(password)) {
+  errors.push(['Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number']);
+}
+
+if (errors.length) {
+  setErrors(errors);
   };
 
   return (
