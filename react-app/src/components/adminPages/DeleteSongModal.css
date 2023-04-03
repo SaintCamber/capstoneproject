@@ -55,3 +55,58 @@
 .cancel-button:hover {
   background-color: #11662f;
 }
+
+
+
+.UpdateSongModal {
+  background-color: #181818;
+  color: #fff;
+  padding: 1rem;
+  max-width: 500px;
+  margin: auto;
+  border-radius: 10px;
+}
+
+.UpdateSongModal h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.UpdateSongModal form label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+.UpdateSongModal form input {
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  background-color: #282828;
+  color: #fff;
+  width: 100%;
+}
+
+.UpdateSongModal form input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #1DB954;
+}
+
+.UpdateSongModal form button {
+  background-color: #1DB954;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.UpdateSongModal form button:hover {
+  background-color: #fff;
+  color: #1DB954;
+}

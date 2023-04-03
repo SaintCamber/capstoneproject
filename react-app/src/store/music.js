@@ -129,9 +129,14 @@ export const deleteArtist = (artistId) => ({
   payload: artistId,
 });
 
+export const updateSong = ({songId, updatedSongData}) => async (dispatch) => {
+  return {
+    type: UPDATE_SONG,
+    payload: {songId, updatedSongData}
+  }
+}
 
-
-
+ 
 
 
 
@@ -220,25 +225,20 @@ export const getSingleAlbumThunk = (albumId) => async (dispatch) => {
 
 
 
-export const updateSong = (songId, updatedSongData) => async (dispatch) => {
-  try {
+export const UpdateSongThunk = (songId, updatedSongData) => async (dispatch) => {
     const response = await fetch(`/api/admin/songs/${songId}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
       body: JSON.stringify(updatedSongData),
     });
-
+    if(response.ok){
     const data = await response.json();
 
-    dispatch(getSongs());
-
-    return data;
-  } catch (error) {
-    console.log("Error updating song: ", error);
+    dispatch(updateSong(songId,data))
+    return data;}
   }
-};
 
 
 
@@ -572,17 +572,66 @@ const music = (state = initialState, action) => {
       return {
         ...state,
         songs: state.songs.map(song => {
-          if (song.id === action.payload.id) {
+          if (song.id === action.payload.songId) {
             return {
               ...song,
-              title: action.payload.title,
-              albumId: action.payload.albumId,
-            };
+              title: action.payload.updatedSongInfo.title}
           } else {
             return song;
           }
         }),
+        albums: state.albums.map(album => {
+          if (album.songs.includes(action.payload.songId)) {
+            return {
+              ...album,
+              songs: album.songs.map(song => {
+                if (song === action.payload.songId) {
+                  return {
+                    ...song,
+                    title: action.payload.title
+                  }
+                } else {
+                  return song;
+                }
+              })
+            }
+          } else {  
+            return album;
+          } 
+        }),
+        artists: state.artists.map(artist => {
+          if (artist.albums.some(album => album.songs.includes(action.payload.songId))) {
+            return {
+              ...artist,
+              albums: artist.albums.map(album => {
+                if (album.songs.includes(action.payload.songId)) {
+                  return {
+                    ...album,
+                    songs: album.songs.map(song => {
+                      if (song === action.payload.songId) {
+                        return {
+                          ...song,
+                          title: action.payload.title
+                        }
+                      } else {
+                        return song;
+                      }
+                    })
+                  }
+                } else {
+                  return album;
+                }
+              })
+            }
+          } else {    
+            return artist;
+          }   
+        })
+
       };
+
+
+     
     case PLAY_ALBUM:
       const currentlyPlaying = [];
       action.payload.forEach(song => {

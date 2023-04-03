@@ -6,7 +6,7 @@ import DeleteSongModal from "./delete_song_modal";
 import { useModal } from "../../context/Modal";
 import UploadForm from "../upload";
 import {deleteAnArtist} from '../../store/music'
-import { DeleteAlbumModal,DeleteArtistModal } from "./delete_song_modal";
+import { DeleteAlbumModal,DeleteArtistModal,UpdateSongModal } from "./delete_song_modal";
 import { Redirect, useHistory } from "react-router-dom";
 
 
@@ -130,6 +130,7 @@ export const AdminPanel = () => {
                             <ul>
                               {album.songs.map((song) => (
                                 <li key={song.id}>{song.title}
+                                {console.log("THE SONG", song)}
                                   <OpenModalButton
                                     buttonText="X"
                                     onItemClick={(e) => (e.preventDefault(), e.stopPropagation(), closeMenu())}
@@ -137,6 +138,13 @@ export const AdminPanel = () => {
                                   >
 
                                   </OpenModalButton>
+                                  {/* <OpenModalButton
+                                    buttonText={<i className={"fa fa-refresh"} aria-hidden="true"></i>}
+                                    onItemClick={(e) => (e.preventDefault(), e.stopPropagation(), closeMenu())}
+                                    modalComponent={<UpdateSongModal song={song}/>}
+                                  >
+
+                                  </OpenModalButton> */}
                                 </li>
                               ))}
                             </ul>

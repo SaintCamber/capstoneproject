@@ -1,8 +1,9 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
-import { deleteASong, deleteAnAlbum, deleteAnArtist,updateSong } from "../../store/music";
+import { UpdateSongThunk, deleteASong, deleteAnAlbum, deleteAnArtist } from "../../store/music";
 import "./DeleteSongModal.css";
+import {useState} from 'react'
 
 function DeleteSongModal({ songId,albumId,artistId }) {
     const dispatch = useDispatch();
@@ -85,16 +86,42 @@ export function DeleteArtistModal({ artistId }) {
         </div>
     );
 }
-export function UpdateSongModal(songId){
+
+export function UpdateSongModal(song) {
     const dispatch = useDispatch();
     const { closeModal } = useModal();
-
-    return(
-        <div className="UpdateSongModal">
-            <h1>Update Song Info</h1>
-            <form></form>
-        </div>
-    )
-
-
-}
+    const [title, setTitle] = useState('')
+    const [Errors, setErrors] = useState([]);
+    console.log(song, 'song in update song modal')
+    const handleUpdate = (event) => {
+      event.preventDefault();
+      let errors = [];
+      setErrors([])
+      if (!title) errors.push('Please provide a title for the song.');
+      if (title.length > 50) errors.push('Song title must be less than 50 characters.');
+      if (title.length < 1) errors.push('Song title must be at least 1 character.');
+      const formData = new FormData();
+      if (errors.length) return setErrors(errors);
+      formData['title']= title;
+      dispatch(UpdateSongThunk(song.song.id, formData));
+      console.log(song.song.id, 'song id in update song modal')
+      console.log(formData, 'form data in update song modal')
+      closeModal();
+    };
+  
+    const handleNameChange = (event) => {
+      setTitle(event.target.value);
+    };
+  
+    return (
+      <div className="UpdateSongModal">
+        <h1>Update Song Info</h1>
+        <form onSubmit={handleUpdate}>
+            <div>{Errors.map(error=><p>{error}</p>)}</div>
+          <label htmlFor="name">Title:</label>
+          <input type="text" id="name" value={title} onChange={handleNameChange} />
+          <button type="submit">Update</button>
+        </form>
+      </div>
+    );
+  }
