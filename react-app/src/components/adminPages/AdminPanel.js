@@ -6,6 +6,7 @@ import DeleteSongModal from "./delete_song_modal";
 import { useModal } from "../../context/Modal";
 import UploadForm from "../upload";
 import {deleteAnArtist} from '../../store/music'
+import { DeleteAlbumModal } from "./delete_song_modal";
 
 import "./admin.css"
 
@@ -53,11 +54,13 @@ export const AdminPanel = () => {
   };
 
   const handleClickOutside = (e) => {
-    const modalContainer = document.querySelector(".ReactModal__Overlay");
+    const modalContainer = document.querySelector("#modalContent");
+    const modalButtons = document.querySelector("#modal-content > div > div");
     if (
       containerRef.current &&
       !containerRef.current.contains(e.target) &&
-      (!modalContainer || !modalContainer.contains(e.target))
+      (!modalContainer || !modalContainer.contains(e.target)) &&
+      (!modalButtons || !modalButtons.contains(e.target))
     ) {
       setOpenArtist(null);
       setOpenAlbum(null);
@@ -90,9 +93,11 @@ export const AdminPanel = () => {
         </div>
         <div >
           <h1>Artists</h1>
-          <h3 onClick={() => setShowUploadForm(true)}>Add Music</h3>
-          {showUploadForm && (
-            <UploadForm onSuccess={handleUploadFormSuccess} />)}
+          <OpenModalButton className="upload-button"
+            buttonText="Add Music"
+            onItemClick={(e) => (e.preventDefault(), e.stopPropagation(), closeMenu())}
+            modalComponent={<UploadForm onSuccess={handleUploadFormSuccess} />}
+          ></OpenModalButton>
 
           <div className="AdminPanel__container__artists">
             {artists &&
@@ -109,6 +114,13 @@ export const AdminPanel = () => {
                         <li key={album.id}>
                           <h4 onClick={() => handleAlbumClick(album.id)}>
                             {album.name}
+                            <OpenModalButton
+                                    buttonText="X"
+                                    onItemClick={(e) => (e.preventDefault(), e.stopPropagation(), closeMenu())}
+                                    modalComponent={<DeleteAlbumModal albumId={album.id} />}
+                                  >
+
+                                  </OpenModalButton>
                           </h4>
                           {openAlbum === album.id && (
                             <div className="album_entry">
@@ -118,25 +130,7 @@ export const AdminPanel = () => {
                                   <OpenModalButton
                                     buttonText="X"
                                     onItemClick={(e) => (e.preventDefault(), e.stopPropagation(), closeMenu())}
-                                    modalComponent={<DeleteSongModal songId={song.id} />}
-                                    styles={{
-                                      position: 'absolute',
-                                      top: '-10px',
-                                      right: '0',
-                                      color: '#fff',
-                                      backgroundColor: 'transparent',
-                                      border: 'none',
-                                      cursor: 'pointer',
-                                      fontSize: '12px',
-                                      outline: 'none',
-                                      transition: 'color 0.2s ease-in-out',
-                                      height: '20px',
-                                      width: '20px',
-                                      zIndex: 1, // added z-index
-                                    }}
-                                    hoverStyle={{
-                                      color: 'red',
-                                    }}
+                                    modalComponent={<DeleteSongModal songId={song.id} albumId={album.id} artistId={artist.id}/>}
                                   >
 
                                   </OpenModalButton>

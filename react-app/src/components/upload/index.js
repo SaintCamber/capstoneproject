@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
+import { useModal } from '../../context/Modal';
+import "./upload.css";
+import {useHistory} from 'react-router-dom'
 
-const UploadForm = ({ closeModal }) => {
+const UploadForm = ({ }) => {
   const [file, setFile] = useState(null);
   const [name, setName] = useState("");
   const [albumName, setAlbumName] = useState("");
   const [release_date, setReleaseDate] = useState("");
-  // const [album_art, setAlbumArt] = useState("");
+  const [album_art, setAlbumArt] = useState("placeHolder");
   const [artistName, setArtistName] = useState("");
   const [error, setError] = useState([]);
   const [songLoading, setSongLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-
+  const {closeModal} = useModal()
+  const history = useHistory()
   const isValidUrl = (url) => {
     try {
       new URL(url);
@@ -28,7 +32,6 @@ const UploadForm = ({ closeModal }) => {
     const selectedFile = file
     const maxSize = 10000000; // 10MB
     setSongLoading(true)
-    const allowedTypes = ['.mp3'];
 
 
     if (!name || !albumName || !release_date || !artistName || !file) {
@@ -42,11 +45,21 @@ const UploadForm = ({ closeModal }) => {
 
     }
 
+    const allowedTypes = ['audio/mpeg', 'audio/mp3'];
     if (!allowedTypes.includes(selectedFile.type)) {
-      errors.push("Only mp3 files are allowed");
-      setSongLoading(false);
+      errors.push("Only MP3 files are allowed");
+    }
 
-
+    if (name.length < 3 || name.length > 30) {
+      errors.push("Song name must be between 3 and 30 characters");
+    }
+    
+    if (albumName.length < 3 || albumName.length > 30) {
+      errors.push("Album name must be between 3 and 30 characters");
+    }
+    
+    if (artistName.length < 3 || artistName.length > 30) {
+      errors.push("Artist name must be between 3 and 30 characters");
     }
 
     const releaseDateTimestamp = new Date(release_date).getTime();
@@ -65,43 +78,58 @@ const UploadForm = ({ closeModal }) => {
     formData.append('song_name', name);
     formData.append('album_name', albumName);
     formData.append('release_date', release_date);
-    // formData.append('album_art', album_art);
+    formData.append('album_art', album_art);
     formData.append('artist_name', artistName);
     formData.append('file', file);
 
 
 
-    try {
-      await fetch("api/admin/upload", {
+    
+    const uploading = await fetch("api/admin/upload", {
         method: "POST",
         body: formData,
         headers: {
           enctype: "multipart/form-data",
         },
       });
-      setSongLoading(false);
-      setName("");
-      setAlbumName("");
-      setArtistName("");
-      setReleaseDate("");
-      // setAlbumArt("");
-      setFile(null);
-      if (!errors.length) {
-        setSuccess(true);
+      if (errors.length) {
+        setSongLoading(false);
+        setError(errors);
+        return;
       }
-    } catch (err) {
-      return error
+      if (uploading.ok){
+        setSongLoading(false);
+        setName("");
+        setAlbumName("");
+        setArtistName("");
+        setReleaseDate("");
+        setAlbumArt("");
+        setFile(null);
+        closeModal();
+        setSuccess(true);
+        const ids = await uploading.json();
+        history.push(`/albums/${ids.album.id}`)
+      }
 
-    }
+
+      
+   
   };
 
   const handleFileChange = (e) => {
-
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    if (selectedFile.type !== 'audio/mpeg' && selectedFile.type !== 'audio/mp3') {
+      setFile(null);
+      setError(["Only MP3 files are allowed"]);
+    } else {
+      setFile(selectedFile);
+      setError([]);
+    }
   };
 
 
   return (
+    <div className="UploadForm">
     <form onSubmit={handleSubmit} enctype="multipart/form-data">
       <h7>add a song to create an artist and album entry in the database</h7>
       <div><p></p></div>
@@ -180,12 +208,19 @@ const UploadForm = ({ closeModal }) => {
         />
       </div>
       <div>
-        <button type="submit">Upload</button>
+        <button type="submit" disabled={error.length < 1 ? false : true }>Upload</button>
+        <button type="button" onClick={(e)=>{e.preventDefault(); return closeModal()}}>Cancel</button>
       </div>
-      {error.map(err => <p>{err}</p>)}
+      {error.length > 0 && (
+        <div>
+          {error.map((err) => (
+            <p>{err}</p>
+          ))}
+        </div>
+      )}
       {songLoading && <p>Loading...</p>}
       {success && <p>song uploaded successfully</p>}
-    </form>
+    </form></div>
   );
 };
 

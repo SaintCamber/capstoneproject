@@ -74,11 +74,7 @@ def admin_only(func):
 @admin_routes.route("/upload", methods=["POST"], endpoint="upload_song")
 # @admin_only
 def upload_song():
-    print(session.get("email"))
 
-    form = UploadForm()
-    if not form.validate_on_submit():
-        return jsonify(form.errors)
     # Get the values of the application key ID and application key from environment variables
     application_key_id = os.environ.get("B2_KEY")
     application_key = os.environ.get("B2_SECRET")
@@ -172,7 +168,14 @@ def upload_song():
     )
     db.session.add(newSong)
     db.session.commit()
-    return "File uploaded successfully!"
+    return jsonify(
+        {
+            "message": "Song uploaded successfully",
+            "song": newSong.to_dict(),
+            "artist": newSong.artist.to_dict(),
+            "album": newSong.album.to_dict(),
+        }
+    )
 
 
 @admin_routes.route(
@@ -202,7 +205,7 @@ def delete_song(id):
     song = Song.query.get_or_404(id)
     db.session.delete(song)
     db.session.commit()
-    return "", 204
+    return jsonify({"message": "Song deleted"})
 
 
 @admin_routes.route("/albums", methods=["POST"], endpoint="func3")
@@ -224,32 +227,34 @@ def Create_album():
     "/albums/<int:id>", methods=["GET", "PUT", "DELETE"], endpoint="func5"
 )
 @admin_only
-def read_album(id):
+def album(id):
+    # Read Album
     if request.method == "GET":
+        # def read_album(id):
         album = Album.query.get_or_404(id)
         return album.to_dict()
 
-
-# Read Album
-
-
-# Update Album
-def update_album(id):
+    # Update Album
     if request.method == "PUT":
+        # def update_album(id):
         album = Album.query.get_or_404(id)
         album.title = request.json.get("title", album.title)
         album.artist_id = request.json.get("artist_id", album.artist_id)
         db.session.commit()
         return album.to_dict()
 
-
-# Delete Album
-def delete_album(id):
+    # Delete Album
     if request.method == "DELETE":
         album = Album.query.get_or_404(id)
+        songs = Song.query.filter_by(album_id=album.id).all()
+        for song in songs:
+            db.session.delete(song)
         db.session.delete(album)
+        artist = Artist.query.get(album.artist_id)
+        if not artist.albums:
+            db.session.delete(artist)
         db.session.commit()
-        return "", 204
+        return jsonify({"message": "Album deleted"})
 
 
 @admin_routes.route(
@@ -378,3 +383,10 @@ def get_songs():
             "totalPages": songs.pages,
         }
     )
+
+
+@admin_routes.route("/artists/<int:artistId>/albums")
+def get_albums_by_artist(artistId):
+    albums = Album.query.filter_by(artist_id=artistId).all()
+    albums_json = [album.to_dict() for album in albums]
+    return jsonify(albums_json)

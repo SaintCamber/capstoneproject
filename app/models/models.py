@@ -92,6 +92,8 @@ class Song(db.Model):
             "title": self.title,
             "artist": self.artist.name,
             "album": self.album.name,
+            "artist_id": self.artist_id,
+            "album_id": self.album_id,
         }
 
 

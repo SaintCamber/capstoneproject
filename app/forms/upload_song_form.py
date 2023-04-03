@@ -5,9 +5,9 @@ from wtforms.validators import DataRequired
 
 class UploadForm(FlaskForm):
     title = StringField("title", validators=[DataRequired()])
-    artist = StringField("artist", validators=[DataRequired()])
-    album = StringField("album", validators=[DataRequired()])
-    release_date = StringField("date", validators=[DataRequired()])
+    artist_name = StringField("artist name", validators=[DataRequired()])
+    album = StringField("album name", validators=[DataRequired()])
+    release_date = StringField("releawse date", validators=[DataRequired()])
     file = FileField("file", validators=[DataRequired()])
 
 

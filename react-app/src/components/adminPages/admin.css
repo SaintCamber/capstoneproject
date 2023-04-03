@@ -188,3 +188,17 @@ AdminPanel__container__artists ModalButton{
   margin-bottom: 40px;
   border-bottom: 1px solid #ccc;
 }
+#root > div.App > div.AdminPanel > div > div:nth-child(3) > button{
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 40px;
+  border-radius: 10%;
+  background-color: #1db954;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}

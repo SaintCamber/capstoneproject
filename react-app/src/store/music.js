@@ -20,14 +20,15 @@ const UPDATE_ARTIST = "music/updateArtist";
 const UPDATE_SONG = "music/updateSong";
 const CLEAR_QUEUE = "music/clearQueue";
 const PLAY_TRACK = "music/playTrack";
-
+const ARTIST_ALBUMS = "music/artistAlbums";
 const ADD_SONG_TO_QUEUE_NEXT = "music/addSongToQueueNext";
 const ADD_SONG_TO_QUEUE_LAST = "music/addSongToQueueLast";
 const REMOVE_SONG_FROM_QUEUE = "music/removeSongFromQueue";
+const UPLOAD_SONG = "music/uploadSong";
 
 export const playSong = (song) => ({
   type: PLAY_TRACK,
-  payload:song
+  payload: song
 });
 
 export const pauseSong = () => ({
@@ -42,12 +43,19 @@ export const loadSong = (songUrl) => ({
   type: LOAD_SONG,
   payload: songUrl,
 });
-
+export const newSong = (formData) => ({
+  type: UPLOAD_SONG,
+  payload: formData,
+});
 export const playAlbum = (album) => ({
   type: PLAY_ALBUM,
   payload: album,
 });
 
+export const getArtistsAlbums = (artistId) => ({
+  type: ARTIST_ALBUMS,
+  payload: artistId,
+});
 export const addSongToQueueNext = (song) => ({
   type: ADD_SONG_TO_QUEUE_NEXT,
   payload: song,
@@ -71,6 +79,20 @@ export const getAllSongs = (songs) => ({
 });
 
 
+export const uploadSong = (formData) => async (dispatch) => {
+  const res =await fetch("api/admin/upload", {
+    method: "POST",
+    body: formData,
+    headers: {
+      enctype: "multipart/form-data",
+    },
+  });
+  if (res.ok){
+  const data = await res.json();
+  
+  dispatch(newSong(data));}
+  return {};
+};
 export const addSongToQueueNextThunk = (song) => (dispatch) => {
   dispatch(addSongToQueueNext(song));
 };
@@ -122,6 +144,12 @@ export const getSingleAlbum = (album) => ({
   type: GET_SINGLE_ALBUM,
   payload: album
 })
+
+export const getArtistsAlbumsThunk = (artistId) => async (dispatch) => {
+  const response = await fetch(`/api/admin/artists/${artistId}/albums`);
+  const data = await response.json();
+  dispatch(getArtistsAlbums(data));
+};
 
 export const getArtists = (artists) => ({
   type: GET_ARTISTS,
@@ -239,16 +267,17 @@ export const deleteAnArtist = (artistId) => async (dispatch) => {
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({artistId})
+    body: JSON.stringify({ artistId })
   });
   const data = await response.json();
-  dispatch(deleteArtist(artistId));
+  if (response.ok) {
+    dispatch(deleteArtist(artistId));
+  }
   return data;
 }
 
-
-export const playSongThunk=(song)=> async (dispatch) =>{
-    dispatch(playSong(song))
+export const playSongThunk = (song) => async (dispatch) => {
+  dispatch(playSong(song))
 }
 
 
@@ -297,7 +326,8 @@ export const getAllArtistsPages = (page) => async (dispatch) => {
   const response = await fetch(`/api/admin/artists/pages/all?page=${page}`);
   const data = await response.json();
   dispatch(getArtists(data.items));
-  return data;}
+  return data;
+}
 
 
 
@@ -359,12 +389,12 @@ const music = (state = initialState, action) => {
   switch (action.type) {
     case PLAY_TRACK: {
       console.log("playTrack called")
-      console.log(action.payload,"payload for playTrack")
+      console.log(action.payload, "payload for playTrack")
 
       return {
         ...state,
         currentlyPlaying: action.payload,
-        songUrl:action.payload.fileUrl
+        songUrl: action.payload.fileUrl
       };
     }
     case 'PAUSE_TRACK': {
@@ -381,8 +411,8 @@ const music = (state = initialState, action) => {
 
       return {
         ...state,
-        currentlyPlaying:null,
-        songUrl:null
+        currentlyPlaying: null,
+        songUrl: null
       };
     }
     case 'RESUME_TRACK': {
@@ -411,53 +441,62 @@ const music = (state = initialState, action) => {
     case GET_SINGLE_ALBUM:
       return { ...state, currentAlbum: action.payload };
     case DELETE_SONG:
-      const updatedAlbums1 = state.albums.map(album => {
-        return {
-          ...album,
-          songs: album.songs.filter(songId => songId !== action.payload)
-        };
+      const updatedAlbum = state.albums.map((album) => {
+        if (album.id === action.payload.albumId) {
+          return {
+            ...album,
+            songs: album.songs.filter((song) => song.id !== action.payload.songId),
+          };
+        } else {
+          return album;
+        }
       });
-      const updatedArtists1 = state.artists.map(artist => {
-        return {
-          ...artist,
-          albums: artist.albums.map(album => {
-            if (album.songs.includes(action.payload)) {
-              return {
-                ...album,
-                songs: album.songs.filter(songId => songId !== action.payload)
-              };
-            } else {
-              return album;
-            }
-          })
-        };
+
+      const updatedArtist = state.artists.map((artist) => {
+        if (artist.id === action.payload.artistId) {
+          return {
+            ...artist,
+            albums: artist.albums.map((album) => {
+              if (album.id === action.payload.albumId) {
+                return {
+                  ...album,
+                  songs: album.songs.filter((song) => song.id !== action.payload.songId),
+                };
+              } else {
+                return album;
+              }
+            }),
+          };
+        } else {
+          return artist;
+        }
       });
+
       return {
         ...state,
-        songs: state.songs.filter(song => song.id !== action.payload),
-        albums: updatedAlbums1,
-        artists: updatedArtists1
+        songs: state.songs.filter((song) => song.id !== action.payload.songId),
+        albums: updatedAlbum,
+        artists: updatedArtist,
       };
     case DELETE_ALBUM:
-      const updatedAlbums2 = state.albums.filter(album => album.id !== action.payload);
-      const updatedArtists2 = state.artists.map(artist => {
-        if (artist.albums.includes(action.payload)) {
-          return { ...artist, albums: artist.albums.filter(id => id !== action.payload) };
-        }
-        return artist;
-      });
-      return { ...state, albums: updatedAlbums2, artists: updatedArtists2 };
+      const albumId = action.payload;
+      const updatedAlbums = state.albums.filter(album => album.id !== albumId);
+      const updatedArtists = state.artists
+        .map(artist => {
+          const artistAlbums = artist.albums.filter(album => album.id !== albumId);
+          if (artistAlbums.length === 0) {
+            return null; // Return null if artist has no albums
+          }
+          return { ...artist, albums: artistAlbums };
+        })
+        .filter(artist => artist !== null); // Filter out null artists
 
-      case DELETE_ARTIST:
-        const deletedArtistId = +action.payload;
-        const filteredArtists = state.artists.filter(
-          artist => artist.id !== deletedArtistId
-        );
-        return {
-          ...state,
-            artists: filteredArtists,
-        };
-     
+      return {
+        ...state,
+        albums: updatedAlbums,
+        artists: updatedArtists,
+      };
+
     case UPDATE_ALBUM:
       return {
         ...state,
@@ -487,6 +526,23 @@ const music = (state = initialState, action) => {
           }
         }),
       };
+
+    case 'DELETE_ARTIST': {
+      
+      const artistId = action.payload;
+      const updatedArtists = state.artists.filter(artist => artist.id !== artistId);
+      const updatedAlbums = state.albums.filter(album => album.artist_id !== artistId);
+      const updatedSongs = state.songs.filter(song => song.artist_id !== artistId);
+
+      return {
+        ...state,
+        artists: updatedArtists,
+        albums: updatedAlbums,
+        songs: updatedSongs,
+      };
+
+    }
+
     case ADD_SONG_TO_QUEUE_NEXT:
       return {
         ...state,
@@ -539,6 +595,19 @@ const music = (state = initialState, action) => {
         currentAlbum: action.payload,
         currentlyPlaying: currentlyPlaying,
         isPlaying: true,
+      };
+
+      case ARTIST_ALBUMS:
+      return {
+        ...state,
+        artistAlbums: action.payload,
+      };
+      case UPLOAD_SONG:
+      return {
+        ...state,
+        songs: [...state.songs, action.payload.song],
+        albums: [...state.albums, action.payload.album],
+        artists: [...state.artists, action.payload.artist],
       };
     default:
       return state;
