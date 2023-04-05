@@ -1,4 +1,8 @@
 # Songify Music App
+https://songify-2jhs.onrender.com/
+<img width="950" alt="Screenshot 2023-04-05 102230" src="https://user-images.githubusercontent.com/105817556/230186226-01c012d4-aa8d-4163-9bf3-f38a3072ef73.png">
+
+
 ## Overview
 Songify is a music streaming web application built using JavaScript, React.js, Redux, Flask, SQLAlchemy, and Wavesurfer.js. The app allows users to browse, search,   and play songs from a cloud server, in this case Backblaze B2 buckets. The app has a responsive design that allows for seamless playback of audio files while           navigating through different pages.
 
