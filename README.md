@@ -22,7 +22,54 @@ Create and edit playlists
 Add and remove songs from playlists
 Responsive design optimized for desktop and mobile devices
 ## Challenges
-One of the biggest challenges of this project was learning how to properly implement Wavesurfer.js to play audio files while navigating through different pages. The solution involved designing the app structure to optimize performance and minimize loading times. Another challenge was implementing user authentication and authorization, which required integrating Flask with React.js and Redux.
+This project posed a significant technical challenge in the implementation of Wavesurfer.js for the playback of audio files while navigating through various pages. The process involved a considerable amount of research, experimentation, and refactoring to ensure seamless and uninterrupted audio playback. The useEffect function for the Wavesurfer component was the primary area of focus, where I had to find the optimal solution to parse the store correctly for the audio files.
+
+To achieve this, I utilized a range of approaches to ensure that the Wavesurfer component functioned effectively and efficiently. This included in-depth analysis of the different aspects of the code, such as data structures, event handling, and the manipulation of the audio files. Additionally, I worked on the optimization of the code structure and organization to enhance the overall performance of the application.
+
+Overall, the technical challenge involved in implementing Wavesurfer.js for audio playback in Songiufy was an excellent opportunity for me to hone my problem-solving and research skills. Through perseverance and determination, I was able to overcome the obstacles and create a functional and user-friendly music application.
+"""
+import React, { useState, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import WaveSurfer from "wavesurfer.js";
+```
+  useEffect(() => {
+
+    setSource(songUrl || fileUrl || "");
+
+  }, [fileUrl, songUrl, source]);
+
+  useEffect(() => {
+    if (source) {
+      if (waveSurfer) {
+        waveSurfer.load(source);
+      } else {
+        const ws = WaveSurfer.create({
+          container: waveformRef.current,
+          waveColor: "transparent",
+          progressColor: "transparent",
+          cursorColor: "transparent",
+          barWidth: 2,
+          barRadius: 3,
+          responsive: true,
+          height: 50,
+        });
+        ws.on("ready", () => {
+          ws.play();
+          setIsPlaying(true);
+          setDuration(ws.getDuration());
+          ws.on("audioprocess", () => {
+            setCurrentTime(ws.getCurrentTime());
+          });
+        });
+        ws.load(source);
+        setWaveSurfer(ws);
+      }
+    }
+  }, [source, waveSurfer]);
+
+```
+
+
 
 ## Future Improvements
 Implement a recommendation engine based on user listening history and preferences
