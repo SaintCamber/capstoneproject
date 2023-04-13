@@ -38,6 +38,7 @@ function LoginFormPage() {
       setErrors(data);
     }
   };
+}
 
   const loginDemo = (e) => {
     e.preventDefault();
@@ -80,5 +81,5 @@ function LoginFormPage() {
       </div>
     );
   }
-}
+
 export default LoginFormPage;
