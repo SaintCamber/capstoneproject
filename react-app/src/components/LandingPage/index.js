@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAlbums } from '../../store/music';
+import { getAlbumsPages } from '../../store/music';
 import { getAllPlaylists } from '../../store/playlists';
 import AlbumCard from '../AlbumCard';
 import PlaylistCard from '../playlistCard/playlistcard';
@@ -10,6 +11,7 @@ export default function LandingPage() {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [albumsLoaded, setAlbumsLoaded] = useState(false);
+  const Pages = useSelector(state => state.music.pages);
   const user = useSelector(state => state.session.user);
   const albums = useSelector(state => state.music.albums);
   const playlists = useSelector(state => state.playlists.user_playlists);
@@ -22,12 +24,20 @@ export default function LandingPage() {
   useEffect(() => {
     async function fetchData() {
       await dispatch(getAllPlaylists(user?.id));
-      await dispatch(getAlbums());
+      // await dispatch(getAlbums());
+      await dispatch(getAlbumsPages());
       setAlbumsLoaded(true);
       setLoading(false);
     }
     fetchData();
   }, [dispatch, user?.id]);
+
+  const handleLoadMore = async () => {
+  if (Pages.hasNextPage) {
+    await dispatch(getAlbumsPages(Pages.currentPage + 1));
+  }
+
+}
   
 
    const randomAlbums = albums ? Object.values(albums).sort(() => 0.5 - Math.random()).slice(0, 15) : [];
@@ -62,14 +72,14 @@ export default function LandingPage() {
             {albums && randomAlbums.map((album) => (
               <AlbumCard key={album?.id} album={album} />
             ))}
-
-            <h1 className="LandingPage__music__Header">Popular Albums</h1>
-            <div className="LandingPage__container__albums">
-              {albums && albums.map((album) => (
-                !randomAlbums.includes(album) ?<AlbumCard key={album?.id} album={album} />:""
-              ))}
-            </div>
+          {albums && (<div>{albums.map(album=> <AlbumCard key={album?.id} album={album} />)}</div>)}
+          
           </div >
+          
+          <div>
+          {Pages.hasNextPage ? <h8 onClick={handleLoadMore}>load more</h8>:''}
+
+          </div>
           
       </div>
     </div>

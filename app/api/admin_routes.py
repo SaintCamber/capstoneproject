@@ -342,7 +342,7 @@ def get_Songs():
 @admin_routes.route("/artists/pages/all", methods=["GET"], endpoint="func41")
 def get_artists():
     page = request.args.get("page", 1, type=int)
-    artists = Artist.query.paginate(page, per_page=10)
+    artists = Artist.query.paginate(page, per_page=25)
     artists_json = [artist.to_dict() for artist in artists.items]
     return jsonify(
         {
@@ -356,9 +356,10 @@ def get_artists():
 
 @admin_routes.route("/albums/pages/all", methods=["GET"], endpoint="func31")
 def get_albums():
-    page = request.args.get("page", 1, type=int)
-    albums = Album.query.paginate(page, per_page=10)
+    page = request.args.get("page")
+    albums = db.paginate(db.select(Album))
     albums_json = [album.to_dict() for album in albums.items]
+    print('albums',albums_json)
     return jsonify(
         {
             "items": albums_json,

@@ -314,12 +314,16 @@ export const getSongsPages = (page) => async (dispatch) => {
   return data;
 };
 
-export const getAlbumsPages = (page) => async (dispatch) => {
+export const getAlbumsPages = (page=1) => async (dispatch) => {
+  console.log('GET ALBUMS PAGES')
   const response = await fetch(`/api/admin/albums/pages/all?page=${page}`);
-  const data = await response.json();
-  console.log(data, "response from getAlbums thunk")
-  dispatch(getAllAlbums(data.items));
-  return data;
+  if (response.ok){
+    const data = await response.json();
+    console.log(data, "response from getAlbumsPages thunk")
+    dispatch(getAllAlbums(data));
+    return data;
+
+  }
 };
 
 export const getAllArtistsPages = (page) => async (dispatch) => {
@@ -383,6 +387,7 @@ const initialState = {
   currentAlbum: null,
   currentTrackIndex: null,
   queue: [],
+  pages:{},
 };
 
 const music = (state = initialState, action) => {
@@ -435,7 +440,7 @@ const music = (state = initialState, action) => {
     case GET_SONGS:
       return { ...state, songs: action.payload };
     case GET_ALBUMS:
-      return { ...state, albums: action.payload };
+      return { ...state,albums: state.albums.concat(action.payload.items),pages:{currentPage:action.payload.currentPage,hasNextPage:action.payload.hasNextPage,totalPages:action.payload.totalPages} };
     case GET_ARTISTS:
       return { ...state, artists: action.payload };
     case GET_SINGLE_ALBUM:
