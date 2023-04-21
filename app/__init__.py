@@ -10,6 +10,7 @@ from .models.models import (
     Album,
     Playlist,
     playlists_songs,
+    favorites_songs
 )
 from .models.user import User
 from .models.db import db

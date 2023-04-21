@@ -4,7 +4,8 @@ let DELETE_PLAYLIST = 'playlists/DELETE_PLAYLIST';
 let REMOVE_SONG_FROM_PLAYLIST = 'playlists/REMOVE_SONG_FROM_PLAYLIST';
 let ADD_SONG_TO_PLAYLIST = 'playlists/ADD_SONG_TO_PLAYLIST';
 let READ_SiNGLE_PLAYLIST = 'playlists/READ_SiNGLE_PLAYLIST';
-
+let addLikedSong = 'playlists/addLikedSong';
+let removeLikedSong = 'playlists/removeLikedSong';
 
 const createPlaylist = (playlist) => ({
     type: CREATE_PLAYLIST,
@@ -115,7 +116,7 @@ export const playPlaylistThunk = (playlistId) => async (dispatch) => {
 }
 
 
-const initialState = { user_playlists: {}, singlePlaylist: {} }
+const initialState = { user_playlists: {}, singlePlaylist: {}, LikedSongs: {}}; // LikedSongs is a playlist
 
 const playlists = (state = initialState, action) => {
     switch (action.type) {
@@ -167,10 +168,18 @@ const playlists = (state = initialState, action) => {
                 user_playlists: { ...state.user_playlists } 
 
             }
+
+        // case addLikedSong:
+                
+        //     return {
+        //         ...state,
+                
+        // // case removeLikedSong:
+           
         default:
             return state;
     }
 }
 
 
-    export default playlists;
+    export default playlists;;

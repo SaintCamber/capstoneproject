@@ -18,6 +18,9 @@ class User(db.Model, UserMixin):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    favorites = db.relationship(
+        "Song", secondary="favorites_songs", back_populates="likedBy"
+    )
 
     @property
     def password(self):
@@ -39,3 +42,6 @@ class User(db.Model, UserMixin):
 
     def serialize_playlists(self):
         return [playlist.to_dict() for playlist in self.playlists]
+
+    def Serialize_favorites(self):
+        return [song.to_dict() for song in self.favorites]

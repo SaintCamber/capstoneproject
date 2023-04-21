@@ -81,6 +81,7 @@ class Song(db.Model):
     playlists = db.relationship(
         "Playlist", secondary="playlists_songs", back_populates="songs"
     )
+    likedBy = db.relationship("User", secondary="favorites_songs",back_populates="favorites")
 
     artist = db.relationship("Artist", back_populates="songs")
     album = db.relationship("Album", back_populates="songs")
@@ -141,3 +142,17 @@ playlists_songs = db.Table(
 )
 if environment == "production":
     playlists_songs.schema = SCHEMA
+
+
+# a join table between the user and songs tables representing songs a user likes
+
+    
+favorites_songs = db.Table(
+    "favorites_songs",
+    db.Model.metadata,
+    db.Column("song_id",db.Integer,db.ForeignKey(add_prefix_for_prod("songs.id")),primary_key=True),
+    db.Column("user_id",db.Integer,db.ForeignKey(add_prefix_for_prod("users.id")),primary_key=True)
+)
+
+if environment == "production":
+    favorites_songs.schema = SCHEMA

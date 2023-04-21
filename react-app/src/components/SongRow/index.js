@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { playSongThunk, addSongToQueueNextThunk } from '../../store/music';
+import { playSongThunk, addSongToQueueNextThunk,addSongToFavoritesThunk,removeSongFromFavoritesThunk } from '../../store/music';
 import { initWaveSurfer } from '../../components/playbar/wavesurferUtils';
 import { removeSongFromPlaylist } from '../../store/playlists';
 import { getSinglePlaylist } from '../../store/playlists';
@@ -56,6 +56,12 @@ const handlePlaySong = () => {
  
 
 const toggleFavorite = () => {
+  if(isFavorite){
+    dispatch(removeSongFromFavoritesThunk(song.id));
+  }
+  else if (!isFavorite){
+    dispatch(addSongToFavoritesThunk(song.id));
+  }
   setIsFavorite(!isFavorite);
 };
 

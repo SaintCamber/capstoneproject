@@ -25,6 +25,21 @@ const ADD_SONG_TO_QUEUE_NEXT = "music/addSongToQueueNext";
 const ADD_SONG_TO_QUEUE_LAST = "music/addSongToQueueLast";
 const REMOVE_SONG_FROM_QUEUE = "music/removeSongFromQueue";
 const UPLOAD_SONG = "music/uploadSong";
+const LIKE_SONG = 'music/likeSong'
+const UNLIKE_SONG = 'music/unlikeSong'
+
+
+export const addSongToFavorites = (song) => ({
+  type: LIKE_SONG,
+  payload: song
+
+})
+
+export const removeSongFromFavorites = (song) => ({
+  type: UNLIKE_SONG,
+  payload: song
+})
+
 
 export const playSong = (song) => ({
   type: PLAY_TRACK,
@@ -149,6 +164,40 @@ export const getSingleAlbum = (album) => ({
   type: GET_SINGLE_ALBUM,
   payload: album
 })
+
+
+// thunks for favorites
+
+export const addSongToFavoritesThunk = (song) => async (dispatch) => {
+  const res = await fetch(`/api/users/favorites/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({songId:song}),
+  });
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(addSongToFavorites(data));
+  }
+};
+
+export const removeSongFromFavoritesThunk = (song) => async (dispatch) => {
+  const res = await fetch(`/api/users/favorites/remove`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(song),
+  });
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(removeSongFromFavorites(data));
+  }
+};
+
+
+
 
 export const getArtistsAlbumsThunk = (artistId) => async (dispatch) => {
   const response = await fetch(`/api/admin/artists/${artistId}/albums`);
@@ -388,6 +437,7 @@ const initialState = {
   currentTrackIndex: null,
   queue: [],
   pages:{},
+  likedSongs: [],
 };
 
 const music = (state = initialState, action) => {
@@ -668,6 +718,17 @@ const music = (state = initialState, action) => {
         albums: [...state.albums, action.payload.album],
         artists: [...state.artists, action.payload.artist],
       };
+      case LIKE_SONG:
+      return {
+        ...state,
+        likedSongs: [...state.likedSongs, action.payload],
+      };
+      case UNLIKE_SONG:
+      return {
+        ...state,
+        likedSongs: state.likedSongs.filter(song => song.id !== action.payload),
+      };
+
     default:
       return state;
   }

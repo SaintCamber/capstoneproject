@@ -25,3 +25,11 @@
     margin-bottom: 20px;
     color: white;
 }
+
+.loadmore{
+    color:"light grey";
+}
+
+.loadmore:hover{
+    color:white;
+}

@@ -68,21 +68,17 @@ export default function LandingPage() {
             )) : <h2 className="alt_header" >You don't have any playlists yet!</h2>}
           <h1 className="LandingPage__music__Header" >Discover Albums</h1>
         </div>
-          <div className="LandingPage__container__albums">
-            {albums && randomAlbums.map((album) => (
-              <AlbumCard key={album?.id} album={album} />
-            ))}
+         
           {albums && (<div>{albums.map(album=> <AlbumCard key={album?.id} album={album} />)}</div>)}
           
           </div >
           
           <div>
-          {Pages.hasNextPage ? <h8 onClick={handleLoadMore}>load more</h8>:''}
+          {Pages.hasNextPage ? <h8 className='loadmore' onClick={handleLoadMore}>load more</h8>:''}
 
           </div>
           
       </div>
-    </div>
     </div>
   );
 }
