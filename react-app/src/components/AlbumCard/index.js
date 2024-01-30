@@ -33,7 +33,7 @@ function AlbumCard({ album }) {
   return (
     <div className="AlbumCard" onClick={handleCardClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className="AlbumCard__art">
-        {album.album_art ? (
+        {album?.album_art ? (
           <img src={album.album_art} alt={`Album art for ${album}`} />
         ) : (
           <div className="AlbumCard__art-placeholder">
