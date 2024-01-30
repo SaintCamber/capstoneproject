@@ -512,10 +512,10 @@ const music = (state = initialState, action) => {
           return {
             ...artist,
             albums: artist.albums.map((album) => {
-              if (album.id === action.payload.albumId) {
+              if (album?.id === action.payload.albumId) {
                 return {
                   ...album,
-                  songs: album.songs.filter((song) => song.id !== action.payload.songId),
+                  songs: album?.songs.filter((song) => song.id !== action.payload.songId),
                 };
               } else {
                 return album;
@@ -535,10 +535,10 @@ const music = (state = initialState, action) => {
       };
     case DELETE_ALBUM:
       const albumId = action.payload;
-      const updatedAlbums = state.albums.filter(album => album.id !== albumId);
+      const updatedAlbums = state.albums.filter(album => album?.id !== albumId);
       const updatedArtists = state.artists
         .map(artist => {
-          const artistAlbums = artist.albums.filter(album => album.id !== albumId);
+          const artistAlbums = artist?.albums.filter(album => album?.id !== albumId);
           if (artistAlbums.length === 0) {
             return null; // Return null if artist has no albums
           }

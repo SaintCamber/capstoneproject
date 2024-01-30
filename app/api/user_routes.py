@@ -48,3 +48,18 @@ def likeSong():
     print(song, "the SONG FROM REQUEST")
     user.favorites.append(song)
     return user.Serialize_favorites()
+
+
+@user_routes.route("/favorites/add", methods=["POST"])
+@login_required
+def unlikeSong():
+    """
+    Query for current user then remove song from favorites
+    """
+    print("THE REQUEST OBJECT IS", request.json["songId"])
+    user = User.query.get(current_user.id)
+    song = Song.query.get(request.json["songId"])
+
+    print(song, "the SONG FROM REQUEST")
+    user.favorites = [fave for fave in user.favorites if fave.id is not song.id]
+    return user.Serialize_favorites()
