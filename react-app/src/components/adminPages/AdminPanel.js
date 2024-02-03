@@ -115,7 +115,7 @@ export const AdminPanel = () => {
                       <h3>Albums</h3>
                       {artist.albums.map((album) => (
                         <li key={album.id}>
-                          <h4 onClick={() => handleAlbumClick(album.id)}>
+                          <h4 className="AlbumName" onClick={() => handleAlbumClick(album.id)}>
                             {album.name}
                             <OpenModalButton
                                     buttonText="X"
@@ -129,7 +129,7 @@ export const AdminPanel = () => {
                             <div className="album_entry">
                             <ul>
                               {album.songs.map((song) => (
-                                <li key={song.id}>{song.title}
+                                <li className="songTitle" key={song.id}>{song.title}
                                 {console.log("THE SONG", song)}
                                   <OpenModalButton
                                     buttonText="X"

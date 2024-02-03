@@ -27,7 +27,7 @@
   margin: 10px 0;
 }
 
-AdminPanel__container__artists ModalButton{
+.AdminPanel__container__artists ModalButton{
   background-color: #1DB954;
   border: none;
   border-radius: 20px;
@@ -202,3 +202,20 @@ AdminPanel__container__artists ModalButton{
   font-weight: 600;
   cursor: pointer;
 }
+
+.AdminPanel__artist-entry > h2:hover {
+  cursor:pointer;
+  color:#1db954;
+}
+
+.AdminPanel__artist-entry > ul > li > h4.AlbumName:hover 
+ {
+
+  cursor:pointer;
+  color:#1db954;
+}
+.songTitle:hover {
+  cursor:pointer;
+  color:#1db954;
+}
+
