@@ -34,7 +34,7 @@ function AlbumCard({ album }) {
     <div className="AlbumCard" onClick={handleCardClick} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <div className="AlbumCard__art">
         {album?.album_art ? (
-          <img src={album.album_art} alt={`Album art for ${album}`} />
+          <img src={album?.album_art} alt={`Album art for ${album}`} />
         ) : (
           <div className="AlbumCard__art-placeholder">
             <img src="https://f005.backblazeb2.com/file/capstonestorage/default_image.PNG" alt="Album art placeholder" />
@@ -43,8 +43,8 @@ function AlbumCard({ album }) {
       </div>
     
       <div className="AlbumCard__details">
-        <h3>{album.name}</h3>
-        <p>{album.artist}</p>
+        <h3>{album?.name}</h3>
+        <p>{album?.artist}</p>
       </div>
     </div>
   );
