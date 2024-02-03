@@ -28,8 +28,11 @@
 
 .loadmore{
     color:"light grey";
+    
 }
 
 .loadmore:hover{
     color:white;
+    box-shadow: 4px ;
+    cursor:pointer;
 }

@@ -74,7 +74,7 @@ export default function LandingPage() {
           </div >
           
           <div>
-          {Pages.hasNextPage ? <h8 className='loadmore' onClick={handleLoadMore}>load more</h8>:''}
+          {Pages.hasNextPage ? <h8 style={{cursor:"pointer"}} onClick={handleLoadMore}>Load More</h8>:''}
 
           </div>
           
