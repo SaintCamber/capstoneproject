@@ -1,31 +1,34 @@
 import os
-from flask import Flask, render_template, request, session, redirect
+
+from flask import Flask, redirect, render_template, request, session
 from flask_cors import CORS
+from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
-from flask_login import LoginManager
-from .models.models import (
-    Artist,
-    Song,
-    Album,
-    Playlist,
-    playlists_songs,
-    favorites_songs
-)
-from .models.user import User
-from .models.db import db
-from .forms.upload_song_form import UploadForm
-from .forms.playlist_form import PlaylistForm, AddSongToPlaylist
-from .seeds import seed_commands
 
-# from .models.models_file import Artist, Song, Album, Playlist, PlaylistSong
-from .api.user_routes import user_routes
-from .api.auth_routes import auth_routes
 from .api.admin_routes import admin_routes
+from .api.auth_routes import auth_routes
 from .api.playlist_routes import playlist_routes
+from .api.search_routes import search_routes
+
+# from .models.models_file import Artist, Song, Album, Playlist, PlaylistSong,search
+from .api.user_routes import user_routes
 
 # from .seeds import seed_commands
 from .config import Config
+from .forms.playlist_form import AddSongToPlaylist, PlaylistForm
+from .forms.upload_song_form import UploadForm
+from .models.db import db
+from .models.models import (
+    Album,
+    Artist,
+    Playlist,
+    Song,
+    favorites_songs,
+    playlists_songs,
+)
+from .models.user import User
+from .seeds import seed_commands
 
 # from .utils.b2_helpers import authorize_account
 
@@ -52,6 +55,7 @@ app.register_blueprint(user_routes, url_prefix="/api/users")
 app.register_blueprint(auth_routes, url_prefix="/api/auth")
 app.register_blueprint(admin_routes, url_prefix="/api/admin")
 app.register_blueprint(playlist_routes, url_prefix="/api/playlists")
+app.register_blueprint(search_routes, url_prefix="/api/search")
 
 # Application Security
 CORS(app)
