@@ -13,26 +13,32 @@ const loadState = (B) => {
     payload: B,
   };
 };
-const getResults = (R) => {
+const setResults = (R) => {
   return {
-    type: "RESUlTS",
+    type: "RESULTS",
     payload: R,
   };
 };
 
-export const getSearchResults = () => async (dispatch) => {
+export const getSearchResults = (query) => async (dispatch) => {
+  // alert(query)
+  dispatch(Search(query));
+  dispatch(loadState(true));
   try {
-    dispatch(loadState(true));
-
     // search logic
 
     let results = [];
-    const fetchResults = async () => {
-      let response = await fetch(``, {
-        method: "GET",
-        headers: { "content-type": "application/json" },
-      });
-    };
+
+    let response = await fetch(`/api/search/${query}`);
+    if (!response.ok) {
+      return;
+    }
+
+    if (response.ok) {
+      let data = await response.json();
+      dispatch(setResults(data));
+      return data;
+    }
   } catch (errors) {
   } finally {
     dispatch(loadState(false));
@@ -42,7 +48,7 @@ export const getSearchResults = () => async (dispatch) => {
 const initialState = {
   query: "",
   loading: false,
-  results: [],
+  results: {},
 };
 
 const search = (state = initialState, action) => {

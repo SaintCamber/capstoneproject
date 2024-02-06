@@ -9,15 +9,15 @@ function SearchBar() {
   const handleChange = (event) => {
     const { value } = event.target;
     setNewQuery(value);
-    dispatch();
-    dispatch(getSearchResults(value));
   };
-
-  useEffect(() => {}, []);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    return dispatch(getSearchResults(newQuery));
+  };
 
   return (
     <section role="search">
-      <form action="#" method="get">
+      <form action="#" method="get" onSubmit={handleSubmit}>
         <fieldset>
           <label htmlFor="s">
             <input
@@ -26,7 +26,7 @@ function SearchBar() {
               id="s"
               placeholder="Search..."
               maxLength="200"
-              value={query}
+              value={newQuery}
               onChange={handleChange}
             />
             <button type="submit">Search</button>
@@ -41,7 +41,7 @@ function SearchBar() {
           <h2>Search Results:</h2>
           <ul>
             {results.map((result) => (
-              <li key={result.id}>{result.name}</li>
+              <li key={result.id}>{result.name || result.title}</li>
             ))}
           </ul>
         </div>

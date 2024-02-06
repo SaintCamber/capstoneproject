@@ -1,7 +1,6 @@
-from flask import Blueprint, jsonify
-from flask_login import current_user, login_required
+from flask import Blueprint, jsonify, request
+from flask_login import login_required
 from fuzzywuzzy import fuzz
-from sqlalchemy import or_
 
 from app.models import Album, Artist, Song
 
@@ -11,15 +10,16 @@ search_routes = Blueprint("search_routes", __name__)
 @search_routes.route("/<string:query>")
 @login_required
 def search_catalog(query):
+    # query = request.args.get('s')
     try:
-        # Perform a fuzzy search for artists, songs, and albums
+        # Perform a search for artists, songs, and albums
         Artists = Artist.query.filter(Artist.name.ilike(f"%{query}%")).all()
         Songs = Song.query.filter(Song.title.ilike(f"%{query}%")).all()
         Albums = Album.query.filter(Album.name.ilike(f"%{query}%")).all()
 
         print(Artists, Songs, Albums)
 
-        # Fuzzy search results
+        # Fuzzy
         fuzzy_artists = [
             artist for artist in Artists if fuzz.partial_ratio(query, artist.name) >= 80
         ]
