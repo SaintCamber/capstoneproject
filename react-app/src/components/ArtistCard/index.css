@@ -1,0 +1,90 @@
+.ArtistCard {
+  display: inline-block;
+  border-radius: 10px;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  width: 200px;
+  margin-right: 5px;
+  margin-bottom: 20px;
+  margin-left: 5px;
+}
+
+.ArtistCard:hover {
+  transform: translateY(-5px);
+}
+
+.ArtistCard__art {
+  height: 0;
+  padding-bottom: 100%;
+  position: relative;
+}
+
+.ArtistCard__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.ArtistCard__art-placeholder {
+  background-color: #e5e5e5;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ArtistCard__art-placeholder svg {
+  fill: #b3b3b3;
+  height: 50%;
+  width: 50%;
+}
+
+.ArtistCard__details {
+  padding: 10px;
+  background-color: #121212;
+  color: #fff;
+  text-align: center;
+}
+
+.ArtistCard__details h3 {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ArtistCard__details p {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: #b3b3b3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.ArtistCard_play {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(88, 211, 16, 0.5);
+  transition: background-color 0.3s ease;
+  opacity: 1;
+}
+.hidden {
+  display: none;
+}

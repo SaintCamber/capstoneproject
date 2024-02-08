@@ -54,13 +54,18 @@ const initialState = {
 const search = (state = initialState, action) => {
   switch (action.type) {
     case "SEARCH":
-      return { ...state, query: action.payload };
+      let newState = { ...state };
+      return { ...newState, query: action.payload };
 
     case "LOADING":
-      return { ...state, loading: action.payload };
+      let newState1 = { ...state };
+
+      return { ...newState1, loading: action.payload };
 
     case "RESULTS":
-      return { ...state, results: action.payload };
+      let newState2 = { ...state };
+
+      return { ...newState2, results: action.payload };
 
     default:
       return state;

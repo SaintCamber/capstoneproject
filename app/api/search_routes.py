@@ -36,7 +36,14 @@ def search_catalog(query):
             "albums": [album.to_dict() for album in fuzzy_albums],
         }
 
+        if (
+            len(results["artists"]) == 0
+            and len(results["songs"]) == 0
+            and len(results["albums"]) == 0
+        ):
+            raise Exception("no records found")
+
         return jsonify(results)
     except Exception as e:
         print(e)
-        return jsonify({"error": 404})
+        return jsonify({"error": 204})

@@ -1,11 +1,13 @@
 import os
-import subprocess
-from app.models import db, Song, Artist, Album, Playlist, playlists_songs, User
-from app.models.db import environment, SCHEMA, db
-from sqlalchemy.sql import text
-from faker import Faker
 import random
+import subprocess
+
 import psycopg2
+from faker import Faker
+from sqlalchemy.sql import text
+
+from app.models import Album, Artist, Playlist, Song, User, db, playlists_songs
+from app.models.db import SCHEMA, db, environment
 
 fake = Faker()
 BUCKET_NAME = os.environ.get("bucket_name")
@@ -14,9 +16,9 @@ ALLOWED_EXTENSIONS = {"mp3", "wav", "flac", "m4p"}
 
 def parse_filename(filename):
     artist_album_song_hash = filename.split("_")
-    artist = artist_album_song_hash[0].replace("-", " ")
-    album = artist_album_song_hash[1].replace("-", " ")
-    song = artist_album_song_hash[2].replace("-", " ")
+    artist = artist_album_song_hash[0].replace("-", " ").lower()
+    album = artist_album_song_hash[1].replace("-", " ").lower()
+    song = artist_album_song_hash[2].replace("-", " ").lower()
     return artist, album, song
 
 
@@ -289,7 +291,7 @@ def seeds():
             db.session.add(song)
             # Commit the changes to the database
             db.session.commit()
-            
+
         except psycopg2.errors.UniqueViolation as e:
             # Handle the unique constraint violation error
             # Rollback the transaction and continue with the next file

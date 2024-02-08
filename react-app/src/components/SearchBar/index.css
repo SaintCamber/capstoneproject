@@ -1,5 +1,6 @@
-section {
+.SearchSection {
   display: flex;
   flex-direction: column;
   padding-left: 230px;
+  height: 100%;
 }
