@@ -60,13 +60,7 @@ export default function SideBar() {
           <i className="fas fa-home"></i>
           <span>Home</span>
         </div>
-        <div
-          className="SideBar__navItem"
-          onClick={(e) => {
-            e.preventDefault();
-            return alert("Feature coming soon please try again later");
-          }}
-        >
+        <div className="SideBar__navItem">
           <i className="fas fa-search"></i>
           <span onClick={() => history.push("/search")}>Search</span>
         </div>

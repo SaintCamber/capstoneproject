@@ -1,13 +1,12 @@
 import os
 import random
-import subprocess
 
 import psycopg2
 from faker import Faker
 from sqlalchemy.sql import text
 
-from app.models import Album, Artist, Playlist, Song, User, db, playlists_songs
-from app.models.db import SCHEMA, db, environment
+from app.models import Album, Artist, Playlist, Song, User, db
+from app.models.db import SCHEMA, environment
 
 fake = Faker()
 BUCKET_NAME = os.environ.get("bucket_name")
