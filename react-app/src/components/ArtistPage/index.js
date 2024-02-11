@@ -22,22 +22,17 @@ const ArtistPage = () => {
       {artist && (
         <div className="ArtistPage__top">
           <div className="ArtistPage__art"></div>
-          <div className="ArtistPage__details">
-          {<h1>{artist?.name}</h1>}
-          </div>
+          <div className="ArtistPage__details">{<h1>{artist?.name}</h1>}</div>
         </div>
       )}
-      <div className="ArtistPage__albums"> {artist?.albums?.map((album)=>{
-        <AlbumCard  key={album.id}  album={album} />
-
-      })}
+      <div className="ArtistPage__albums">
+        {" "}
+        {artist?.albums?.map((album) => {
+          <AlbumCard key={album.id} album={album} />;
+        })}
       </div>
 
-      <div className="ArtistPage__songs"> {.map((X)=>{
-
-      })}
-      
-      </div>
+      <div className="ArtistPage__songs"> {artist?.songs?.map(() => {})}</div>
     </div>
   );
 };
