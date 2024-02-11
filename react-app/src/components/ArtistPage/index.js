@@ -26,7 +26,6 @@ const ArtistPage = () => {
         </div>
       )}
       <div className="ArtistPage__albums">
-        {" "}
         {artist?.albums?.map((album) => {
           <AlbumCard key={album.id} album={album} />;
         })}
