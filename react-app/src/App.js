@@ -17,6 +17,7 @@ import "./index.css";
 import AdminPanel from "./components/adminPages/AdminPanel";
 import AddSongs from "./components/playlists/Addsongs";
 import SearchBar from "./components/SearchBar";
+import ArtistPage from "./components/ArtistPage";
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
@@ -70,6 +71,9 @@ function App() {
           </Route>
           <Route path="/search">
             <SearchBar />
+          </Route>
+          <Route path="/artists/:artistId">
+            <ArtistPage />
           </Route>
         </Switch>
       )}

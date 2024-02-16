@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getSingleArtistThunk } from "../../store/music";
+import { getSingleArtist } from "../../store/music";
+import AlbumCard from "../AlbumCard";
 import "./index.css";
 
 const ArtistPage = () => {
   const dispatch = useDispatch();
-  const artist = useSelector((state) => state.music.currentArtist);
+  const artist = useSelector((state) => state.music.artists);
   const [errors, setErrors] = useState([]);
   const user = useSelector((state) => state.session.user);
   const albums = artist?.albums;
@@ -14,7 +15,7 @@ const ArtistPage = () => {
   const { artistId } = useParams();
 
   useEffect(() => {
-    dispatch(getSingleArtistThunk(artistId));
+    dispatch(getSingleArtist(artistId));
   }, [dispatch, artistId]);
 
   return (
