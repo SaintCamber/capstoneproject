@@ -27,12 +27,14 @@ const ArtistPage = () => {
         </div>
       )}
       <div className="ArtistPage__albums">
+        <h3>Albums</h3>
         {artist?.albums?.map((album) => {
           <AlbumCard key={album.id} album={album} />;
         })}
       </div>
 
       <div className="ArtistPage__songs"> {artist?.songs?.map(() => {})}</div>
+      <h3>Songs</h3>
     </div>
   );
 };
