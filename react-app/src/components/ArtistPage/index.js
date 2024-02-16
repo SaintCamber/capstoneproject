@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getSingleArtist } from "../../store/music";
 import AlbumCard from "../AlbumCard";
-import SongRow from "../SongRow";
+import SongRowAP from "../SongRowAP";
 import "./index.css";
 
 const ArtistPage = () => {
@@ -22,7 +22,7 @@ const ArtistPage = () => {
   };
 
   return (
-    <div className="ArtistPage" onClick={helperLog}>
+    <div className="ArtistPage">
       {artist && (
         <div className="ArtistPage__top">
           <div className="ArtistPage__art"></div>
@@ -35,6 +35,14 @@ const ArtistPage = () => {
           <h3>Albums</h3>
           {artist?.albums?.map((album) => (
             <AlbumCard key={album.id} album={album} />
+          ))}
+        </div>
+      )}
+      {artist.songs && (
+        <div className="ArtistPage__albums">
+          <h3>Songs</h3>
+          {artist?.songs?.map((song) => (
+            <SongRowAP key={song.id} song={song} />
           ))}
         </div>
       )}
