@@ -10,31 +10,39 @@ const ArtistPage = () => {
   const artist = useSelector((state) => state.music.artists);
   const [errors, setErrors] = useState([]);
   const user = useSelector((state) => state.session.user);
-  const albums = artist?.albums;
-  const songs = artist?.songs;
   const { artistId } = useParams();
 
   useEffect(() => {
     dispatch(getSingleArtist(artistId));
   }, [dispatch, artistId]);
 
+  const helperLog = () => {
+    console.log(artist);
+  };
+
   return (
-    <div className="ArtistPage">
+    <div className="ArtistPage" onClick={helperLog}>
       {artist && (
         <div className="ArtistPage__top">
           <div className="ArtistPage__art"></div>
           <div className="ArtistPage__details">{<h1>{artist?.name}</h1>}</div>
         </div>
       )}
-      <div className="ArtistPage__albums">
-        <h3>Albums</h3>
-        {artist?.albums?.map((album) => {
-          <AlbumCard key={album.id} album={album} />;
-        })}
-      </div>
 
-      <div className="ArtistPage__songs"> {artist?.songs?.map(() => {})}</div>
-      <h3>Songs</h3>
+      {artist.albums && (
+        <div className="ArtistPage__albums">
+          <h3>Albums</h3>
+          {artist?.albums?.map((album) => (
+            <AlbumCard key={album.id} album={album} />
+          ))}
+        </div>
+      )}
+
+      {artist.songs && (
+        <div className="ArtistPage__songs">
+          <h3>Songs</h3>
+        </div>
+      )}
     </div>
   );
 };
