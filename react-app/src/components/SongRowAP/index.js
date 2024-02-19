@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-
+import "./index.css";
 function SongRowAP({ song }) {
   let history = useHistory();
 
@@ -8,9 +8,9 @@ function SongRowAP({ song }) {
   };
 
   return (
-    <div className="SongRowAp" onClick={goToAlbum}>
-      <h1>{song.title}</h1>
-      <h4>{song.album}</h4>
+    <div className="SongRowAP" onClick={goToAlbum}>
+      <h2>{song.title}</h2>
+      <h5>{song.album}</h5>
     </div>
   );
 }
