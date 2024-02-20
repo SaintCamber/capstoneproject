@@ -33,5 +33,5 @@ backblaze == 0.1.1
 b2sdk >= 1.0.0
 music-tag == 0.4.3
 b2 == 3.8.0
-python-Levenshtein == 0.25.0
+python-Levenshtein == 0.23.0
 fuzzywuzzy == 0.18.0
