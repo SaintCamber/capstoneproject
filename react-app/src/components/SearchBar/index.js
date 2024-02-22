@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getSearchResults } from "../../store/search";
+import { getSearchResults, clearSearch } from "../../store/search";
 import { useDispatch, useSelector } from "react-redux";
 import AlbumCard from "../AlbumCard";
 import SongRow from "../SongRowCopy";
@@ -17,6 +17,7 @@ function SearchBar() {
     e.preventDefault();
     return dispatch(getSearchResults(newQuery.toLowerCase()));
   };
+  useEffect(() => () => clearSearch, []);
 
   return (
     <section role="search" className="SearchSection">

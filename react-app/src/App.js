@@ -18,6 +18,7 @@ import AdminPanel from "./components/adminPages/AdminPanel";
 import AddSongs from "./components/playlists/Addsongs";
 import SearchBar from "./components/SearchBar";
 import ArtistPage from "./components/ArtistPage";
+import clearSearch from "./store/search.js";
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);

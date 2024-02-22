@@ -20,6 +20,16 @@ const setResults = (R) => {
   };
 };
 
+const Clear = () => {
+  return {
+    type: "ERADICATE",
+  };
+};
+
+export const clearSearch = () => async (dispatch) => {
+  dispatch(Clear(true));
+};
+
 export const getSearchResults = (query) => async (dispatch) => {
   // alert(query)
   dispatch(Search(query));
@@ -66,6 +76,10 @@ const search = (state = initialState, action) => {
       let newState2 = { ...state };
 
       return { ...newState2, results: action.payload };
+    case "ERADICATE":
+      let newState3 = { ...state };
+
+      return { ...newState2, results: {} };
 
     default:
       return state;

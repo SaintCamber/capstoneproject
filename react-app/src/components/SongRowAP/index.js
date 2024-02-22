@@ -9,8 +9,10 @@ function SongRowAP({ song }) {
 
   return (
     <div className="SongRowAP" onClick={goToAlbum}>
-      <h2>{song.title}</h2>
-      <h5>{song.album}</h5>
+      <div className="SongDetails">
+        <div className="SongTitle">{song.title}</div>
+        <div className="SongAlbum">{song.album}</div>
+      </div>
     </div>
   );
 }
