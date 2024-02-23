@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AlbumCard from "../AlbumCard";
 import SongRow from "../SongRowCopy";
 import ArtistCard from "../ArtistCard";
+import "./index.css";
 
 function SearchBar() {
   const dispatch = useDispatch();
@@ -21,8 +22,13 @@ function SearchBar() {
 
   return (
     <section role="search" className="SearchSection">
-      <form action="#" method="get" onSubmit={handleSubmit}>
-        <fieldset>
+      <form
+        className="SearchForm"
+        action="#"
+        method="get"
+        onSubmit={handleSubmit}
+      >
+        <fieldset className="SearchFieldset">
           <label htmlFor="s">
             <input
               type="search"
@@ -33,7 +39,9 @@ function SearchBar() {
               value={newQuery}
               onChange={handleChange}
             />
-            <button type="submit">Search</button>
+            <button className="SearchButton" type="submit">
+              Search
+            </button>
           </label>
         </fieldset>
       </form>
@@ -43,7 +51,7 @@ function SearchBar() {
       {(results?.artists?.length ||
         results?.albums?.length ||
         results?.songs?.length) && (
-        <div>
+        <div className="SearchResults">
           <h2>Search Results:</h2>
           <h4>Songs</h4>
           {results?.songs?.map((song, i = 1) => {

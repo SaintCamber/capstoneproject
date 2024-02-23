@@ -1,6 +1,68 @@
 .SearchSection {
   display: flex;
   flex-direction: column;
-  padding-left: 230px;
+  align-items: start;
   height: 100%;
+  width: 100%;
+  padding: 20px;
+}
+
+.SearchForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.SearchFieldset {
+  display: flex;
+  flex-direction: row;
+  border: none;
+}
+
+#s {
+  flex: 1;
+  border-radius: 15px;
+  border: none;
+  padding: 10px;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+#s:focus {
+  background-color: rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+.SearchButton {
+  background-color: #1ed760;
+  border: none;
+  border-radius: 15px;
+  color: black;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 10px 15px;
+  transition: background-color 0.3s;
+}
+
+.SearchButton:hover {
+  background-color: #147741;
+}
+
+.SearchResults {
+  margin-top: 20px;
+}
+
+.SearchResults h2,
+.SearchResults h4 {
+  color: #1ed760;
+  margin-bottom: 10px;
+}
+
+.SongRow,
+.AlbumCard,
+.ArtistCard {
+  margin-bottom: 15px;
 }
