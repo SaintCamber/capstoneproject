@@ -1,0 +1,13 @@
+.FinishedAdding:hover {
+  cursor: pointer;
+  color: #1db954;
+  background-color: white;
+}
+
+.FinishedAdding {
+  margin-bottom: 5vh;
+  margin-top: 2vh;
+  padding: 1vw;
+  background-color: #1db954;
+  border-radius: 15px;
+}
