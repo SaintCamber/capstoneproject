@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 import { signUp } from "../../store/session";
-import './SignupForm.css';
+import "./SignupForm.css";
 
 function SignupFormPage() {
   const dispatch = useDispatch();
@@ -18,34 +18,37 @@ function SignupFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let errors = [];
-		setErrors([]);
-		if (password.length < 6) {
-			errors.push(["Password must be at least 6 characters long"]);
-		} else if (password.length > 50) {
-			errors.push(["Password must be less than 50 characters long"]);
-		} else if (email.length > 255) {
-			errors.push(["Email must be less than 255 characters long"]);
-		} else
-
-		if (password === confirmPassword) {
-			const data = await dispatch(signUp(username, email, password));
-			if (data) {
-				errors.push(data);
-			}
+    setErrors([]);
+    if (password.length < 6) {
+      errors.push(["Password must be at least 6 characters long"]);
+    } else if (password.length > 50) {
+      errors.push(["Password must be less than 50 characters long"]);
+    } else if (email.length > 255) {
+      errors.push(["Email must be less than 255 characters long"]);
+    } else if (password === confirmPassword) {
+      const data = await dispatch(signUp(username, email, password));
+      if (data) {
+        errors.push(data);
+      }
     } else {
-        setErrors(['Confirm Password field must be the same as the Password field']);
+      setErrors([
+        "Confirm Password field must be the same as the Password field",
+      ]);
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-  errors.push(['Invalid email address']);
-}
-const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-if (!passwordRegex.test(password)) {
-  errors.push(['Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number']);
-}
+      errors.push(["Invalid email address"]);
+    }
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      errors.push([
+        "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, and one number",
+      ]);
+    }
 
-if (errors.length) {
-  setErrors(errors);
+    if (errors.length) {
+      setErrors(errors);
+    }
   };
 
   return (
@@ -53,7 +56,9 @@ if (errors.length) {
       <h1>Sign Up</h1>
       <form onSubmit={handleSubmit}>
         <ul>
-          {errors.map((error, idx) => <li key={idx}>{error}</li>)}
+          {errors.map((error, idx) => (
+            <li key={idx}>{error}</li>
+          ))}
         </ul>
         <label>
           Email
@@ -95,6 +100,5 @@ if (errors.length) {
       </form>
     </div>
   );
-}
 }
 export default SignupFormPage;
