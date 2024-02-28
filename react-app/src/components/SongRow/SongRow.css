@@ -85,3 +85,7 @@
 .hidden {
   display: none;
 }
+
+.fa-play {
+  margin-left: 1vw;
+}

@@ -6,6 +6,9 @@ function SongRowAP({ song }) {
   const goToAlbum = () => {
     history.push(`/albums/${song.album_id}`);
   };
+  // create a regex that removes any numbers or special characters from the song
+  const regex = /^\d+\s/;
+  let title = song?.title.replace(regex, ``);
 
   return (
     <div className="SongRowAP" onClick={goToAlbum}>
