@@ -3,3 +3,11 @@ node_modules/
 .venv
 .vscode
 .env
+capvenv/
+lib/
+lib64/
+include/
+bin/
+share/
+var/
+pyvenv.cfg

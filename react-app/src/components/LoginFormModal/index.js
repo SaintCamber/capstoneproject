@@ -15,10 +15,10 @@ function LoginFormModal() {
     let errors=[]
     setErrors([]);
     if(!email || !password) {
-      errors.push(['Please fill out all fields'])
+      errors.push(['Please fill out all fields'])}
     if (password.length < 6) {
       errors.push(['Password must be at least 6 characters long'])
-    }  
+    }
     if (password.length > 50) {
       errors.push(['Password must be less than 50 characters long'])
     }
@@ -33,7 +33,7 @@ function LoginFormModal() {
       closeModal()
     }
   };
-  
+
   const loginDemo = (e) => {
     e.preventDefault();
     dispatch(login("demo@aa.io", "password"));
@@ -75,5 +75,5 @@ function LoginFormModal() {
     </div>
   );
 }
-}
+
 export default LoginFormModal;

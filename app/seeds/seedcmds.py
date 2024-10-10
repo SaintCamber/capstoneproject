@@ -2,13 +2,13 @@ import os
 import random
 
 import psycopg2
-from faker import Faker
+# from faker import Faker
 from sqlalchemy.sql import text
 
 from app.models import Album, Artist, Playlist, Song, User, db
 from app.models.db import SCHEMA, environment
 
-fake = Faker()
+# fake = Faker()
 BUCKET_NAME = os.environ.get("bucket_name")
 ALLOWED_EXTENSIONS = {"mp3", "wav", "flac", "m4p"}
 
@@ -304,7 +304,7 @@ def seed_playlists():
     songs = Song.query.all()
     for user in users:
         for i in range(5):  # generate 5 playlists for each user
-            playlist = Playlist(user=user, name=fake.word())
+            playlist = Playlist(user=user, name=i)
             db.session.add(playlist)
             song_set = set()  # keep track of songs already added to playlist
             while (
