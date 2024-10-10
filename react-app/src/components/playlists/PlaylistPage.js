@@ -25,7 +25,7 @@ const PlaylistPage = () => {
     }
 
     useEffect(() => {
-        console.log(playlist, "playlist in the playlist page");
+        // console.log(playlist, "playlist in the playlist page");
         dispatch(getSinglePlaylist(PlaylistId));
     }, [dispatch, PlaylistId]);
 

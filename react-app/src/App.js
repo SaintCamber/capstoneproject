@@ -65,7 +65,7 @@ function App() {
             <AddSongs />
           </Route>
           <Route path="/playlists/:PlaylistId">
-            <PlaylistPage />
+            {!user ? <LoginFormPage/>:<PlaylistPage />}
           </Route>
           <Route path="/albums/:albumId">
             <AlbumPage />

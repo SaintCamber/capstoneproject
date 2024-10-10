@@ -14,7 +14,7 @@ const RenderedSongs = (playlist, handleShowAllSongs, showAllSongs) => {
     };
 
 
-    console.log(playlist, 'playlist in the rendered songs')
+    // console.log(playlist, 'playlist in the rendered songs')
 
     return (
         <div>
